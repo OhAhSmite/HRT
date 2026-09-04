@@ -139,10 +139,9 @@
         .room-notes-wrapper::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
         
         .room-notes-container { width: 100%; box-sizing: border-box; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 6px 8px; font-size: 0.72rem; color: #92400e; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
-        .room-note-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; border-bottom: 1px solid rgba(253, 230, 138, 0.5); padding-bottom: 5px; width: 100%; }
+        .room-note-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; border-bottom: 1px solid rgba(253, 230, 138, 0.5); padding-bottom: 5px; width: 100%; transition: opacity 0.2s ease; }
         .room-note-item:last-child { border-bottom: none; padding-bottom: 0; }
         
-        /* CORRECCIÓN: Evitar que las palabras largas desborden la caja amarilla */
         .room-note-text { flex: 1; min-width: 0; line-height: 1.35; word-wrap: break-word; overflow-wrap: break-word; word-break: break-word; }
         
         .btn-note-done { background: transparent; color: var(--status-free); border: 1px solid var(--status-free); border-radius: 6px; padding: 3px 6px; font-size: 0.65rem; cursor: pointer; font-weight: 600; flex-shrink: 0; transition: all 0.2s ease; }
@@ -161,8 +160,8 @@
         .btn { width: 100%; padding: 10px; border-radius: 10px; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; outline: none; letter-spacing: 0.5px;}
         .btn-checkin { background: var(--brand-green); color: var(--white); border: none; box-shadow: 0 4px 15px rgba(11,66,26,0.2); }
         .btn-checkin:hover { background: var(--brand-green-light); transform: translateY(-2px); }
-        .btn-checkout { background: var(--white); color: var(--status-occ); border: 1px solid var(--status-occ); }
-        .btn-checkout:hover { background: var(--status-occ); color: var(--white); transform: translateY(-2px); }
+        .btn-checkout { background: var(--status-occ); color: var(--white); border: 1px solid var(--status-occ); }
+        .btn-checkout:hover { background: #b91c1c; transform: translateY(-2px); }
         .btn-clean { background: var(--white); color: var(--status-clean); border: 1px solid var(--status-clean); }
         .btn-clean:hover { background: var(--status-clean); color: var(--white); transform: translateY(-2px); }
         .btn-cancel { background: #f1f5f9; border: none; color: var(--text-muted); }
@@ -452,7 +451,7 @@
     
     <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Cédula (Opcional)</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="guestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
-    <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button></div></div></div>
+    <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Check-Out</button></div></div></div>
     
     <div class="modal-overlay" id="addReservationModal"><div class="modal-content modal-sm"><div class="modal-title" id="resModalTitle">Reserva</div><div class="form-group"><label>Huésped (Nombre)</label><input type="text" id="rName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Habitación</label><select id="rRoom"></select></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="rGuestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="rPhone"></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Llegada</label><input type="datetime-local" id="rArrival"></div></div><div class="form-group"><label>Nota adicional</label><input type="text" id="rNote"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveReservation()">Guardar</button></div></div></div>
     
@@ -490,7 +489,7 @@
             <div class="manual-popup-body">
                 <div class="manual-step">
                     <h4><i class="fa-solid fa-bed"></i> 1. Habitaciones</h4>
-                    <p>Haz clic en una tarjeta para voltearla y realizar <strong>Check-In</strong>, cambiar a estado de <strong>Necesita Limpieza</strong>, marcar como <strong>Limpieza completada</strong> o registrar la <strong>Salida</strong>. Ahora también se muestran las notas dirigidas a cada cuarto en su reverso.</p>
+                    <p>Haz clic en una tarjeta para voltearla y realizar <strong>Check-In</strong>, cambiar a estado de <strong>Necesita Limpieza</strong>, marcar como <strong>Limpieza completada</strong> o registrar el <strong>Check-Out</strong>. Ahora también se muestran las notas dirigidas a cada cuarto en su reverso.</p>
                 </div>
                 <div class="manual-step">
                     <h4><i class="fa-solid fa-clipboard-list"></i> 2. Notas / Novedades</h4>
@@ -736,7 +735,8 @@
                 if(hasNotes) {
                     notesBackHtml = `<div class="room-notes-container">`;
                     roomNotes.forEach(n => {
-                        notesBackHtml += `<div class="room-note-item"><div class="room-note-text">${n.content}</div> <button class="btn-note-done" onclick="event.stopPropagation(); deleteNote(${n.id}, true)">Cumplir <i class="fa-solid fa-check"></i></button></div>`;
+                        // AQUÍ HICE EL ARREGLO VISUAL: Ocultar al instante el recuadro "room-note-item" para mejor UX
+                        notesBackHtml += `<div class="room-note-item" id="note-item-${n.id}"><div class="room-note-text">${n.content}</div> <button class="btn-note-done" onclick="event.stopPropagation(); document.getElementById('note-item-${n.id}').style.display='none'; deleteNote(${n.id}, true)">Cumplir <i class="fa-solid fa-check"></i></button></div>`;
                     });
                     notesBackHtml += `</div>`;
                 }
@@ -759,7 +759,9 @@
                 } else {
                     actionButtonsHtml = `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`;
                 }
-                actionButtonsHtml += `<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button><button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button>`;
+                
+                // AQUÍ CAMBIÉ EL BOTÓN A "CHECK-OUT"
+                actionButtonsHtml += `<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">CHECK-OUT</button><button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button>`;
 
                 grid.innerHTML += `
                 <div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})">
@@ -799,7 +801,17 @@
             const py = { status: 'occupied', check_in_time: new Date().toISOString(), last_cleaned_time: new Date().toISOString(), guest_name: document.getElementById('guestName').value.trim() || 'Sin registrar', guest_id: document.getElementById('guestCedula').value.trim() || 'N/A', guest_count: count, isCheckout: false };
             document.getElementById('checkinModal').style.display = 'none'; updateRoomDB(currentRoomIdForCheckin, py);
         }
-        function executeCheckout() { document.getElementById('confirmCheckoutModal').style.display = 'none'; accionHabitacion(currentRoomIdForCheckout, 'available', 'checkout'); }
+        
+        // AQUÍ HICE EL ARREGLO DEL GIRO: La tarjeta se voltea de inmediato y vuelve a verde.
+        function executeCheckout() { 
+            document.getElementById('confirmCheckoutModal').style.display = 'none'; 
+            
+            // Retirar la clase flipped de inmediato para que renderRooms no la recuerde como volteada.
+            const tarjetaRoom = document.getElementById(`room-${currentRoomIdForCheckout}`);
+            if(tarjetaRoom) tarjetaRoom.classList.remove('flipped');
+            
+            accionHabitacion(currentRoomIdForCheckout, 'available', 'checkout'); 
+        }
         
         function accionHabitacion(id, nuevoEstado, actionType) {
             const py = { status: nuevoEstado, isCheckout: false };
