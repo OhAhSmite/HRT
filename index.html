@@ -548,7 +548,7 @@
 
     <div class="modal-overlay" id="customAlertModal"><div class="modal-content modal-sm" style="text-align: center;"><div id="alertIcon" style="font-size: 3.5rem; margin-bottom: 15px;"></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div><p id="alertMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" id="alertBtn" onclick="closeModal('customAlertModal')">Entendido</button></div></div></div>
     
-    <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="¿Estás seguro?">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
+    <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
     <div class="modal-overlay" id="legalModal">
         <div class="modal-content">
@@ -694,7 +694,7 @@
             document.getElementById('view-' + viewId).classList.add('active'); 
             
             document.querySelectorAll('.nav-item').forEach(item => {
-                if(item.getAttribute('onclick') && item.getAttribute('onclick'].includes(viewId)) {
+                if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) {
                     item.classList.add('active');
                 }
             });
