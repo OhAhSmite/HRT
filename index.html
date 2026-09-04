@@ -80,14 +80,14 @@
         .btn-logout { margin: 15px; background: #fef2f2; color: var(--status-occ); border: 1px solid #fecaca; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .btn-logout:hover { background: var(--status-occ); color: var(--white); }
 
-        /* === ÁREA PRINCIPAL Y TRANSICIÓN DE PESTAÑAS === */
+        /* === ÁREA PRINCIPAL Y TRANSICIÓN DE PESTAÑAS (ANIMACIÓN RÁPIDA Y FLUIDA) === */
         .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; padding: 30px; }
         
         .view-section { 
             display: none; 
             opacity: 0; 
-            transform: translateY(15px); 
-            transition: opacity 0.3s ease-out, transform 0.3s ease-out; 
+            transform: translateY(12px); 
+            transition: opacity 0.25s ease-out, transform 0.25s ease-out; 
             flex-direction: column; 
             width: 100%; 
         }
