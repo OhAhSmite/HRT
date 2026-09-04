@@ -60,8 +60,9 @@
         .login-box h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brand-green); margin-bottom: 30px; line-height: 1.2; }
         .login-error { color: var(--status-occ); font-size: 0.85rem; font-weight: 600; margin-top: 15px; display: none; background: #fef2f2; padding: 10px; border-radius: 8px; border: 1px solid #fecaca; }
 
-        /* === HEADER MÓVIL (Oculto en PC) === */
+        /* === HEADER MÓVIL (Por defecto oculto en PC) === */
         .mobile-header { display: none; }
+        .mobile-bottom-bar { display: none; }
 
         /* === BARRA LATERAL (SIDEBAR - ESCRITORIO) === */
         .sidebar { width: 280px; min-width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; box-shadow: 4px 0 30px rgba(11, 66, 26, 0.05); z-index: 100; border-right: 1px solid rgba(0,0,0,0.05); }
@@ -242,9 +243,10 @@
                 font-size: 1rem;
             }
 
-            /* Ocultar barra de escritorio y adaptar menú inferior flotante */
-            .sidebar { display: none; }
+            /* Ocultar barra lateral de escritorio en móviles */
+            .sidebar { display: none !important; }
             
+            /* Mostrar barra inferior flotante exclusiva para móviles con sus 4 accesos */
             .mobile-bottom-bar {
                 display: flex;
                 width: 100%;
@@ -259,6 +261,20 @@
                 justify-content: space-around;
                 align-items: center;
                 z-index: 1000;
+                flex-direction: row !important;
+            }
+            
+            .mobile-bottom-bar .nav-item {
+                flex-direction: column;
+                gap: 3px;
+                font-size: 0.65rem;
+                padding: 6px 4px;
+                align-items: center;
+                text-align: center;
+            }
+            .mobile-bottom-bar .nav-item i {
+                font-size: 1.15rem;
+                width: auto;
             }
             
             .main-content { padding: 15px 12px; width: 100%; }
@@ -313,7 +329,7 @@
             <button class="btn-logout" onclick="processLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span></button>
         </div>
 
-        <div class="mobile-bottom-bar nav-menu">
+        <div class="mobile-bottom-bar">
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
             <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
             <div class="nav-item" onclick="switchView('directorio', this); renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab'));"><i class="fa-solid fa-address-book"></i> <span>Directorio</span></div>
@@ -416,13 +432,13 @@
 
         // UTILES UI
         function switchView(viewId, element) { 
-            // Sincronizar tanto los botones de la barra inferior móvil como del menú de PC si estuvieran activos
+            // Sincronizar todos los elementos de navegación (tanto escritorio como móvil)
             document.querySelectorAll('.view-section, .nav-item').forEach(el => el.classList.remove('active')); 
             
             // Activar la sección correspondiente
             document.getElementById('view-' + viewId).classList.add('active'); 
             
-            // Activar todos los elementos correspondientes a esta vista en los menús
+            // Activar los botones de los menús que correspondan a esta vista
             document.querySelectorAll('.nav-item').forEach(item => {
                 if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) {
                     item.classList.add('active');
