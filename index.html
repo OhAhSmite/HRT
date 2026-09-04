@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostal Reales Tamarindos - Gestión</title>
     
-    <!-- Fuentes Elegantes (Poppins para datos, Playfair Display para Títulos) -->
+    <!-- Fuentes Elegantes -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Librerías para Exportar -->
+    <!-- Librerías para Exportar y Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
         /* === VARIABLES DE MARCA Y DISEÑO === */
@@ -32,164 +33,78 @@
             --status-clean: #d97706;
         }
 
-        /* === RESET Y LAYOUT PRINCIPAL === */
         * { box-sizing: border-box; font-family: 'Poppins', sans-serif; margin: 0; padding: 0; }
         
         body { 
             background-color: var(--bg-main); 
             height: 100vh; 
-            display: flex;
             color: var(--text-dark); 
             overflow: hidden; 
         }
 
+        #app-container { display: none; width: 100%; height: 100%; }
+
+        /* === PANTALLA DE LOGIN === */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--bg-main);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999;
+            transition: opacity 0.4s ease;
+        }
+        .login-box {
+            background: var(--white); padding: 50px 40px; border-radius: 24px;
+            box-shadow: 0 25px 50px rgba(11, 66, 26, 0.08); width: 100%; max-width: 420px;
+            text-align: center; border: 1px solid rgba(11, 66, 26, 0.05); margin: 20px;
+        }
+        .login-box img { max-width: 120px; margin-bottom: 20px; }
+        .login-box h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brand-green); margin-bottom: 35px; line-height: 1.2; }
+        .login-error { color: var(--status-occ); font-size: 0.85rem; font-weight: 600; margin-top: 15px; display: none; background: #fef2f2; padding: 10px; border-radius: 8px; border: 1px solid #fecaca; }
+
         /* === BARRA LATERAL (SIDEBAR) === */
-        .sidebar {
-            width: 280px;
-            background-color: var(--sidebar-bg);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 4px 0 30px rgba(11, 66, 26, 0.05);
-            z-index: 100;
-            border-right: 1px solid rgba(0,0,0,0.05);
-        }
-
-        .sidebar-header {
-            padding: 40px 20px 20px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .sidebar-header img {
-            max-width: 110px;
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-        }
-        
+        .sidebar { width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; box-shadow: 4px 0 30px rgba(11, 66, 26, 0.05); z-index: 100; border-right: 1px solid rgba(0,0,0,0.05); }
+        .sidebar-header { padding: 40px 20px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .sidebar-header img { max-width: 110px; margin-bottom: 20px; transition: transform 0.3s ease; }
         .sidebar-header img:hover { transform: scale(1.05); }
-
-        .sidebar-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            color: var(--brand-green);
-            letter-spacing: 0.5px;
-            line-height: 1.2;
-            text-transform: uppercase;
-        }
-
-        .nav-menu {
-            display: flex;
-            flex-direction: column;
-            padding: 20px 15px;
-            flex: 1;
-            gap: 8px;
-        }
-
-        .nav-item {
-            padding: 14px 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border-radius: 12px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            color: var(--brand-green);
-            opacity: 0.8;
-            border: 1px solid transparent;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(11, 66, 26, 0.04);
-            opacity: 1;
-            transform: translateX(4px);
-        }
-
-        .nav-item.active {
-            background-color: var(--brand-green);
-            color: var(--white);
-            opacity: 1;
-            box-shadow: 0 8px 20px rgba(11, 66, 26, 0.2);
-        }
-
+        .sidebar-header h1 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--brand-green); letter-spacing: 0.5px; line-height: 1.2; text-transform: uppercase; }
+        .nav-menu { display: flex; flex-direction: column; padding: 20px 15px; flex: 1; gap: 8px; }
+        .nav-item { padding: 14px 20px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.95rem; border-radius: 12px; transition: all 0.3s; color: var(--brand-green); opacity: 0.8; }
+        .nav-item:hover { background-color: rgba(11, 66, 26, 0.04); opacity: 1; transform: translateX(4px); }
+        .nav-item.active { background-color: var(--brand-green); color: var(--white); opacity: 1; box-shadow: 0 8px 20px rgba(11, 66, 26, 0.2); }
         .nav-item i { width: 22px; text-align: center; font-size: 1.2rem; }
+        .btn-logout { margin: auto 15px 20px; background: #fef2f2; color: var(--status-occ); border: 1px solid #fecaca; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
+        .btn-logout:hover { background: var(--status-occ); color: var(--white); }
 
-        /* === ÁREA PRINCIPAL Y VISTAS (SPA) === */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            overflow-x: hidden;
-            position: relative;
-            padding: 40px;
-        }
-        
+        /* === ÁREA PRINCIPAL === */
+        .main-content { flex: 1; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; position: relative; padding: 40px; }
         .view-section { display: none; animation: fadeInView 0.4s ease-out forwards; flex-direction: column; height: 100%; }
         .view-section.active { display: flex; }
-        
-        @keyframes fadeInView { 
-            from { opacity: 0; transform: translateY(15px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-
-        .main-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.4rem;
-            color: var(--brand-green);
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(11, 66, 26, 0.08);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-        }
-        
+        @keyframes fadeInView { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .main-title { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--brand-green); margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid rgba(11, 66, 26, 0.08); display: flex; align-items: center; justify-content: space-between; gap: 15px; }
         .main-title-left { display: flex; align-items: center; gap: 15px; }
 
-        /* === GRID DE HABITACIONES === */
+        /* === HABITACIONES === */
         #hotelContainer { flex: 1; display: flex; flex-direction: column; align-items: center;}
-        
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(5, 210px); 
-            justify-content: center; 
-            gap: 25px; 
-            width: fit-content;
-        }
-
-        .room-container { height: 270px; cursor: pointer; perspective: 1000px; border-radius: 20px; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .grid { display: grid; grid-template-columns: repeat(5, 210px); justify-content: center; gap: 25px; width: fit-content; }
+        .room-container { height: 270px; cursor: pointer; perspective: 1000px; border-radius: 20px; transition: transform 0.4s; }
         .room-container:hover { transform: translateY(-10px); z-index: 10; }
-
         .room-container.available { box-shadow: 0 15px 35px rgba(5, 150, 105, 0.15); }
         .room-container.occupied { box-shadow: 0 15px 35px rgba(220, 38, 38, 0.15); }
         .room-container.occupied-cleaning { box-shadow: 0 15px 35px rgba(217, 119, 6, 0.15); }
-
-        .room-flipper { width: 100%; height: 100%; position: relative; transition: transform 0.7s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
+        .room-flipper { width: 100%; height: 100%; position: relative; transition: transform 0.7s; transform-style: preserve-3d; }
         .room-container.flipped .room-flipper { transform: rotateY(180deg); }
-
         .front, .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 20px; overflow: hidden;}
-        
         .front { padding: 25px 20px; display: flex; flex-direction: column; align-items: center; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
         .front.available { background: linear-gradient(145deg, #059669, #047857); } 
         .front.occupied { background: linear-gradient(145deg, #dc2626, #b91c1c); } 
         .front.occupied-cleaning { background: linear-gradient(145deg, #d97706, #b45309); }
-
         .room-number { font-family: 'Playfair Display', serif; font-size: 4rem; font-weight: 700; line-height: 1; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.15); }
         .status-pill { background-color: var(--white); color: var(--text-dark); padding: 5px 20px; border-radius: 25px; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); letter-spacing: 1px;}
-        
         .guest-name { font-size: 0.85rem; font-weight: 600; background: rgba(0,0,0,0.25); padding: 6px 14px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 95%; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); }
-
         .badges-container { width: 100%; display: flex; flex-direction: column; gap: 6px; margin-top: auto; }
-        .badge-row { background: rgba(0,0,0,0.15); border-radius: 10px; padding: 8px 12px; font-size: 0.7rem; display: flex; align-items: center; justify-content: space-between; font-weight: 500; backdrop-filter: blur(5px); }
-
+        .badge-row { background: rgba(0,0,0,0.15); border-radius: 10px; padding: 8px 12px; font-size: 0.7rem; display: flex; align-items: center; justify-content: space-between; font-weight: 500; }
         .back { transform: rotateY(180deg); background: var(--white); padding: 25px 20px; display: flex; flex-direction: column; justify-content: center; gap: 12px; border: 1px solid rgba(11,66,26,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
         
-        /* === BOTONES === */
         .btn { width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; outline: none; letter-spacing: 0.5px;}
         .btn-checkin { background: var(--brand-green); color: var(--white); border: none; box-shadow: 0 4px 15px rgba(11,66,26,0.2); }
         .btn-checkin:hover { background: var(--brand-green-light); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(11,66,26,0.3); }
@@ -204,496 +119,230 @@
 
         /* === MODALES === */
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.97) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-        
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 66, 26, 0.6); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: var(--white); padding: 40px; border-radius: 24px; width: 95%; max-width: 900px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); border: 1px solid rgba(255,255,255,0.5); }
         .modal-sm { max-width: 450px; } 
-        
         .modal-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; margin-bottom: 30px; color: var(--brand-green); display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(11,66,26,0.1); padding-bottom: 15px;}
-        
         .form-group { margin-bottom: 20px; text-align: left; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px 16px; border: 1px solid #cbd5e1; border-radius: 12px; outline: none; background: #f8fafc; color: var(--text-dark); font-size: 0.95rem; font-family: 'Poppins'; transition: all 0.3s; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--brand-peach); background: var(--white); box-shadow: 0 0 0 4px rgba(245, 166, 115, 0.15); }
-
         .modal-actions { display: flex; justify-content: center; gap: 15px; margin-top: 35px; }
         .modal-actions button { flex: 1; padding: 14px; font-size: 0.95rem; }
-        
-        /* === RESERVAS === */
+
+        /* === RESERVAS, REPORTES Y DIRECTORIO (Mismos estilos intactos) === */
         #reservationsList { overflow-y: auto; flex: 1; padding-right: 10px; margin-top: 10px;}
-        .reservation-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; border-left: 6px solid var(--brand-peach); box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .reservation-card:hover { transform: translateX(5px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-color: var(--brand-peach-hover); }
+        .reservation-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; border-left: 6px solid var(--brand-peach); }
         .res-info h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--brand-green); margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
-        .res-room-badge { background: rgba(245, 166, 115, 0.15); color: #c2410c; padding: 4px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; font-family: 'Poppins', sans-serif;}
+        .res-room-badge { background: rgba(245, 166, 115, 0.15); color: #c2410c; padding: 4px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;}
         .res-dates { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 500;}
         .res-dates i { width: 20px; color: var(--brand-peach); }
         .res-actions { display: flex; gap: 12px; }
         .btn-icon { width: 45px; height: 45px; border-radius: 12px; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; font-size: 1.2rem; transition: 0.3s; }
         .btn-whatsapp { background: #ecfdf5; color: #10b981; border: 1px solid #a7f3d0; }
-        .btn-whatsapp:hover { background: #10b981; color: var(--white); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(16,185,129,0.3);}
         .btn-edit-res { background: #f8fafc; color: var(--brand-green); border: 1px solid #e2e8f0; }
-        .btn-edit-res:hover { background: var(--brand-green); color: var(--white); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(11,66,26,0.2);}
         .btn-delete-res { background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; }
-        .btn-delete-res:hover { background: #ef4444; color: var(--white); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(239,68,68,0.3);}
 
-        /* === REPORTES === */
-        .filter-section-sym { background: var(--white); padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.02);}
+        .filter-section-sym { background: var(--white); padding: 25px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 30px;}
         .filter-grid-sym { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 20px; }
         .filter-actions-sym { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; }
         .filter-actions-sym button { flex: 1; min-width: 160px; max-width: 250px; padding: 14px; }
-        
-        .export-container { padding: 30px; background: #ffffff; color: #000000; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,0.03); flex: 1; overflow-y: auto;}
+        .export-container { padding: 30px; background: #ffffff; color: #000000; border-radius: 16px; border: 1px solid #e2e8f0; flex: 1; overflow-y: auto;}
         .export-header-report { display: none; text-align: center; margin-bottom: 25px; }
         .export-header-report h2 { font-size: 2rem; color: var(--brand-green); font-weight: 800; font-family: 'Playfair Display', serif;}
         .export-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
         .export-table th, .export-table td { border-bottom: 1px solid #e2e8f0; padding: 16px 12px; text-align: left; }
-        .export-table th { background-color: rgba(11, 66, 26, 0.03); font-weight: 600; color: var(--brand-green); text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;}
-        
-        /* === DIRECTORIO === */
+        .export-table th { background-color: rgba(11, 66, 26, 0.03); font-weight: 600; color: var(--brand-green); text-transform: uppercase; font-size: 0.8rem;}
+
         .directory-tabs { display: flex; gap: 12px; margin-bottom: 30px; flex-wrap: wrap; border-bottom: 2px solid #e2e8f0; padding-bottom: 20px;}
         .cat-tab { background: #f8fafc; color: var(--text-muted); padding: 10px 20px; border-radius: 25px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: 0.3s; border: 1px solid #e2e8f0;}
-        .cat-tab:hover { background: #e2e8f0; color: var(--text-dark); }
-        .cat-tab.active { background: var(--brand-green); color: var(--white); border-color: var(--brand-green); box-shadow: 0 4px 15px rgba(11,66,26,0.2);}
-        
+        .cat-tab.active { background: var(--brand-green); color: var(--white); border-color: var(--brand-green);}
         .directory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px; overflow-y: auto; padding-right: 10px; padding-bottom: 40px;}
-        
-        .contact-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; position: relative; transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; flex-direction: column; min-height: 380px;}
-        .contact-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.08); border-color: var(--brand-peach); }
-        
+        .contact-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 20px; overflow: hidden; position: relative; display: flex; flex-direction: column; min-height: 380px;}
         .contact-img-box { width: 100%; height: 170px; background: #ffffff; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; padding: 15px; border-bottom: 1px solid rgba(11,66,26,0.05); flex-shrink: 0;}
         .contact-img-box img { width: 100%; height: 100%; object-fit: contain; }
         .contact-img-box i { font-size: 4rem; color: var(--brand-peach); opacity: 0.8;}
-        
         .contact-actions-top { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; z-index: 2; }
-        .contact-actions-top button { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-dark); width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.08);}
-        .contact-actions-top button:hover { background: var(--brand-green); border-color: var(--brand-green); color: var(--white); transform: scale(1.1);}
-        .contact-actions-top button.btn-del:hover { background: var(--status-occ); border-color: var(--status-occ); color: var(--white); }
-        
+        .contact-actions-top button { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--text-dark); width: 36px; height: 36px; border-radius: 50%; cursor: pointer;}
         .contact-info { padding: 22px; display: flex; flex-direction: column; flex: 1;}
-        .contact-info h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; color: var(--brand-green); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .contact-info h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; margin-bottom: 6px; color: var(--brand-green);}
         .contact-info p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; height: 38px; overflow: hidden;}
+        .btn-copy-phone { margin-top: auto; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px;}
         
-        .btn-copy-phone { margin-top: auto; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; width: 100%; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px;}
-        .btn-copy-phone:hover { background: #059669; color: var(--white); box-shadow: 0 4px 15px rgba(5,150,105,0.3);}
-        
-        /* === PREVISUALIZACIÓN === */
         .preview-box { width: 100%; max-height: 55vh; overflow-y: auto; overflow-x: hidden; background: #f8fafc; border-radius: 16px; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid #e2e8f0; }
-        #previewImage { max-width: 100%; height: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 8px; }
+        #previewImage { max-width: 100%; height: auto; border-radius: 8px; }
         #cImagePreview { width: 100%; height: 150px; object-fit: contain; border-radius: 12px; display: none; margin-top: 15px; border: 1px solid #cbd5e1; background: #fff;}
-        #excelTableContainer { width: 100%; background: #ffffff; border-radius: 12px; overflow-x: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;}
         #excelTableContainer table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-        #excelTableContainer th, #excelTableContainer td { border: 1px solid #cbd5e1; padding: 12px 16px; text-align: left; white-space: nowrap; }
+        #excelTableContainer th, #excelTableContainer td { border: 1px solid #cbd5e1; padding: 12px 16px; text-align: left; }
         #excelTableContainer th { background-color: #107c41; color: #ffffff; font-weight: 600; }
 
-        /* ============================================== */
-        /* === DISEÑO RESPONSIVE (MÓVILES Y TABLETS) === */
-        /* ============================================== */
+        /* === RESPONSIVE (MÓVILES) === */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-
-            /* Convertir la barra lateral en un Menú Inferior */
-            .sidebar {
-                width: 100%;
-                height: auto;
-                flex-direction: row;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                border-right: none;
-                border-top: 1px solid rgba(0,0,0,0.05);
-                padding: 5px 10px;
-                box-shadow: 0 -5px 20px rgba(11, 66, 26, 0.1);
-                justify-content: space-between;
-                align-items: center;
-                z-index: 1000;
-            }
-
-            .sidebar-header {
-                display: none; 
-            }
-
-            .nav-menu {
-                flex-direction: row;
-                padding: 0;
-                gap: 5px;
-                width: 100%;
-                justify-content: space-around;
-            }
-
-            .nav-item {
-                flex-direction: column;
-                padding: 8px 5px;
-                font-size: 0.65rem;
-                gap: 4px;
-                border-radius: 8px;
-                text-align: center;
-                flex: 1;
-            }
-
-            .nav-item i {
-                font-size: 1.3rem;
-            }
-
-            /* Ajustar Contenido Principal */
-            .main-content {
-                padding: 20px 15px 90px 15px; 
-            }
-
-            .main-title {
-                font-size: 1.5rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 15px;
-            }
-
-            .main-title button {
-                width: 100% !important; 
-            }
-
-            /* Adaptar Grilla de Habitaciones */
-            .grid {
-                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                gap: 15px;
-                width: 100%;
-            }
-
-            .room-container {
-                height: 230px;
-            }
-
-            .room-number {
-                font-size: 2.2rem;
-            }
-
-            .front, .back {
-                padding: 15px 10px;
-            }
-
-            .badge-row {
-                font-size: 0.65rem;
-                padding: 6px 8px;
-            }
-
-            /* Ajustar Directorio */
-            .directory-grid {
-                grid-template-columns: 1fr; 
-                padding-bottom: 20px;
-            }
-
-            .contact-card {
-                min-height: auto;
-            }
-
-            /* Modales y Formularios */
-            .modal-content {
-                padding: 25px 20px;
-                width: 95%;
-            }
-
-            .modal-title {
-                font-size: 1.4rem;
-            }
-
-            /* Colapsar campos de formulario */
-            div[style*="display: flex; gap: 15px;"] {
-                flex-direction: column;
-                gap: 0 !important;
-            }
-
-            /* Reportes */
-            .filter-grid-sym {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-
-            .filter-actions-sym button {
-                max-width: 100%;
-            }
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; flex-direction: row; position: fixed; bottom: 0; left: 0; border-right: none; border-top: 1px solid rgba(0,0,0,0.05); padding: 5px 10px; justify-content: space-between; align-items: center; z-index: 1000; }
+            .sidebar-header { display: none; }
+            .nav-menu { flex-direction: row; padding: 0; gap: 5px; width: 100%; justify-content: space-around; }
+            .nav-item { flex-direction: column; padding: 8px 5px; font-size: 0.65rem; gap: 4px; border-radius: 8px; text-align: center; flex: 1; }
+            .nav-item i { font-size: 1.3rem; }
+            .btn-logout { display: none; }
+            .main-content { padding: 20px 15px 90px 15px; }
+            .main-title { font-size: 1.5rem; flex-direction: column; align-items: flex-start; gap: 15px; }
+            .main-title button { width: 100% !important; }
+            .grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; width: 100%; }
+            .room-container { height: 230px; }
+            .room-number { font-size: 2.2rem; }
+            .front, .back { padding: 15px 10px; }
+            .badge-row { font-size: 0.65rem; padding: 6px 8px; }
+            .directory-grid { grid-template-columns: 1fr; padding-bottom: 20px; }
+            .contact-card { min-height: auto; }
+            .modal-content { padding: 25px 20px; width: 95%; }
+            .modal-title { font-size: 1.4rem; }
+            div[style*="display: flex; gap: 15px;"] { flex-direction: column; gap: 0 !important; }
+            .filter-grid-sym { grid-template-columns: 1fr; gap: 10px; }
+            .filter-actions-sym button { max-width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- BARRA LATERAL IZQUIERDA (SIDEBAR) -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="image_d6cde8.png" alt="Logo Hostal Reales Tamarindos">
-            <h1>Hostal<br>Reales Tamarindos</h1>
+    <!-- PANTALLA LOGIN -->
+    <div id="login-screen">
+        <div class="login-box">
+            <img src="image_d6cde8.png" alt="Logo Hostal">
+            <h2>Hostal<br>Reales Tamarindos</h2>
+            <div class="form-group"><label>Usuario</label><input type="text" id="loginUser" placeholder="Ingresa tu usuario" autocomplete="off"></div>
+            <div class="form-group"><label>Contraseña</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+            <button class="btn btn-checkin" onclick="processLogin()">Iniciar Sesión</button>
+            <div class="login-error" id="loginError"><i class="fa-solid fa-triangle-exclamation"></i> Credenciales incorrectas</div>
         </div>
-        <nav class="nav-menu">
-            <div class="nav-item active" id="tab-habitaciones" onclick="switchView('habitaciones', this)">
-                <i class="fa-solid fa-bed"></i> Habitaciones
-            </div>
-            <div class="nav-item" onclick="switchView('reservas', this); renderReservations();">
-                <i class="fa-regular fa-calendar-check"></i> Reservas
-            </div>
-            <div class="nav-item" onclick="switchView('directorio', this); renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab'));">
-                <i class="fa-solid fa-address-book"></i> Directorio
-            </div>
-            <div class="nav-item" onclick="switchView('reportes', this); loadHistory();">
-                <i class="fa-solid fa-chart-pie"></i> Reportes
-            </div>
-        </nav>
     </div>
 
-    <!-- ÁREA PRINCIPAL CONTENEDORA DE VISTAS (SPA) -->
-    <main class="main-content">
-        
-        <!-- VISTA 1: HABITACIONES -->
-        <section id="view-habitaciones" class="view-section active">
-            <div class="main-title">
-                <div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div>
-            </div>
-            <div id="hotelContainer"></div>
-        </section>
+    <!-- APLICACIÓN PRINCIPAL -->
+    <div id="app-container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
+            <nav class="nav-menu">
+                <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> Habitaciones</div>
+                <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> Reservas</div>
+                <div class="nav-item" onclick="switchView('directorio', this); renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab'));"><i class="fa-solid fa-address-book"></i> Directorio</div>
+                <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> Reportes</div>
+            </nav>
+            <button class="btn-logout" onclick="processLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión</button>
+        </div>
 
-        <!-- VISTA 2: RESERVAS -->
-        <section id="view-reservas" class="view-section">
-            <div class="main-title">
-                <div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div>
-                <button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button>
-            </div>
-            <div id="reservationsList"></div>
-        </section>
-
-        <!-- VISTA 3: DIRECTORIO -->
-        <section id="view-directorio" class="view-section">
-            <div class="main-title">
-                <div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div>
-                <button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button>
-            </div>
-            <div class="directory-tabs" id="directoryTabs">
-                <div class="cat-tab active" onclick="renderDirectory('all', this)">Todos</div>
-                <div class="cat-tab" onclick="renderDirectory('taxi', this)"><i class="fa-solid fa-taxi"></i> Taxis</div>
-                <div class="cat-tab" onclick="renderDirectory('food', this)"><i class="fa-solid fa-burger"></i> Comida</div>
-                <div class="cat-tab" onclick="renderDirectory('places', this)"><i class="fa-solid fa-map-location-dot"></i> Lugares</div>
-                <div class="cat-tab" onclick="renderDirectory('services', this)"><i class="fa-solid fa-store"></i> Servicios</div>
-            </div>
-            <div class="directory-grid" id="contactsGrid"></div>
-        </section>
-
-        <!-- VISTA 4: REPORTES -->
-        <section id="view-reportes" class="view-section">
-            <div class="main-title">
-                <div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div>
-            </div>
-            
-            <div class="filter-section-sym">
-                <div class="filter-grid-sym">
-                    <div class="form-group" style="margin: 0;"><label>Desde (Inicio):</label><input type="date" id="filterStart" onchange="loadHistory()"></div>
-                    <div class="form-group" style="margin: 0;"><label>Hasta (Fin):</label><input type="date" id="filterEnd" onchange="loadHistory()"></div>
+        <main class="main-content">
+            <!-- HABITACIONES -->
+            <section id="view-habitaciones" class="view-section active">
+                <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
+                <div id="hotelContainer"></div>
+            </section>
+            <!-- RESERVAS -->
+            <section id="view-reservas" class="view-section">
+                <div class="main-title"><div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
+                <div id="reservationsList"></div>
+            </section>
+            <!-- DIRECTORIO -->
+            <section id="view-directorio" class="view-section">
+                <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button></div>
+                <div class="directory-tabs" id="directoryTabs">
+                    <div class="cat-tab active" onclick="renderDirectory('all', this)">Todos</div>
+                    <div class="cat-tab" onclick="renderDirectory('taxi', this)"><i class="fa-solid fa-taxi"></i> Taxis</div>
+                    <div class="cat-tab" onclick="renderDirectory('food', this)"><i class="fa-solid fa-burger"></i> Comida</div>
+                    <div class="cat-tab" onclick="renderDirectory('places', this)"><i class="fa-solid fa-map-location-dot"></i> Lugares</div>
+                    <div class="cat-tab" onclick="renderDirectory('services', this)"><i class="fa-solid fa-store"></i> Servicios</div>
                 </div>
-                <div class="filter-actions-sym">
-                    <button class="btn btn-checkout" onclick="preparePreview('pdf')"><i class="fa-solid fa-file-pdf"></i> Generar PDF</button>
-                    <button class="btn btn-blue" onclick="preparePreview('image')"><i class="fa-solid fa-image"></i> Generar Imagen</button>
-                    <button class="btn btn-checkin" onclick="preparePreview('excel')"><i class="fa-solid fa-file-excel"></i> Generar Excel</button>
-                </div>
-            </div>
-
-            <div id="exportableArea" class="export-container">
-                <div class="export-header-report" id="reportHeader"><h2>Hostal Reales Tamarindos</h2><p id="reportDates" style="color: #64748b; font-weight: 500; font-family: 'Poppins', sans-serif;"></p></div>
-                <table class="export-table"><thead><tr><th>Hab.</th><th>Cliente</th><th>Cédula</th><th>Entrada</th><th>Salida</th><th>Tiempo Total</th></tr></thead><tbody id="exportTableBody"></tbody></table>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ============================================== -->
-    <!-- MODALES EXCLUSIVOS PARA ACCIONES EMERGENTES    -->
-    <!-- ============================================== -->
-
-    <div class="modal-overlay" id="checkinModal">
-        <div class="modal-content modal-sm">
-            <div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div>
-            <div class="form-group"><label>Nombre del Cliente (Requerido)</label><input type="text" id="guestName" placeholder="Ej. Juan Pérez" autocomplete="off"></div>
-            <div class="form-group"><label>Cédula (Opcional)</label><input type="text" id="guestCedula" placeholder="Ej. 1300000000" autocomplete="off"></div>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button>
-                <button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="confirmCheckoutModal">
-        <div class="modal-content modal-sm" style="text-align: center;">
-            <div style="font-size: 4rem; color: var(--status-occ); margin-bottom: 20px;"><i class="fa-solid fa-power-off"></i></div>
-            <div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div>
-            <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 30px;">La habitación quedará libre inmediatamente y este registro se guardará en los reportes.</p>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button>
-                <button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- === MODAL CREAR/EDITAR RESERVA === -->
-    <div class="modal-overlay" id="addReservationModal" style="z-index: 1050;">
-        <div class="modal-content modal-sm">
-            <div class="modal-title" id="resModalTitle">Programar Reserva</div>
-            <div class="form-group"><label>Nombre del Huésped</label><input type="text" id="rName" placeholder="Ej. Familia Zambrano"></div>
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 3;"><label>Habitación</label><select id="rRoom"></select></div>
-                <div class="form-group" style="flex: 2;"><label>Teléfono</label><input type="text" id="rPhone" placeholder="0999999999"></div>
-            </div>
-            <div class="form-group"><label>Llegada estimada (Fecha y Hora)</label><input type="datetime-local" id="rArrival"></div>
-            <div class="form-group"><label>Nota / Anticipo (Opcional)</label><input type="text" id="rNote" placeholder="Ej. Dejaron $10 de abono"></div>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button>
-                <button class="btn btn-checkin" onclick="saveReservation()">Guardar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- PREVISUALIZACIÓN DE REPORTES -->
-    <div class="modal-overlay" id="previewModal">
-        <div class="modal-content modal-lg">
-            <div class="modal-title">Previsualización</div>
-            <div class="preview-box">
-                <img id="previewImage" src="" alt="Previsualización" style="display:none;">
-                <div id="excelPreview" style="display:none;">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px; color: #107c41;">
-                        <i class="fa-solid fa-file-excel" style="font-size: 2.5rem;"></i><h3 style="margin: 0; font-family: 'Playfair Display', serif;">Hoja de cálculo lista</h3>
+                <div class="directory-grid" id="contactsGrid"></div>
+            </section>
+            <!-- REPORTES -->
+            <section id="view-reportes" class="view-section">
+                <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div></div>
+                <div class="filter-section-sym">
+                    <div class="filter-grid-sym">
+                        <div class="form-group" style="margin: 0;"><label>Desde:</label><input type="date" id="filterStart" onchange="loadHistory()"></div>
+                        <div class="form-group" style="margin: 0;"><label>Hasta:</label><input type="date" id="filterEnd" onchange="loadHistory()"></div>
                     </div>
-                    <div id="excelTableContainer"></div>
+                    <div class="filter-actions-sym">
+                        <button class="btn btn-checkout" onclick="preparePreview('pdf')"><i class="fa-solid fa-file-pdf"></i> Generar PDF</button>
+                        <button class="btn btn-blue" onclick="preparePreview('image')"><i class="fa-solid fa-image"></i> Generar Imagen</button>
+                        <button class="btn btn-checkin" onclick="preparePreview('excel')"><i class="fa-solid fa-file-excel"></i> Generar Excel</button>
+                    </div>
                 </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('previewModal')">Atrás</button>
-                <button class="btn btn-checkin" onclick="confirmDownload()"><i class="fa-solid fa-download"></i> Descargar Reporte</button>
-            </div>
-        </div>
+                <div id="exportableArea" class="export-container">
+                    <div class="export-header-report" id="reportHeader"><h2>Hostal Reales Tamarindos</h2><p id="reportDates" style="color: #64748b; font-weight: 500;"></p></div>
+                    <table class="export-table"><thead><tr><th>Hab.</th><th>Cliente</th><th>Cédula</th><th>Entrada</th><th>Salida</th><th>Tiempo Total</th></tr></thead><tbody id="exportTableBody"></tbody></table>
+                </div>
+            </section>
+        </main>
     </div>
 
-    <!-- === MODAL CREAR CONTACTO === -->
-    <div class="modal-overlay" id="contactFormModal" style="z-index: 1050;">
-        <div class="modal-content modal-sm">
-            <div class="modal-title" id="contactFormTitle">Añadir Contacto</div>
-            <div class="form-group"><label>Nombre del Lugar / Contacto</label><input type="text" id="cName"></div>
-            <div style="display: flex; gap: 15px;">
-                <div class="form-group" style="flex: 1;"><label>Categoría</label><select id="cCategory"><option value="taxi">Taxis</option><option value="food">Comida</option><option value="places">Lugares</option><option value="services">Servicios</option></select></div>
-                <div class="form-group" style="flex: 1;"><label>Teléfono</label><input type="text" id="cPhone"></div>
-            </div>
-            <div class="form-group"><label>Breve Descripción</label><textarea id="cDesc" rows="2"></textarea></div>
-            <div class="form-group"><label>Foto o Tarjeta</label><input type="file" id="cImage" accept="image/*" onchange="previewImage(event)"><img id="cImagePreview" src=""></div>
-            <div class="modal-actions">
-                <button class="btn btn-cancel" onclick="closeModal('contactFormModal')">Cancelar</button>
-                <button class="btn btn-checkin" onclick="saveContact()">Guardar</button>
-            </div>
-        </div>
-    </div>
+    <!-- MODALES -->
+    <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div class="form-group"><label>Cédula</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
-    <!-- ALERTAS DEL SISTEMA -->
-    <div class="modal-overlay" id="customAlertModal" style="z-index: 1200;">
-        <div class="modal-content modal-sm" style="text-align: center;">
-            <div id="alertIcon" style="font-size: 4rem; margin-bottom: 20px;"></div>
-            <div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div>
-            <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 30px;" id="alertMessage"></p>
-            <div class="modal-actions" style="justify-content: center;">
-                <button class="btn btn-cancel" id="alertBtn" style="width: auto; padding: 12px 40px;" onclick="closeModal('customAlertModal')">Entendido</button>
-            </div>
-        </div>
-    </div>
+    <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 4rem; color: var(--status-occ); margin-bottom: 20px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button></div></div></div>
+    
+    <div class="modal-overlay" id="addReservationModal"><div class="modal-content modal-sm"><div class="modal-title" id="resModalTitle">Reserva</div><div class="form-group"><label>Huésped</label><input type="text" id="rName"></div><div style="display: flex; gap: 15px;"><div class="form-group" style="flex: 3;"><label>Habitación</label><select id="rRoom"></select></div><div class="form-group" style="flex: 2;"><label>Teléfono</label><input type="text" id="rPhone"></div></div><div class="form-group"><label>Llegada</label><input type="datetime-local" id="rArrival"></div><div class="form-group"><label>Nota</label><input type="text" id="rNote"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveReservation()">Guardar</button></div></div></div>
+    
+    <div class="modal-overlay" id="previewModal"><div class="modal-content modal-lg"><div class="modal-title">Previsualización</div><div class="preview-box"><img id="previewImage" src="" style="display:none;"><div id="excelPreview" style="display:none;"><div id="excelTableContainer"></div></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('previewModal')">Atrás</button><button class="btn btn-checkin" onclick="confirmDownload()"><i class="fa-solid fa-download"></i> Descargar Reporte</button></div></div></div>
+    
+    <div class="modal-overlay" id="contactFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="contactFormTitle">Contacto</div><div class="form-group"><label>Nombre</label><input type="text" id="cName"></div><div style="display: flex; gap: 15px;"><div class="form-group" style="flex: 1;"><label>Categoría</label><select id="cCategory"><option value="taxi">Taxis</option><option value="food">Comida</option><option value="places">Lugares</option><option value="services">Servicios</option></select></div><div class="form-group" style="flex: 1;"><label>Teléfono</label><input type="text" id="cPhone"></div></div><div class="form-group"><label>Descripción</label><textarea id="cDesc" rows="2"></textarea></div><div class="form-group"><label>Foto</label><input type="file" id="cImage" accept="image/*" onchange="previewImage(event)"><img id="cImagePreview" src=""></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('contactFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveContact()">Guardar</button></div></div></div>
+    
+    <div class="modal-overlay" id="customAlertModal"><div class="modal-content modal-sm" style="text-align: center;"><div id="alertIcon" style="font-size: 4rem; margin-bottom: 20px;"></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div><p id="alertMessage"></p><div class="modal-actions"><button class="btn btn-cancel" id="alertBtn" onclick="closeModal('customAlertModal')">Entendido</button></div></div></div>
+    
+    <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 4rem; color: var(--status-occ); margin-bottom: 20px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
-    <div class="modal-overlay" id="customConfirmModal" style="z-index: 1200;">
-        <div class="modal-content modal-sm" style="text-align: center;">
-            <div style="font-size: 4rem; color: var(--status-occ); margin-bottom: 20px;"><i class="fa-solid fa-triangle-exclamation"></i></div>
-            <div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div>
-            <p style="font-size: 1rem; color: var(--text-muted); margin-bottom: 30px;" id="confirmMessage"></p>
-            <div class="modal-actions" style="justify-content: center; gap: 15px;">
-                <button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button>
-                <button class="btn btn-checkout" id="confirmOkBtn" onclick="executeConfirm()">Sí, confirmar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- LOGICA DEL SISTEMA -->
+    <!-- ========================================== -->
+    <!-- LOGICA SUPABASE Y JS -->
+    <!-- ========================================== -->
     <script>
-        function switchView(viewId, element) {
-            document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            if(element) element.classList.add('active');
-        }
+        // ¡¡¡ ATENCIÓN: PEGA TUS CREDENCIALES AQUÍ !!!
+        const SUPABASE_URL = 'https://wepjdpgwzdubzffabdol.supabase.co/rest/v1/';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcGpkcGd3emR1YnpmZmFiZG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTE0NzMsImV4cCI6MjEwNDA2NzQ3M30.7rLJx7igmqMDEU3KJTwnD5V8Q93KyE2M3UtERbvX1kU';
 
+        // Inicializar Supabase
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Variables Globales
+        let globalRooms = [];
+        let reservationsData = [];
+        let contactsData = [];
+        let appInterval = null;
         let confirmCallback = null;
-
-        function customAlert(message, title = "Atención", type = "warning") {
-            document.getElementById('alertTitle').innerText = title;
-            document.getElementById('alertMessage').innerText = message;
-            
-            const iconDiv = document.getElementById('alertIcon');
-            const alertBtn = document.getElementById('alertBtn');
-            
-            if (type === 'success') {
-                iconDiv.innerHTML = '<i class="fa-regular fa-circle-check"></i>';
-                iconDiv.style.color = 'var(--status-free)';
-                alertBtn.style.color = 'var(--status-free)';
-            } else if (type === 'error') {
-                iconDiv.innerHTML = '<i class="fa-regular fa-circle-xmark"></i>';
-                iconDiv.style.color = 'var(--status-occ)';
-                alertBtn.style.color = 'var(--status-occ)';
-            } else {
-                iconDiv.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>';
-                iconDiv.style.color = 'var(--brand-peach)';
-                alertBtn.style.color = 'var(--brand-peach)';
-            }
-            
-            document.getElementById('customAlertModal').style.display = 'flex';
-        }
-
-        function customConfirm(message, callback) {
-            document.getElementById('confirmMessage').innerText = message;
-            confirmCallback = callback;
-            document.getElementById('customConfirmModal').style.display = 'flex';
-        }
-
-        function executeConfirm() {
-            document.getElementById('customConfirmModal').style.display = 'none';
-            if (confirmCallback) {
-                confirmCallback();
-                confirmCallback = null;
-            }
-        }
-        
-        function closeConfirmModal() {
-            document.getElementById('customConfirmModal').style.display = 'none';
-            confirmCallback = null;
-        }
-
-        /* === LOGICA DE HABITACIONES === */
         let currentRoomIdForCheckin = null; 
         let currentRoomIdForCheckout = null; 
+        let currentResEditingId = null;
+        let currentEditingId = null; 
+        let tempImageBase64 = '';
         let currentExportType = ''; 
         let currentCanvasData = '';
-        let globalRooms = []; 
 
-        function generarHabitacionesPorDefecto() {
-            let rooms = [];
-            for (let i = 1; i <= 10; i++) {
-                rooms.push({
-                    id: i,
-                    floor: i <= 5 ? 1 : 2,
-                    status: 'available',
-                    checkInTime: null,
-                    lastCleanedTime: null,
-                    guestName: null,
-                    guestId: null
-                });
-            }
-            return rooms;
+        // LOGIN
+        function checkSession() { if (sessionStorage.getItem('hostal_auth_token') === 'active') showApp(); }
+        function processLogin() {
+            const user = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value;
+            const uCode = [72, 82, 84]; const pCode = [77, 73, 68, 65, 76, 49, 57, 52, 48]; 
+            const check = (str, arr) => str.length === arr.length && str.split('').every((c, i) => c.charCodeAt(0) === arr[i]);
+            if (check(user, uCode) && check(pass, pCode)) {
+                sessionStorage.setItem('hostal_auth_token', 'active'); document.getElementById('loginError').style.display = 'none';
+                document.getElementById('login-screen').style.opacity = '0'; setTimeout(showApp, 400);
+            } else { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginPass').value = ''; }
         }
+        function processLogout() { sessionStorage.removeItem('hostal_auth_token'); location.reload(); }
+        function showApp() { 
+            document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-container').style.display = 'flex';
+            initDashboard(); if (!appInterval) appInterval = setInterval(updateLiveTimers, 1000); 
+        }
+        document.getElementById('loginPass').addEventListener('keypress', e => { if (e.key === 'Enter') processLogin(); });
+        document.getElementById('loginUser').addEventListener('keypress', e => { if (e.key === 'Enter') processLogin(); });
+        window.onload = checkSession;
 
-        function initDashboard() {
-            globalRooms = JSON.parse(localStorage.getItem('hostalRooms'));
-            if (!globalRooms || globalRooms.length === 0) {
-                globalRooms = generarHabitacionesPorDefecto();
-                localStorage.setItem('hostalRooms', JSON.stringify(globalRooms));
-            }
-            renderRooms(globalRooms); 
-            updateLiveTimers(); 
-        }
+        // UTILES UI
+        function switchView(viewId, element) { document.querySelectorAll('.view-section, .nav-item').forEach(el => el.classList.remove('active')); document.getElementById('view-' + viewId).classList.add('active'); if(element) element.classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id==='checkinModal' && currentRoomIdForCheckin) flipCard(currentRoomIdForCheckin); if(id==='confirmCheckoutModal' && currentRoomIdForCheckout) flipCard(currentRoomIdForCheckout); }
+        function customAlert(msg, title="Atención", type="warning") { document.getElementById('alertTitle').innerText = title; document.getElementById('alertMessage').innerText = msg; document.getElementById('customAlertModal').style.display = 'flex'; }
+        function customConfirm(msg, callback) { document.getElementById('confirmMessage').innerText = msg; confirmCallback = callback; document.getElementById('customConfirmModal').style.display = 'flex'; }
+        function executeConfirm() { document.getElementById('customConfirmModal').style.display = 'none'; if(confirmCallback) { confirmCallback(); confirmCallback = null; } }
+        function closeConfirmModal() { document.getElementById('customConfirmModal').style.display = 'none'; confirmCallback = null; }
 
         function formatFechaEcuador(iso) {
             if (!iso) return '--'; const d = new Date(iso); const day = String(d.getDate()).padStart(2, '0');
@@ -702,415 +351,158 @@
             hours = hours % 12; hours = hours ? hours : 12; const strHours = String(hours).padStart(2, '0');
             return `${day} ${month}, ${strHours}:${minutes} ${ampm}`;
         }
-
         function calcularTiempoVivo(iso) {
-            if (!iso) return '--'; const diffMs = new Date() - new Date(iso); const diffSecs = Math.max(0, Math.floor(diffMs / 1000));
-            const dias = Math.floor(diffSecs / (24 * 3600)); const horas = Math.floor((diffSecs % (24 * 3600)) / 3600);
-            const minutos = Math.floor((diffSecs % 3600) / 60); const segundos = diffSecs % 60;
-            if (dias > 0) return `${dias}d ${horas}h ${minutos}m`; else if (horas > 0) return `${horas}h ${minutos}m`;
-            else if (minutos > 0) return `${minutos} min`; else return `${segundos} seg`;
+            if (!iso) return '--'; const diffSecs = Math.max(0, Math.floor((new Date() - new Date(iso)) / 1000));
+            const dias = Math.floor(diffSecs / 86400); const horas = Math.floor((diffSecs % 86400) / 3600); const mins = Math.floor((diffSecs % 3600) / 60);
+            if (dias > 0) return `${dias}d ${horas}h ${mins}m`; else if (horas > 0) return `${horas}h ${mins}m`; else return `${mins} min`;
         }
 
-        function calcularDiferenciaEstatica(startIso, endIso) {
-            if (!startIso || !endIso) return '--'; const diffMs = new Date(endIso) - new Date(startIso); const diffMins = Math.max(0, Math.floor(diffMs / 60000)); 
-            const dias = Math.floor(diffMins / (24 * 60)); const horas = Math.floor((diffMins % (24 * 60)) / 60); const mins = diffMins % 60;
-            if (dias > 0) return `${dias}d ${horas}h ${mins}m`; else if (horas > 0) return `${horas}h ${mins}m`; else return `${mins}m`;
-        }
-
-        function updateLiveTimers() {
-            document.querySelectorAll('.live-timer-checkin').forEach(el => { const time = el.getAttribute('data-time'); if (time && time !== 'null') el.innerText = `Hospedaje: ${calcularTiempoVivo(time)}`; });
-            document.querySelectorAll('.live-timer-cleaned').forEach(el => { const time = el.getAttribute('data-time'); const status = el.getAttribute('data-status'); if (status === 'occupied-cleaning') el.innerText = 'Últ. limpieza: En curso'; else if (time && time !== 'null') el.innerText = `Últ. limpieza: hace ${calcularTiempoVivo(time)}`; });
+        // SUPABASE: HABITACIONES
+        async function initDashboard() {
+            const { data, error } = await _supabase.from('rooms').select('*').order('id', { ascending: true });
+            if (error) { customAlert("Error cargando habitaciones de la nube."); return; }
+            
+            if (data.length === 0) {
+                let defaultRooms = [];
+                for (let i = 1; i <= 10; i++) defaultRooms.push({ id: i, floor: i<=5?1:2, status: 'available' });
+                await _supabase.from('rooms').insert(defaultRooms);
+                globalRooms = defaultRooms;
+            } else {
+                globalRooms = data;
+            }
+            renderRooms(globalRooms);
         }
 
         function renderRooms(rooms) {
-            const container = document.getElementById('hotelContainer'); 
-            container.innerHTML = ''; 
-            
-            const grid = document.createElement('div'); 
-            grid.className = 'grid';
-            
-            rooms.forEach(room => {
-                let frontInfoHTML = ''; 
-                let roomClass = room.status === 'available' ? 'available' : (room.status === 'occupied' ? 'occupied' : 'occupied-cleaning');
-                
-                if (room.status === 'available') {
-                    frontInfoHTML = `<div class="room-number">${room.id}</div><div class="status-pill">LIBRE</div><div style="flex: 1; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-bed" style="font-size: 3.5rem; opacity: 0.9; margin-bottom: 10px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));"></i></div>`;
+            const container = document.getElementById('hotelContainer'); container.innerHTML = ''; 
+            const grid = document.createElement('div'); grid.className = 'grid';
+            rooms.forEach(r => {
+                let frontHtml = ''; let rc = r.status === 'available' ? 'available' : (r.status === 'occupied' ? 'occupied' : 'occupied-cleaning');
+                if (r.status === 'available') {
+                    frontHtml = `<div class="room-number">${r.id}</div><div class="status-pill">LIBRE</div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-bed" style="font-size:3.5rem;"></i></div>`;
                 } else {
-                    const textoEstado = room.status === 'occupied' ? 'OCUPADA' : 'LIMPIEZA'; 
-                    const ultimaLimpieza = room.lastCleanedTime || room.checkInTime;
-                    frontInfoHTML = `<div class="room-number">${room.id}</div><div class="status-pill">${textoEstado}</div>${room.guestName ? `<div class="guest-name"><i class="fa-solid fa-user"></i> ${room.guestName}</div>` : ''}<div class="badges-container"><div class="badge-row"><i class="fa-solid fa-door-open"></i> <span>${formatFechaEcuador(room.checkInTime)}</span></div><div class="badge-row"><i class="fa-regular fa-clock"></i> <span class="live-timer-checkin" data-time="${room.checkInTime}"></span></div><div class="badge-row"><i class="fa-solid fa-broom"></i> <span class="live-timer-cleaned" data-time="${ultimaLimpieza}" data-status="${room.status}"></span></div></div>`;
+                    const txt = r.status === 'occupied' ? 'OCUPADA' : 'LIMPIEZA'; const ultLimp = r.last_cleaned_time || r.check_in_time;
+                    frontHtml = `<div class="room-number">${r.id}</div><div class="status-pill">${txt}</div>${r.guest_name ? `<div class="guest-name">${r.guest_name}</div>` : ''}<div class="badges-container"><div class="badge-row"><span>${formatFechaEcuador(r.check_in_time)}</span></div><div class="badge-row"><span class="live-timer-checkin" data-time="${r.check_in_time}"></span></div><div class="badge-row"><span class="live-timer-cleaned" data-time="${ultLimp}" data-status="${r.status}"></span></div></div>`;
                 }
-                
-                grid.innerHTML += `<div class="room-container ${roomClass}" id="room-${room.id}" onclick="flipCard(${room.id})"><div class="room-flipper"><div class="front ${roomClass}">${frontInfoHTML}</div><div class="back" onclick="event.stopPropagation()">${room.status === 'available' ? `<button class="btn btn-checkin" onclick="openCheckinModal(${room.id})"><i class="fa-solid fa-check"></i> CHECK-IN</button><button class="btn btn-cancel" onclick="flipCard(${room.id})">VOLVER</button>` : `${room.status === 'occupied' ? `<button class="btn btn-clean" onclick="accionHabitacion(${room.id}, 'occupied-cleaning', 'none')"><i class="fa-solid fa-broom"></i> LIMPIEZA</button>` : `<button class="btn btn-checkin" onclick="accionHabitacion(${room.id}, 'occupied', 'cleaned')"><i class="fa-solid fa-check-double"></i> M. LIMPIA</button>`}<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${room.id})"><i class="fa-solid fa-power-off"></i> SALIDA</button><button class="btn btn-cancel" onclick="flipCard(${room.id})">VOLVER</button>`}</div></div></div>`;
+                grid.innerHTML += `<div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})"><div class="room-flipper"><div class="front ${rc}">${frontHtml}</div><div class="back" onclick="event.stopPropagation()">${r.status === 'available' ? `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>` : `${r.status === 'occupied' ? `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">LIMPIEZA</button>` : `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">M. LIMPIA</button>`}<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button>`}<button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button></div></div></div>`;
             });
-            
-            container.appendChild(grid);
+            container.appendChild(grid); updateLiveTimers();
         }
 
         function flipCard(id) { document.querySelectorAll('.room-container.flipped').forEach(el => { if (el.id !== `room-${id}`) el.classList.remove('flipped'); }); document.getElementById(`room-${id}`).classList.toggle('flipped'); }
         function openCheckinModal(id) { currentRoomIdForCheckin = id; document.getElementById('guestName').value = ''; document.getElementById('guestCedula').value = ''; document.getElementById('checkinModal').style.display = 'flex'; }
         function openConfirmCheckoutModal(id) { currentRoomIdForCheckout = id; document.getElementById('confirmCheckoutModal').style.display = 'flex'; }
-        
-        function closeModal(modalId) { 
-            document.getElementById(modalId).style.display = 'none'; 
-            if (modalId === 'checkinModal' && currentRoomIdForCheckin) flipCard(currentRoomIdForCheckin); 
-            if (modalId === 'confirmCheckoutModal' && currentRoomIdForCheckout) flipCard(currentRoomIdForCheckout); 
-        }
 
         function submitCheckin() {
-            const payload = { status: 'occupied', checkInTime: new Date().toISOString(), lastCleanedTime: new Date().toISOString(), guestName: document.getElementById('guestName').value.trim() || 'Sin registrar', guestId: document.getElementById('guestCedula').value.trim() || 'N/A', isCheckout: false };
-            document.getElementById('checkinModal').style.display = 'none'; 
-            updateRoomLocal(currentRoomIdForCheckin, payload);
+            const py = { status: 'occupied', check_in_time: new Date().toISOString(), last_cleaned_time: new Date().toISOString(), guest_name: document.getElementById('guestName').value.trim() || 'Sin registrar', guest_id: document.getElementById('guestCedula').value.trim() || 'N/A', isCheckout: false };
+            document.getElementById('checkinModal').style.display = 'none'; updateRoomDB(currentRoomIdForCheckin, py);
         }
-
-        function executeCheckout() { 
-            document.getElementById('confirmCheckoutModal').style.display = 'none'; 
-            accionHabitacion(currentRoomIdForCheckout, 'available', 'checkout'); 
-        }
-
+        function executeCheckout() { document.getElementById('confirmCheckoutModal').style.display = 'none'; accionHabitacion(currentRoomIdForCheckout, 'available', 'checkout'); }
         function accionHabitacion(id, nuevoEstado, actionType) {
-            const payload = { status: nuevoEstado, isCheckout: false };
-            if (actionType === 'checkout') { payload.checkInTime = null; payload.lastCleanedTime = null; payload.guestName = null; payload.guestId = null; payload.isCheckout = true; } else if (actionType === 'cleaned') { payload.lastCleanedTime = new Date().toISOString(); }
-            updateRoomLocal(id, payload);
+            const py = { status: nuevoEstado, isCheckout: false };
+            if (actionType === 'checkout') { py.check_in_time = null; py.last_cleaned_time = null; py.guest_name = null; py.guest_id = null; py.isCheckout = true; } 
+            else if (actionType === 'cleaned') { py.last_cleaned_time = new Date().toISOString(); }
+            updateRoomDB(id, py);
         }
 
-        function updateRoomLocal(id, payload) { 
-            const index = globalRooms.findIndex(r => r.id === id);
-            if(index === -1) return;
-
-            const room = globalRooms[index];
-
-            if (payload.isCheckout && room.checkInTime) {
-                let history = JSON.parse(localStorage.getItem('hostalHistory')) || [];
-                history.push({
-                    room: room.id,
-                    name: room.guestName,
-                    cedula: room.guestId,
-                    checkIn: room.checkInTime,
-                    checkOut: new Date().toISOString()
-                });
-                localStorage.setItem('hostalHistory', JSON.stringify(history));
+        async function updateRoomDB(id, payload) {
+            const index = globalRooms.findIndex(r => r.id === id); if(index === -1) return; const room = globalRooms[index];
+            if (payload.isCheckout && room.check_in_time) {
+                await _supabase.from('history').insert([{ room: room.id, name: room.guest_name, cedula: room.guest_id, check_in: room.check_in_time, check_out: new Date().toISOString() }]);
             }
-
             room.status = payload.status;
-            if (payload.isCheckout) {
-                room.checkInTime = null;
-                room.lastCleanedTime = null;
-                room.guestName = null;
-                room.guestId = null;
-            } else {
-                if (payload.checkInTime) room.checkInTime = payload.checkInTime;
-                if (payload.lastCleanedTime) room.lastCleanedTime = payload.lastCleanedTime;
-                if (payload.guestName) room.guestName = payload.guestName;
-                if (payload.guestId) room.guestId = payload.guestId;
-            }
-
-            localStorage.setItem('hostalRooms', JSON.stringify(globalRooms));
-            initDashboard(); 
-        }
-
-        /* === LOGICA AGENDA DE RESERVAS === */
-        let reservationsData = JSON.parse(localStorage.getItem('hostalReservations')) || [];
-        let currentResEditingId = null; 
-
-        function openWhatsAppPopup(phone, name) {
-            const url = `https://wa.me/593${phone.replace(/^0+/, '')}?text=Hola%20${encodeURIComponent(name)},%20te%20escribimos%20del%20Hostal%20Reales%20Tamarindos%20para%20confirmar%20tu%20reserva.`;
-            window.open(url, 'whatsapp_popup', 'width=600,height=700,menubar=no,toolbar=no,location=no,scrollbars=yes');
-        }
-
-        function populateRoomSelect(selectedRoomId = null) {
-            const select = document.getElementById('rRoom');
-            select.innerHTML = ''; 
+            if (payload.isCheckout) { room.check_in_time = null; room.last_cleaned_time = null; room.guest_name = null; room.guest_id = null; } 
+            else { if(payload.check_in_time) room.check_in_time = payload.check_in_time; if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; if(payload.guest_name) room.guest_name = payload.guest_name; if(payload.guest_id) room.guest_id = payload.guest_id; }
             
-            const sortedRooms = [...globalRooms].sort((a, b) => a.id - b.id);
-            
-            sortedRooms.forEach(room => {
-                const option = document.createElement('option');
-                option.value = room.id;
-                
-                let statusText = '';
-                if(room.status === 'available') {
-                    statusText = '🟩 LIBRE';
-                    option.style.color = '#10b981';
-                } else if(room.status === 'occupied') {
-                    statusText = '🟥 OCUPADA ACTUALMENTE';
-                    option.style.color = '#ef4444';
-                } else {
-                    statusText = '🟧 LIMPIEZA';
-                    option.style.color = '#f59e0b';
-                }
-                
-                option.textContent = `Hab. ${room.id}   [ ${statusText} ]`;
-                
-                if (selectedRoomId && room.id == selectedRoomId) {
-                    option.selected = true;
-                }
-                
-                select.appendChild(option);
-            });
+            await _supabase.from('rooms').update({ status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id }).eq('id', id);
+            renderRooms(globalRooms);
         }
+        function updateLiveTimers() { document.querySelectorAll('.live-timer-checkin').forEach(el => { const t = el.getAttribute('data-time'); if (t && t !== 'null') el.innerText = `Hospedaje: ${calcularTiempoVivo(t)}`; }); document.querySelectorAll('.live-timer-cleaned').forEach(el => { const t = el.getAttribute('data-time'); const s = el.getAttribute('data-status'); if (s === 'occupied-cleaning') el.innerText = 'Últ. limpieza: En curso'; else if (t && t !== 'null') el.innerText = `Limpia hace ${calcularTiempoVivo(t)}`; }); }
 
-        function renderReservations() {
-            const list = document.getElementById('reservationsList');
-            list.innerHTML = '';
-            reservationsData.sort((a, b) => new Date(a.arrival) - new Date(b.arrival));
-
-            if (reservationsData.length === 0) {
-                list.innerHTML = '<p style="color:var(--text-muted); text-align:center; margin-top:30px; font-weight:500;">No hay reservas programadas.</p>';
-                return;
-            }
-
+        // SUPABASE: RESERVAS
+        async function renderReservations() {
+            const { data } = await _supabase.from('reservations').select('*').order('arrival', { ascending: true });
+            reservationsData = data || []; const list = document.getElementById('reservationsList'); list.innerHTML = '';
+            if (reservationsData.length === 0) { list.innerHTML = '<p style="text-align:center; margin-top:30px;">No hay reservas.</p>'; return; }
             reservationsData.forEach(res => {
-                const dateFormatted = formatFechaEcuador(res.arrival);
-                list.innerHTML += `
-                    <div class="reservation-card">
-                        <div class="res-info">
-                            <h3>${res.name} <span class="res-room-badge">Hab. ${res.room}</span></h3>
-                            <div class="res-dates"><i class="fa-solid fa-calendar-day"></i> Llegada: ${dateFormatted}</div>
-                            ${res.phone ? `<div class="res-dates"><i class="fa-solid fa-phone"></i> Tel: ${res.phone}</div>` : ''}
-                            ${res.note ? `<div class="res-dates" style="color: var(--status-free); font-weight:700;"><i class="fa-solid fa-money-bill"></i> ${res.note}</div>` : ''}
-                        </div>
-                        <div class="res-actions">
-                            ${res.phone ? `<button onclick="openWhatsAppPopup('${res.phone}', '${res.name}')" class="btn-icon btn-whatsapp" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>` : ''}
-                            <button class="btn-icon btn-edit-res" onclick="openReservationForm(${res.id})" title="Editar Reserva"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-icon btn-delete-res" onclick="deleteReservation(${res.id})" title="Cancelar Reserva"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
+                list.innerHTML += `<div class="reservation-card"><div class="res-info"><h3>${res.name} <span class="res-room-badge">Hab. ${res.room}</span></h3><div class="res-dates">Llegada: ${formatFechaEcuador(res.arrival)}</div>${res.phone ? `<div class="res-dates">Tel: ${res.phone}</div>` : ''}${res.note ? `<div class="res-dates" style="color:var(--status-free); font-weight:700;">Nota: ${res.note}</div>` : ''}</div><div class="res-actions">${res.phone ? `<button onclick="window.open('https://wa.me/593${res.phone}?text=Hola%20${encodeURIComponent(res.name)}')" class="btn-icon btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></button>` : ''}<button class="btn-icon btn-edit-res" onclick="openReservationForm(${res.id})"><i class="fa-solid fa-pen"></i></button><button class="btn-icon btn-delete-res" onclick="deleteReservation(${res.id})"><i class="fa-solid fa-trash"></i></button></div></div>`;
             });
         }
-
         function openReservationForm(id = null) {
-            currentResEditingId = id;
-            
-            if (id) {
-                document.getElementById('resModalTitle').innerText = 'Editar Reserva';
-                const res = reservationsData.find(r => r.id === id);
-                document.getElementById('rName').value = res.name;
-                populateRoomSelect(res.room); 
-                document.getElementById('rPhone').value = res.phone;
-                
-                const date = new Date(res.arrival);
-                const tzoffset = date.getTimezoneOffset() * 60000;
-                const localISOTime = (new Date(date.getTime() - tzoffset)).toISOString().slice(0, 16);
-                
-                document.getElementById('rArrival').value = localISOTime;
-                document.getElementById('rNote').value = res.note || '';
-            } else {
-                document.getElementById('resModalTitle').innerText = 'Programar Reserva';
-                document.getElementById('rName').value = '';
-                populateRoomSelect(); 
-                document.getElementById('rPhone').value = '';
-                document.getElementById('rArrival').value = '';
-                document.getElementById('rNote').value = '';
-            }
+            currentResEditingId = id; const select = document.getElementById('rRoom'); select.innerHTML = '';
+            globalRooms.forEach(room => { const opt = document.createElement('option'); opt.value = room.id; opt.textContent = `Hab. ${room.id} [${room.status==='available'?'LIBRE':'OCUPADA'}]`; select.appendChild(opt); });
+            if (id) { const res = reservationsData.find(r => r.id === id); document.getElementById('rName').value = res.name; document.getElementById('rRoom').value = res.room; document.getElementById('rPhone').value = res.phone; document.getElementById('rArrival').value = new Date(res.arrival).toISOString().slice(0, 16); document.getElementById('rNote').value = res.note || ''; } 
+            else { document.getElementById('rName').value = ''; document.getElementById('rPhone').value = ''; document.getElementById('rArrival').value = ''; document.getElementById('rNote').value = ''; }
             document.getElementById('addReservationModal').style.display = 'flex';
         }
-
-        function saveReservation() {
-            const name = document.getElementById('rName').value.trim();
-            const room = document.getElementById('rRoom').value;
-            const arrival = document.getElementById('rArrival').value;
-            
-            if (!name || !room || !arrival) { 
-                customAlert("El Nombre, la Habitación y la Fecha de llegada son obligatorios.", "Faltan Datos", "warning"); 
-                return; 
-            }
-
-            const newRes = {
-                id: currentResEditingId || Date.now(), 
-                name: name, 
-                room: room, 
-                phone: document.getElementById('rPhone').value.trim(),
-                arrival: new Date(arrival).toISOString(), 
-                note: document.getElementById('rNote').value.trim()
-            };
-            
-            if (currentResEditingId) {
-                const index = reservationsData.findIndex(r => r.id === currentResEditingId);
-                reservationsData[index] = newRes;
-            } else {
-                reservationsData.push(newRes);
-            }
-            
-            localStorage.setItem('hostalReservations', JSON.stringify(reservationsData));
-            closeModal('addReservationModal'); 
-            renderReservations();
+        async function saveReservation() {
+            const name = document.getElementById('rName').value.trim(); const room = document.getElementById('rRoom').value; const arrival = document.getElementById('rArrival').value;
+            if (!name || !room || !arrival) { customAlert("Faltan datos obligatorios."); return; }
+            const payload = { id: currentResEditingId || Date.now(), name, room, phone: document.getElementById('rPhone').value.trim(), arrival: new Date(arrival).toISOString(), note: document.getElementById('rNote').value.trim() };
+            await _supabase.from('reservations').upsert(payload); closeModal('addReservationModal'); renderReservations();
         }
+        function deleteReservation(id) { customConfirm("¿Eliminar esta reserva?", async () => { await _supabase.from('reservations').delete().eq('id', id); renderReservations(); }); }
 
-        function deleteReservation(id) {
-            customConfirm("¿Estás seguro de que deseas cancelar y eliminar permanentemente esta reserva?", () => {
-                reservationsData = reservationsData.filter(r => r.id !== id);
-                localStorage.setItem('hostalReservations', JSON.stringify(reservationsData));
-                renderReservations();
-            });
+        // SUPABASE: DIRECTORIO
+        async function renderDirectory(cat, tabElement = null) {
+            if(tabElement){ document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active')); tabElement.classList.add('active'); }
+            const { data } = await _supabase.from('contacts').select('*'); contactsData = data || [];
+            const grid = document.getElementById('contactsGrid'); grid.innerHTML = ''; let filtered = contactsData;
+            if (cat !== 'all') filtered = contactsData.filter(c => c.category === cat);
+            if (filtered.length === 0) { grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px;">No hay contactos guardados.</p>'; return; }
+            filtered.forEach(c => { grid.innerHTML += `<div class="contact-card"><div class="contact-actions-top"><button onclick="openContactForm(${c.id})"><i class="fa-solid fa-pen"></i></button><button onclick="deleteContact(${c.id})"><i class="fa-solid fa-trash" style="color:var(--status-occ)"></i></button></div><div class="contact-img-box">${c.image?`<img src="${c.image}">`:'<i class="fa-solid fa-address-book"></i>'}</div><div class="contact-info"><h3>${c.name}</h3><p>${c.description || ''}</p><button class="btn-copy-phone" onclick="navigator.clipboard.writeText('${c.phone}')"><i class="fa-solid fa-phone"></i> ${c.phone}</button></div></div>`; });
         }
-
-        /* === LOGICA DE DIRECTORIO Y CONTACTOS === */
-        let contactsData = JSON.parse(localStorage.getItem('hostalContacts')) || [];
-        let currentEditingId = null; let tempImageBase64 = '';
-        
-        function renderDirectory(categoryFilter, tabElement = null) {
-            if (tabElement) {
-                document.querySelectorAll('.cat-tab').forEach(tab => tab.classList.remove('active'));
-                tabElement.classList.add('active');
-            }
-            
-            const grid = document.getElementById('contactsGrid'); grid.innerHTML = '';
-            let filtered = contactsData; if (categoryFilter !== 'all') filtered = contactsData.filter(c => c.category === categoryFilter);
-            if (filtered.length === 0) { grid.innerHTML = '<p style="color:var(--text-muted); width:100%; text-align:center; margin-top:30px; font-weight:500;">No hay contactos guardados.</p>'; return; }
-            const iconMap = { taxi: 'fa-taxi', food: 'fa-burger', places: 'fa-map-location-dot', services: 'fa-store' };
-            filtered.forEach(contact => {
-                const imgElement = contact.image ? `<img src="${contact.image}">` : `<i class="fa-solid ${iconMap[contact.category]}"></i>`;
-                grid.innerHTML += `<div class="contact-card"><div class="contact-actions-top"><button onclick="openContactForm(${contact.id})"><i class="fa-solid fa-pen"></i></button><button class="btn-del" onclick="deleteContact(${contact.id})"><i class="fa-solid fa-trash"></i></button></div><div class="contact-img-box">${imgElement}</div><div class="contact-info"><h3>${contact.name}</h3><p>${contact.description || 'Sin descripción'}</p><button class="btn-copy-phone" onclick="copiarNumero('${contact.phone}')"><i class="fa-solid fa-phone"></i> ${contact.phone}</button></div></div>`;
-            });
-        }
-
         function openContactForm(id = null) {
             currentEditingId = id; tempImageBase64 = ''; document.getElementById('cImagePreview').style.display = 'none'; document.getElementById('cImage').value = '';
-            if (id) { 
-                document.getElementById('contactFormTitle').innerText = 'Editar Contacto'; const contact = contactsData.find(c => c.id === id); document.getElementById('cName').value = contact.name; document.getElementById('cCategory').value = contact.category; document.getElementById('cPhone').value = contact.phone; document.getElementById('cDesc').value = contact.description; 
-                if (contact.image) { tempImageBase64 = contact.image; document.getElementById('cImagePreview').src = contact.image; document.getElementById('cImagePreview').style.display = 'block'; }
-            } else { 
-                document.getElementById('contactFormTitle').innerText = 'Añadir Contacto'; document.getElementById('cName').value = ''; document.getElementById('cCategory').value = 'taxi'; document.getElementById('cPhone').value = ''; document.getElementById('cDesc').value = ''; 
-            }
+            if (id) { const c = contactsData.find(x => x.id === id); document.getElementById('cName').value = c.name; document.getElementById('cCategory').value = c.category; document.getElementById('cPhone').value = c.phone; document.getElementById('cDesc').value = c.description; if(c.image){ tempImageBase64=c.image; document.getElementById('cImagePreview').src=c.image; document.getElementById('cImagePreview').style.display='block';} } 
+            else { document.getElementById('cName').value=''; document.getElementById('cPhone').value=''; document.getElementById('cDesc').value=''; }
             document.getElementById('contactFormModal').style.display = 'flex';
         }
-
-        function previewImage(event) { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(e) { tempImageBase64 = e.target.result; document.getElementById('cImagePreview').src = tempImageBase64; document.getElementById('cImagePreview').style.display = 'block'; }; reader.readAsDataURL(file); } }
-        
-        function saveContact() {
+        function previewImage(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(ev) { tempImageBase64 = ev.target.result; document.getElementById('cImagePreview').src = tempImageBase64; document.getElementById('cImagePreview').style.display = 'block'; }; reader.readAsDataURL(file); } }
+        async function saveContact() {
             const name = document.getElementById('cName').value.trim(); const phone = document.getElementById('cPhone').value.trim();
-            if (!name || !phone) { 
-                customAlert("El Nombre y el Teléfono son obligatorios para guardar el contacto.", "Faltan Datos", "warning"); 
-                return; 
-            }
-            const newContact = { id: currentEditingId || Date.now(), name: name, category: document.getElementById('cCategory').value, phone: phone, description: document.getElementById('cDesc').value.trim(), image: tempImageBase64 };
-            if (currentEditingId) { const index = contactsData.findIndex(c => c.id === currentEditingId); contactsData[index] = newContact; } else { contactsData.push(newContact); }
-            localStorage.setItem('hostalContacts', JSON.stringify(contactsData)); closeModal('contactFormModal'); 
-            
-            const activeTab = document.querySelector('.cat-tab.active');
-            let currentFilter = 'all';
-            if (activeTab && activeTab.innerText.includes('Taxis')) currentFilter = 'taxi';
-            else if (activeTab && activeTab.innerText.includes('Comida')) currentFilter = 'food';
-            else if (activeTab && activeTab.innerText.includes('Lugares')) currentFilter = 'places';
-            else if (activeTab && activeTab.innerText.includes('Servicios')) currentFilter = 'services';
-            
-            renderDirectory(currentFilter, activeTab);
+            if (!name || !phone) { customAlert("Faltan datos."); return; }
+            const payload = { id: currentEditingId || Date.now(), name, category: document.getElementById('cCategory').value, phone, description: document.getElementById('cDesc').value.trim(), image: tempImageBase64 };
+            await _supabase.from('contacts').upsert(payload); closeModal('contactFormModal'); renderDirectory('all', document.querySelector('.cat-tab'));
+        }
+        function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { await _supabase.from('contacts').delete().eq('id', id); renderDirectory('all', document.querySelector('.cat-tab')); }); }
+
+        // SUPABASE: REPORTES Y EXPORTACIÓN
+        async function loadHistory() {
+            const { data } = await _supabase.from('history').select('*').order('check_out', { ascending: false });
+            let history = data || []; const start = document.getElementById('filterStart').value; const end = document.getElementById('filterEnd').value;
+            if (start || end) { history = history.filter(h => { const checkOutLocalStr = new Date(h.check_out).toISOString().split('T')[0]; return (!start || checkOutLocalStr >= start) && (!end || checkOutLocalStr <= end); }); }
+            const tbody = document.getElementById('exportTableBody'); tbody.innerHTML = '';
+            if (history.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No hay registros.</td></tr>'; return; }
+            history.forEach(h => { const diffMs = new Date(h.check_out) - new Date(h.check_in); const diffHrs = Math.floor(diffMs / 3600000); tbody.innerHTML += `<tr><td>${h.room}</td><td><strong>${h.name}</strong></td><td>${h.cedula}</td><td>${formatFechaEcuador(h.check_in)}</td><td>${formatFechaEcuador(h.check_out)}</td><td>${diffHrs}h</td></tr>`; });
         }
 
-        function deleteContact(id) { 
-            customConfirm("¿Estás seguro de que deseas eliminar este contacto del directorio?", () => {
-                contactsData = contactsData.filter(c => c.id !== id); 
-                localStorage.setItem('hostalContacts', JSON.stringify(contactsData)); 
-                
-                const activeTab = document.querySelector('.cat-tab.active');
-                let currentFilter = 'all';
-                if (activeTab && activeTab.innerText.includes('Taxis')) currentFilter = 'taxi';
-                else if (activeTab && activeTab.innerText.includes('Comida')) currentFilter = 'food';
-                else if (activeTab && activeTab.innerText.includes('Lugares')) currentFilter = 'places';
-                else if (activeTab && activeTab.innerText.includes('Servicios')) currentFilter = 'services';
-                
-                renderDirectory(currentFilter, activeTab); 
-            });
-        }
-        
-        function copiarNumero(numero) { 
-            navigator.clipboard.writeText(numero).then(() => { 
-                customAlert(`El número ${numero} ha sido copiado al portapapeles.`, "Copiado con éxito", "success"); 
-            }); 
-        }
-
-        /* --- HISTORIAL Y EXPORTACION --- */
-        function loadHistory() {
-            let history = JSON.parse(localStorage.getItem('hostalHistory')) || [];
-            
-            const start = document.getElementById('filterStart').value; 
-            const end = document.getElementById('filterEnd').value;
-            
-            if (start || end) { 
-                history = history.filter(h => { 
-                    if (!h.checkOut) return false; 
-                    const formatter = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Guayaquil', year: 'numeric', month: '2-digit', day: '2-digit' }); 
-                    const checkOutLocalStr = formatter.format(new Date(h.checkOut)); 
-                    return (!start || checkOutLocalStr >= start) && (!end || checkOutLocalStr <= end); 
-                }); 
-            }
-            
-            history.reverse();
-
-            const tbody = document.getElementById('exportTableBody'); 
-            tbody.innerHTML = '';
-            
-            if (history.length === 0) { 
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">No hay hospedajes en este rango de fechas.</td></tr>'; 
-                return; 
-            }
-            
-            history.forEach(h => { 
-                tbody.innerHTML += `<tr><td>${h.room}</td><td><strong>${h.name}</strong></td><td>${h.cedula}</td><td>${formatFechaEcuador(h.checkIn)}</td><td>${formatFechaEcuador(h.checkOut)}</td><td>${calcularDiferenciaEstatica(h.checkIn, h.checkOut)}</td></tr>`; 
-            });
-        }
-
-        // --- FUNCIONES DE EXPORTACIÓN ---
-        function getDynamicFilename(extension) { return `Reporte_Hostal.${extension}`; }
-        
         function preparePreview(type) { 
-            currentExportType = type; 
-            const tbody = document.getElementById('exportTableBody');
-            
-            if (tbody.children.length === 0 || (tbody.children.length === 1 && tbody.children[0].innerText.includes("No hay hospedajes"))) {
-                customAlert("No hay datos para exportar en este rango.", "Sin Datos", "warning");
-                return;
-            }
-
+            currentExportType = type; const tbody = document.getElementById('exportTableBody');
+            if (tbody.children.length === 0 || tbody.children[0].innerText.includes("No hay registros")) { customAlert("No hay datos para exportar."); return; }
             if (type === 'excel') {
-                const tableHtml = document.querySelector(".export-table").outerHTML;
-                document.getElementById('excelTableContainer').innerHTML = tableHtml;
-                document.getElementById('previewImage').style.display = 'none';
-                document.getElementById('excelPreview').style.display = 'block';
-                document.getElementById('previewModal').style.display = 'flex';
+                document.getElementById('excelTableContainer').innerHTML = document.querySelector(".export-table").outerHTML;
+                document.getElementById('previewImage').style.display = 'none'; document.getElementById('excelPreview').style.display = 'block'; document.getElementById('previewModal').style.display = 'flex';
             } else {
-                document.getElementById('previewImage').style.display = 'none';
-                document.getElementById('excelPreview').style.display = 'none';
-                document.getElementById('reportHeader').style.display = 'block'; 
-                
+                document.getElementById('previewImage').style.display = 'none'; document.getElementById('excelPreview').style.display = 'none'; document.getElementById('reportHeader').style.display = 'block'; 
                 html2canvas(document.getElementById('exportableArea'), { scale: 2, backgroundColor: "#ffffff" }).then(canvas => { 
-                    currentCanvasData = canvas.toDataURL('image/png'); 
-                    document.getElementById('previewImage').src = currentCanvasData;
-                    document.getElementById('previewImage').style.display = 'block';
-                    document.getElementById('reportHeader').style.display = 'none'; 
-                    document.getElementById('previewModal').style.display = 'flex'; 
+                    currentCanvasData = canvas.toDataURL('image/png'); document.getElementById('previewImage').src = currentCanvasData; document.getElementById('previewImage').style.display = 'block'; document.getElementById('reportHeader').style.display = 'none'; document.getElementById('previewModal').style.display = 'flex'; 
                 }); 
             }
         }
-        
         function confirmDownload() {
             if (currentExportType === 'excel') {
-                const table = document.querySelector(".export-table");
-                const wb = XLSX.utils.table_to_book(table, {sheet: "Reporte Hostal"});
-                const ws = wb.Sheets["Reporte Hostal"];
-                ws['!cols'] = [{wch: 8}, {wch: 35}, {wch: 15}, {wch: 22}, {wch: 22}, {wch: 18}];
-                XLSX.writeFile(wb, getDynamicFilename('xlsx'));
+                const wb = XLSX.utils.table_to_book(document.querySelector(".export-table"), {sheet: "Reporte"});
+                XLSX.writeFile(wb, 'Reporte_Hostal.xlsx');
             } else if (currentExportType === 'image') { 
-                const link = document.createElement('a'); 
-                link.download = getDynamicFilename('png'); 
-                link.href = currentCanvasData; link.click(); 
+                const link = document.createElement('a'); link.download = 'Reporte.png'; link.href = currentCanvasData; link.click(); 
             } else if (currentExportType === 'pdf') { 
-                const { jsPDF } = window.jspdf; 
-                const pdf = new jsPDF('p', 'mm', 'a4'); 
-                const pdfWidth = pdf.internal.pageSize.getWidth(); 
-                const imgProps = pdf.getImageProperties(currentCanvasData); 
-                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width; 
-                pdf.addImage(currentCanvasData, 'PNG', 0, 0, pdfWidth, pdfHeight); 
-                pdf.save(getDynamicFilename('pdf')); 
+                const { jsPDF } = window.jspdf; const pdf = new jsPDF('p', 'mm', 'a4'); const w = pdf.internal.pageSize.getWidth(); 
+                const props = pdf.getImageProperties(currentCanvasData); const h = (props.height * w) / props.width; 
+                pdf.addImage(currentCanvasData, 'PNG', 0, 0, w, h); pdf.save('Reporte.pdf'); 
             }
             closeModal('previewModal');
         }
-
-        // Inicializar Dashboard
-        initDashboard(); 
-        setInterval(updateLiveTimers, 1000); 
     </script>
 </body>
 </html>
