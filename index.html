@@ -60,7 +60,10 @@
         .login-box h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brand-green); margin-bottom: 30px; line-height: 1.2; }
         .login-error { color: var(--status-occ); font-size: 0.85rem; font-weight: 600; margin-top: 15px; display: none; background: #fef2f2; padding: 10px; border-radius: 8px; border: 1px solid #fecaca; }
 
-        /* === BARRA LATERAL (SIDEBAR) === */
+        /* === HEADER MÓVIL (Oculto en PC) === */
+        .mobile-header { display: none; }
+
+        /* === BARRA LATERAL (SIDEBAR - ESCRITORIO) === */
         .sidebar { width: 280px; min-width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; box-shadow: 4px 0 30px rgba(11, 66, 26, 0.05); z-index: 100; border-right: 1px solid rgba(0,0,0,0.05); }
         .sidebar-header { padding: 30px 20px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .sidebar-header img { max-width: 100px; margin-bottom: 15px; transition: transform 0.3s ease; }
@@ -76,9 +79,8 @@
 
         /* === ÁREA PRINCIPAL === */
         .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; padding: 30px; }
-        .view-section { display: none; animation: fadeInView 0.3s ease-out forwards; flex-direction: column; width: 100%; }
-        .view-section.active { display: flex; }
-        @keyframes fadeInView { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .view-section { display: none; opacity: 0; transform: translateY(12px); transition: opacity 0.35s ease, transform 0.35s ease; flex-direction: column; width: 100%; }
+        .view-section.active { display: flex; opacity: 1; transform: translateY(0); }
         
         .main-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--brand-green); margin-bottom: 25px; padding-bottom: 12px; border-bottom: 2px solid rgba(11, 66, 26, 0.08); display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
         .main-title-left { display: flex; align-items: center; gap: 15px; }
@@ -188,49 +190,76 @@
         #excelTableContainer th, #excelTableContainer td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }
         #excelTableContainer th { background-color: #107c41; color: #ffffff; font-weight: 600; }
 
-        /* === RESPONSIVE MÓVILES (BARRA INFERIOR FLUIDA) === */
+        /* === RESPONSIVE MÓVILES (ESTILO APP NATIVA Y ELEGANTE) === */
         @media (max-width: 768px) {
-            #app-container { flex-direction: column; padding-bottom: 75px; }
-            .sidebar { 
-                width: 100%; 
-                min-width: 100%; 
-                height: 65px; 
-                position: fixed; 
-                bottom: 0; 
-                left: 0; 
-                border-right: none; 
-                border-top: 1px solid rgba(0,0,0,0.08); 
-                padding: 4px 6px; 
-                flex-direction: row; 
-                justify-content: space-around; 
-                align-items: center; 
-                z-index: 1000; 
+            #app-container { flex-direction: column; padding-top: 65px; padding-bottom: 75px; }
+            
+            /* Header Superior Exclusivo para Móviles con Logo y Nombre */
+            .mobile-header {
+                display: flex;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 65px;
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(10px);
+                border-bottom: 1px solid rgba(11, 66, 26, 0.08);
+                z-index: 1000;
+                align-items: center;
+                justify-content: space-between;
+                padding: 0 15px;
             }
-            .sidebar-header { display: none; }
-            .nav-menu { flex-direction: row; padding: 0; gap: 2px; width: 100%; justify-content: space-around; }
-            .nav-item { flex-direction: column; padding: 6px 4px; font-size: 0.62rem; gap: 3px; border-radius: 8px; text-align: center; flex: 1; align-items: center; }
-            .nav-item i { font-size: 1.15rem; }
-            
-            /* Botón Logout adaptado para móviles en la barra inferior */
-            .btn-logout { 
-                margin: 0; 
-                padding: 6px 8px; 
-                font-size: 0.62rem; 
-                flex-direction: column; 
-                gap: 3px; 
-                background: transparent; 
-                border: none; 
+            .mobile-brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .mobile-brand img {
+                width: 36px;
+                height: 36px;
+                object-fit: contain;
+            }
+            .mobile-brand h2 {
+                font-family: 'Playfair Display', serif;
+                font-size: 1rem;
+                color: var(--brand-green);
+                line-height: 1.1;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+            }
+            .mobile-logout-btn {
+                background: #fef2f2;
+                border: 1px solid #fecaca;
                 color: var(--status-occ);
-                box-shadow: none;
-                flex: 1;
-                text-align: center;
-                height: 100%;
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
                 justify-content: center;
+                cursor: pointer;
+                font-size: 1rem;
             }
-            .btn-logout i { font-size: 1.15rem; }
-            .btn-logout:hover { background: rgba(220, 38, 38, 0.08); color: var(--status-occ); }
+
+            /* Ocultar barra de escritorio y adaptar menú inferior flotante */
+            .sidebar { display: none; }
+            
+            .mobile-bottom-bar {
+                display: flex;
+                width: 100%;
+                height: 65px;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                border-top: 1px solid rgba(0, 0, 0, 0.08);
+                padding: 4px 10px;
+                justify-content: space-around;
+                align-items: center;
+                z-index: 1000;
+            }
             
             .main-content { padding: 15px 12px; width: 100%; }
             .main-title { font-size: 1.35rem; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
@@ -264,6 +293,15 @@
     </div>
 
     <div id="app-container">
+        
+        <div class="mobile-header">
+            <div class="mobile-brand">
+                <img src="image_d6cde8.png" alt="Logo">
+                <h2>Hostal<br>Reales Tamarindos</h2>
+            </div>
+            <button class="mobile-logout-btn" onclick="processLogout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+
         <div class="sidebar">
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
@@ -272,7 +310,14 @@
                 <div class="nav-item" onclick="switchView('directorio', this); renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab'));"><i class="fa-solid fa-address-book"></i> Directorio</div>
                 <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> Reportes</div>
             </nav>
-            <button class="btn-logout" onclick="processLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Salir</span></button>
+            <button class="btn-logout" onclick="processLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span></button>
+        </div>
+
+        <div class="mobile-bottom-bar nav-menu">
+            <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
+            <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
+            <div class="nav-item" onclick="switchView('directorio', this); renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab'));"><i class="fa-solid fa-address-book"></i> <span>Directorio</span></div>
+            <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> <span>Reportes</span></div>
         </div>
 
         <main class="main-content">
@@ -371,9 +416,19 @@
 
         // UTILES UI
         function switchView(viewId, element) { 
+            // Sincronizar tanto los botones de la barra inferior móvil como del menú de PC si estuvieran activos
             document.querySelectorAll('.view-section, .nav-item').forEach(el => el.classList.remove('active')); 
+            
+            // Activar la sección correspondiente
             document.getElementById('view-' + viewId).classList.add('active'); 
-            if(element) element.classList.add('active'); 
+            
+            // Activar todos los elementos correspondientes a esta vista en los menús
+            document.querySelectorAll('.nav-item').forEach(item => {
+                if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) {
+                    item.classList.add('active');
+                }
+            });
+
             window.scrollTo(0, 0);
         }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id==='checkinModal' && currentRoomIdForCheckin) flipCard(currentRoomIdForCheckin); if(id==='confirmCheckoutModal' && currentRoomIdForCheckout) flipCard(currentRoomIdForCheckout); }
