@@ -72,11 +72,11 @@
         .sidebar-header img { max-width: 100px; margin-bottom: 15px; transition: transform 0.3s ease; }
         .sidebar-header img:hover { transform: scale(1.05); }
         .sidebar-header h1 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--brand-green); letter-spacing: 0.5px; line-height: 1.2; text-transform: uppercase; }
-        .nav-menu { display: flex; flex-direction: column; padding: 10px 15px; flex: 1; gap: 8px; }
-        .nav-item { padding: 12px 16px; cursor: pointer; display: flex; align-items: center; gap: 15px; font-weight: 600; font-size: 0.9rem; border-radius: 12px; transition: all 0.3s; color: var(--brand-green); opacity: 0.8; }
+        .nav-menu { display: flex; flex-direction: column; padding: 10px 15px; flex: 1; gap: 6px; }
+        .nav-item { padding: 10px 14px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 0.85rem; border-radius: 12px; transition: all 0.3s; color: var(--brand-green); opacity: 0.8; }
         .nav-item:hover { background-color: rgba(11, 66, 26, 0.04); opacity: 1; transform: translateX(4px); }
         .nav-item.active { background-color: var(--brand-green); color: var(--white); opacity: 1; box-shadow: 0 8px 20px rgba(11, 66, 26, 0.2); }
-        .nav-item i { width: 22px; text-align: center; font-size: 1.1rem; }
+        .nav-item i { width: 20px; text-align: center; font-size: 1rem; }
         .btn-logout { margin: 15px; background: #fef2f2; color: var(--status-occ); border: 1px solid #fecaca; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .btn-logout:hover { background: var(--status-occ); color: var(--white); }
 
@@ -143,7 +143,7 @@
         .modal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 25px; }
         .modal-actions button { flex: 1; padding: 12px; font-size: 0.92rem; }
 
-        /* === RESERVAS, REPORTES Y DIRECTORIO === */
+        /* === RESERVAS, REPORTES, ANTICIPOS Y DIRECTORIO === */
         #reservationsList { width: 100%; margin-top: 5px; padding-bottom: 30px; }
         .reservation-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; border-left: 6px solid var(--brand-peach); gap: 15px; flex-wrap: wrap; }
         .res-info h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--brand-green); margin-bottom: 6px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -193,6 +193,16 @@
         #excelTableContainer th, #excelTableContainer td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }
         #excelTableContainer th { background-color: #107c41; color: #ffffff; font-weight: 600; }
 
+        /* === ESTILOS SECCIÓN ANTICIPOS === */
+        .advance-summary-box { background: var(--white); padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .advance-total-display { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--brand-green); font-weight: 700; }
+        .advance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; width: 100%; padding-bottom: 40px; }
+        .employee-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
+        .employee-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
+        .employee-card-header h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--brand-green); }
+        .advance-history-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; }
+        .advance-item-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
+
         /* === RESPONSIVE MÓVILES (ESTILO APP NATIVA Y ELEGANTE) === */
         @media (max-width: 768px) {
             #app-container { flex-direction: column; padding-top: 65px; padding-bottom: 75px; }
@@ -225,7 +235,7 @@
             }
             .mobile-brand h2 {
                 font-family: 'Playfair Display', serif;
-                font-size: 1rem;
+                font-size: 0.95rem;
                 color: var(--brand-green);
                 line-height: 1.1;
                 text-transform: uppercase;
@@ -248,7 +258,7 @@
             /* Ocultar barra lateral de escritorio en móviles */
             .sidebar { display: none !important; }
             
-            /* Mostrar barra inferior flotante exclusiva para móviles con sus 4 accesos */
+            /* Mostrar barra inferior flotante exclusiva para móviles con sus accesos */
             .mobile-bottom-bar {
                 display: flex;
                 width: 100%;
@@ -259,7 +269,7 @@
                 background: rgba(255, 255, 255, 0.95);
                 backdrop-filter: blur(10px);
                 border-top: 1px solid rgba(0, 0, 0, 0.08);
-                padding: 4px 10px;
+                padding: 4px 4px;
                 justify-content: space-around;
                 align-items: center;
                 z-index: 1000;
@@ -268,14 +278,15 @@
             
             .mobile-bottom-bar .nav-item {
                 flex-direction: column;
-                gap: 3px;
-                font-size: 0.65rem;
-                padding: 6px 4px;
+                gap: 2px;
+                font-size: 0.58rem;
+                padding: 4px 2px;
                 align-items: center;
                 text-align: center;
+                flex: 1;
             }
             .mobile-bottom-bar .nav-item i {
-                font-size: 1.15rem;
+                font-size: 1.05rem;
                 width: auto;
             }
             
@@ -290,7 +301,7 @@
             .badge-row { font-size: 0.58rem; padding: 4px 6px; }
             .guest-name { font-size: 0.72rem; padding: 4px 8px; }
             
-            .directory-grid { grid-template-columns: 1fr; }
+            .directory-grid, .advance-grid { grid-template-columns: 1fr; }
             .filter-grid-sym { grid-template-columns: 1fr; gap: 12px; }
             .modal-content { padding: 20px 15px; width: 95%; max-height: 85vh; }
             .modal-title { font-size: 1.3rem; }
@@ -330,6 +341,7 @@
                 <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> Habitaciones</div>
                 <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> Reservas</div>
                 <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> Directorio</div>
+                <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> Anticipos</div>
                 <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> Reportes</div>
             </nav>
             <button class="btn-logout" onclick="processLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span></button>
@@ -340,6 +352,7 @@
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
             <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
             <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> <span>Directorio</span></div>
+            <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Anticipos</span></div>
             <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> <span>Reportes</span></div>
         </div>
 
@@ -365,6 +378,26 @@
                     <div class="cat-tab" onclick="renderDirectory('services', this)"><i class="fa-solid fa-store"></i> Servicios</div>
                 </div>
                 <div class="directory-grid" id="contactsGrid"></div>
+            </section>
+            <!-- ANTICIPOS DE EMPLEADOS -->
+            <section id="view-anticipos" class="view-section">
+                <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openEmployeeForm()"><i class="fa-solid fa-user-plus"></i> Agregar Empleado</button></div>
+                
+                <div class="filter-section-sym">
+                    <div class="filter-grid-sym">
+                        <div class="form-group" style="margin: 0;"><label>Desde:</label><input type="date" id="advFilterStart" onchange="loadAdvances()"></div>
+                        <div class="form-group" style="margin: 0;"><label>Hasta:</label><input type="date" id="advFilterEnd" onchange="loadAdvances()"></div>
+                    </div>
+                </div>
+
+                <div class="advance-summary-box">
+                    <div>
+                        <span style="font-size: 0.85rem; color: var(--text-muted); display: block; font-weight: 600;">TOTAL ACUMULADO DE ANTICIPOS</span>
+                        <div class="advance-total-display" id="totalAdvancesSum">$0.00</div>
+                    </div>
+                </div>
+
+                <div class="advance-grid" id="employeesGrid"></div>
             </section>
             <!-- REPORTES -->
             <section id="view-reportes" class="view-section">
@@ -399,6 +432,11 @@
     
     <div class="modal-overlay" id="contactFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="contactFormTitle">Contacto</div><div class="form-group"><label>Nombre</label><input type="text" id="cName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Categoría</label><select id="cCategory"><option value="taxi">Taxis</option><option value="food">Comida</option><option value="places">Lugares</option><option value="services">Servicios</option></select></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="cPhone"></div></div><div class="form-group"><label>Descripción</label><textarea id="cDesc" rows="2"></textarea></div><div class="form-group"><label>Foto</label><input type="file" id="cImage" accept="image/*" onchange="previewImage(event)"><img id="cImagePreview" src=""></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('contactFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveContact()">Guardar</button></div></div></div>
     
+    <!-- MODALES ANTICIPOS -->
+    <div class="modal-overlay" id="employeeFormModal"><div class="modal-content modal-sm"><div class="modal-title">Añadir Empleado</div><div class="form-group"><label>Nombre del Empleado</label><input type="text" id="empName" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('employeeFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveEmployee()">Guardar</button></div></div></div>
+    
+    <div class="modal-overlay" id="advanceFormModal"><div class="modal-content modal-sm"><div class="modal-title">Registrar Anticipo</div><div class="form-group"><label>Cantidad de Dinero ($)</label><input type="number" step="0.01" id="advAmount" placeholder="0.00"></div><div class="form-group"><label>Fecha y Hora</label><input type="datetime-local" id="advDateTime"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('advanceFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveAdvance()">Guardar Anticipo</button></div></div></div>
+
     <div class="modal-overlay" id="customAlertModal"><div class="modal-content modal-sm" style="text-align: center;"><div id="alertIcon" style="font-size: 3.5rem; margin-bottom: 15px;"></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div><p id="alertMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" id="alertBtn" onclick="closeModal('customAlertModal')">Entendido</button></div></div></div>
     
     <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
@@ -415,6 +453,9 @@
         let globalRooms = [];
         let reservationsData = [];
         let contactsData = [];
+        let employeesData = [];
+        let advancesData = [];
+        let currentEmpIdForAdvance = null;
         let appInterval = null;
         let confirmCallback = null;
         let currentRoomIdForCheckin = null; 
@@ -649,6 +690,125 @@
             }
         }
         function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { await _supabase.from('contacts').delete().eq('id', id); const { data } = await _supabase.from('contacts').select('*'); contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab')); }); }
+
+        // SUPABASE: ANTICIPOS DE EMPLEADOS
+        async function loadAdvances() {
+            const { data: empData, error: empErr } = await _supabase.from('employees').select('*').order('name', { ascending: true });
+            if (empErr) { customAlert("Error cargando empleados: " + empErr.message); return; }
+            employeesData = empData || [];
+
+            const { data: advData, error: advErr } = await _supabase.from('advances').select('*').order('datetime', { ascending: false });
+            if (advErr) { customAlert("Error cargando anticipos: " + advErr.message); return; }
+            advancesData = advData || [];
+
+            const start = document.getElementById('advFilterStart').value;
+            const end = document.getElementById('advFilterEnd').value;
+
+            let filteredAdvances = advancesData;
+            if (start || end) {
+                filteredAdvances = advancesData.filter(a => {
+                    const dateStr = new Date(a.datetime).toISOString().split('T')[0];
+                    return (!start || dateStr >= start) && (!end || dateStr <= end);
+                });
+            }
+
+            let totalSum = 0;
+            filteredAdvances.forEach(a => { totalSum += parseFloat(a.amount || 0); });
+            document.getElementById('totalAdvancesSum').innerText = `$${totalSum.toFixed(2)}`;
+
+            const grid = document.getElementById('employeesGrid');
+            grid.innerHTML = '';
+
+            if (employeesData.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay empleados registrados. Agrega uno nuevo.</p>';
+                return;
+            }
+
+            employeesData.forEach(emp => {
+                const empAdvances = filteredAdvances.filter(a => a.employee_id === emp.id);
+                let empTotal = 0;
+                empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
+
+                let listHtml = '';
+                if (empAdvances.length === 0) {
+                    listHtml = '<span style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:10px;">Sin anticipos en este periodo</span>';
+                } else {
+                    empAdvances.forEach(adv => {
+                        listHtml += `<div class="advance-item-row"><div><strong>$${parseFloat(adv.amount).toFixed(2)}</strong><br><span style="font-size:0.7rem; color:var(--text-muted);">${formatFechaEcuador(adv.datetime)}</span></div><button class="btn-icon btn-delete-res" style="width:30px; height:30px; min-width:30px; font-size:0.8rem;" onclick="deleteAdvance(${adv.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div>`;
+                    });
+                }
+
+                grid.innerHTML += `<div class="employee-card"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})" title="Eliminar Empleado"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total filtrado: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Agregar Anticipo</button></div>`;
+            });
+        }
+
+        function openEmployeeForm() {
+            document.getElementById('empName').value = '';
+            document.getElementById('employeeFormModal').style.display = 'flex';
+        }
+
+        async function saveEmployee() {
+            const name = document.getElementById('empName').value.trim();
+            if (!name) { customAlert("Ingresa el nombre del empleado."); return; }
+            const payload = { id: Date.now(), name: name };
+            const { error } = await _supabase.from('employees').insert([payload]);
+            if (error) { customAlert("Error guardando empleado: " + error.message); return; }
+            closeModal('employeeFormModal');
+            loadAdvances();
+        }
+
+        function deleteEmployee(empId) {
+            customConfirm("¿Eliminar este empleado y todos sus anticipos?", async () => {
+                await _supabase.from('advances').delete().eq('employee_id', empId);
+                await _supabase.from('employees').delete().eq('id', empId);
+                loadAdvances();
+            });
+        }
+
+        function openAdvanceForm(empId) {
+            currentEmpIdForAdvance = empId;
+            document.getElementById('advAmount').value = '';
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            document.getElementById('advDateTime').value = now.toISOString().slice(0, 16);
+            document.getElementById('advanceFormModal').style.display = 'flex';
+        }
+
+        async function saveAdvance() {
+            const amount = document.getElementById('advAmount').value.trim();
+            const datetime = document.getElementById('advDateTime').value;
+
+            if (!amount || !datetime) {
+                customAlert("Ingresa la cantidad y selecciona la fecha y hora obligatorias.");
+                return;
+            }
+
+            const dateObj = new Date(datetime);
+            if (isNaN(dateObj.getTime())) {
+                customAlert("Fecha y hora inválidas.");
+                return;
+            }
+
+            const payload = {
+                id: Date.now(),
+                employee_id: currentEmpIdForAdvance,
+                amount: parseFloat(amount),
+                datetime: dateObj.toISOString()
+            };
+
+            const { error } = await _supabase.from('advances').insert([payload]);
+            if (error) { customAlert("Error guardando anticipo: " + error.message); return; }
+
+            closeModal('advanceFormModal');
+            loadAdvances();
+        }
+
+        async function deleteAdvance(advId) {
+            customConfirm("¿Eliminar este registro de anticipo?", async () => {
+                await _supabase.from('advances').delete().eq('id', advId);
+                loadAdvances();
+            });
+        }
 
         // SUPABASE: REPORTES Y EXPORTACIÓN
         async function loadHistory() {
