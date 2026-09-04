@@ -295,7 +295,7 @@
     <!-- LOGICA SUPABASE Y JS -->
     <!-- ========================================== -->
     <script>
-        // ¡¡¡ ATENCIÓN: PEGA TUS CREDENCIALES AQUÍ !!!
+        // TUS CREDENCIALES YA ESTÁN PEGADAS AQUÍ
         const SUPABASE_URL = 'https://wepjdpgwzdubzffabdol.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcGpkcGd3emR1YnpmZmFiZG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTE0NzMsImV4cCI6MjEwNDA2NzQ3M30.7rLJx7igmqMDEU3KJTwnD5V8Q93KyE2M3UtERbvX1kU';
 
@@ -360,7 +360,7 @@
         // SUPABASE: HABITACIONES
         async function initDashboard() {
             const { data, error } = await _supabase.from('rooms').select('*').order('id', { ascending: true });
-            if (error) { customAlert("Error cargando habitaciones de la nube."); return; }
+            if (error) { customAlert("Error cargando habitaciones: " + error.message); return; }
             
             if (data.length === 0) {
                 let defaultRooms = [];
@@ -414,14 +414,16 @@
             if (payload.isCheckout) { room.check_in_time = null; room.last_cleaned_time = null; room.guest_name = null; room.guest_id = null; } 
             else { if(payload.check_in_time) room.check_in_time = payload.check_in_time; if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; if(payload.guest_name) room.guest_name = payload.guest_name; if(payload.guest_id) room.guest_id = payload.guest_id; }
             
-            await _supabase.from('rooms').update({ status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id }).eq('id', id);
+            const { error } = await _supabase.from('rooms').update({ status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id }).eq('id', id);
+            if (error) { customAlert("Error actualizando habitación: " + error.message); return; }
             renderRooms(globalRooms);
         }
         function updateLiveTimers() { document.querySelectorAll('.live-timer-checkin').forEach(el => { const t = el.getAttribute('data-time'); if (t && t !== 'null') el.innerText = `Hospedaje: ${calcularTiempoVivo(t)}`; }); document.querySelectorAll('.live-timer-cleaned').forEach(el => { const t = el.getAttribute('data-time'); const s = el.getAttribute('data-status'); if (s === 'occupied-cleaning') el.innerText = 'Últ. limpieza: En curso'; else if (t && t !== 'null') el.innerText = `Limpia hace ${calcularTiempoVivo(t)}`; }); }
 
         // SUPABASE: RESERVAS
         async function renderReservations() {
-            const { data } = await _supabase.from('reservations').select('*').order('arrival', { ascending: true });
+            const { data, error } = await _supabase.from('reservations').select('*').order('arrival', { ascending: true });
+            if (error) { customAlert("Error al cargar reservas: " + error.message); return; }
             reservationsData = data || []; const list = document.getElementById('reservationsList'); list.innerHTML = '';
             if (reservationsData.length === 0) { list.innerHTML = '<p style="text-align:center; margin-top:30px;">No hay reservas.</p>'; return; }
             reservationsData.forEach(res => {
@@ -436,17 +438,25 @@
             document.getElementById('addReservationModal').style.display = 'flex';
         }
         async function saveReservation() {
-            const name = document.getElementById('rName').value.trim(); const room = document.getElementById('rRoom').value; const arrival = document.getElementById('rArrival').value;
-            if (!name || !room || !arrival) { customAlert("Faltan datos obligatorios."); return; }
-            const payload = { id: currentResEditingId || Date.now(), name, room, phone: document.getElementById('rPhone').value.trim(), arrival: new Date(arrival).toISOString(), note: document.getElementById('rNote').value.trim() };
-            await _supabase.from('reservations').upsert(payload); closeModal('addReservationModal'); renderReservations();
+            try {
+                const name = document.getElementById('rName').value.trim(); const room = document.getElementById('rRoom').value; const arrival = document.getElementById('rArrival').value;
+                if (!name || !room || !arrival) { customAlert("Faltan datos obligatorios."); return; }
+                const payload = { id: currentResEditingId || Date.now(), name: name, room: parseInt(room), phone: document.getElementById('rPhone').value.trim(), arrival: new Date(arrival).toISOString(), note: document.getElementById('rNote').value.trim() };
+                const { error } = await _supabase.from('reservations').upsert(payload);
+                if (error) { customAlert("Error guardando reserva (Supabase): " + error.message); return; }
+                closeModal('addReservationModal'); renderReservations();
+            } catch (err) {
+                customAlert("Error en tu navegador: " + err.message);
+            }
         }
         function deleteReservation(id) { customConfirm("¿Eliminar esta reserva?", async () => { await _supabase.from('reservations').delete().eq('id', id); renderReservations(); }); }
 
         // SUPABASE: DIRECTORIO
         async function renderDirectory(cat, tabElement = null) {
             if(tabElement){ document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active')); tabElement.classList.add('active'); }
-            const { data } = await _supabase.from('contacts').select('*'); contactsData = data || [];
+            const { data, error } = await _supabase.from('contacts').select('*'); 
+            if (error) { customAlert("Error al cargar directorio: " + error.message); return; }
+            contactsData = data || [];
             const grid = document.getElementById('contactsGrid'); grid.innerHTML = ''; let filtered = contactsData;
             if (cat !== 'all') filtered = contactsData.filter(c => c.category === cat);
             if (filtered.length === 0) { grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px;">No hay contactos guardados.</p>'; return; }
@@ -460,16 +470,23 @@
         }
         function previewImage(e) { const file = e.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = function(ev) { tempImageBase64 = ev.target.result; document.getElementById('cImagePreview').src = tempImageBase64; document.getElementById('cImagePreview').style.display = 'block'; }; reader.readAsDataURL(file); } }
         async function saveContact() {
-            const name = document.getElementById('cName').value.trim(); const phone = document.getElementById('cPhone').value.trim();
-            if (!name || !phone) { customAlert("Faltan datos."); return; }
-            const payload = { id: currentEditingId || Date.now(), name, category: document.getElementById('cCategory').value, phone, description: document.getElementById('cDesc').value.trim(), image: tempImageBase64 };
-            await _supabase.from('contacts').upsert(payload); closeModal('contactFormModal'); renderDirectory('all', document.querySelector('.cat-tab'));
+            try {
+                const name = document.getElementById('cName').value.trim(); const phone = document.getElementById('cPhone').value.trim();
+                if (!name || !phone) { customAlert("Faltan datos."); return; }
+                const payload = { id: currentEditingId || Date.now(), name: name, category: document.getElementById('cCategory').value, phone: phone, description: document.getElementById('cDesc').value.trim(), image: tempImageBase64 };
+                const { error } = await _supabase.from('contacts').upsert(payload); 
+                if (error) { customAlert("Error guardando contacto (Supabase): " + error.message); return; }
+                closeModal('contactFormModal'); renderDirectory('all', document.querySelector('.cat-tab'));
+            } catch (err) {
+                customAlert("Error en tu navegador: " + err.message);
+            }
         }
         function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { await _supabase.from('contacts').delete().eq('id', id); renderDirectory('all', document.querySelector('.cat-tab')); }); }
 
         // SUPABASE: REPORTES Y EXPORTACIÓN
         async function loadHistory() {
-            const { data } = await _supabase.from('history').select('*').order('check_out', { ascending: false });
+            const { data, error } = await _supabase.from('history').select('*').order('check_out', { ascending: false });
+            if (error) { customAlert("Error cargando historial: " + error.message); return; }
             let history = data || []; const start = document.getElementById('filterStart').value; const end = document.getElementById('filterEnd').value;
             if (start || end) { history = history.filter(h => { const checkOutLocalStr = new Date(h.check_out).toISOString().split('T')[0]; return (!start || checkOutLocalStr >= start) && (!end || checkOutLocalStr <= end); }); }
             const tbody = document.getElementById('exportTableBody'); tbody.innerHTML = '';
