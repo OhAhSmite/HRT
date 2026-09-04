@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostal Reales Tamarindos - Gestión</title>
     
-    <!-- MEDIDAS DE SEGURIDAD CONTRA MOTORES DE BÚSQUEDA Y RASTREADORES -->
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
     <meta name="googlebot" content="noindex, nofollow">
     
-    <!-- Fuentes Elegantes -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Librerías para Exportar y Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -460,7 +457,6 @@
 </head>
 <body>
 
-    <!-- PANTALLA LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <img src="image_d6cde8.png" alt="Logo Hostal">
@@ -470,7 +466,6 @@
             <button class="btn btn-checkin" onclick="processLogin()">Iniciar Sesión</button>
             <div class="login-error" id="loginError"><i class="fa-solid fa-triangle-exclamation"></i> Credenciales incorrectas</div>
             
-            <!-- AVISO LEGAL CON ENLACE PARA ABRIR POP-UP -->
             <div class="login-legal-notice">
                 <i class="fa-solid fa-shield-halved"></i> Sistema privado protegido. <br>
                 <a onclick="openLegalModal()">Ver Políticas de Privacidad y Aviso Legal</a>
@@ -478,10 +473,8 @@
         </div>
     </div>
 
-    <!-- APLICACIÓN PRINCIPAL -->
     <div id="app-container">
         
-        <!-- HEADER SUPERIOR EXCLUSIVO PARA MÓVILES -->
         <div class="mobile-header">
             <div class="mobile-brand">
                 <img src="image_d6cde8.png" alt="Logo">
@@ -493,7 +486,6 @@
             </div>
         </div>
 
-        <!-- SIDEBAR (ESCRITORIO) -->
         <div class="sidebar">
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
@@ -509,7 +501,6 @@
             </div>
         </div>
 
-        <!-- BARRA INFERIOR FLOTANTE EXCLUSIVA PARA MÓVILES -->
         <div class="mobile-bottom-bar">
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
             <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
@@ -519,22 +510,18 @@
         </div>
 
         <main class="main-content">
-            <!-- BARRA SUPERIOR CON BOTÓN DE MANUAL / GUÍA -->
             <div class="top-utility-bar">
                 <button class="btn-manual-top" onclick="openManualModal()"><i class="fa-solid fa-circle-question"></i> Manual de Usuario</button>
             </div>
 
-            <!-- HABITACIONES -->
             <section id="view-habitaciones" class="view-section active">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
                 <div id="hotelContainer"></div>
             </section>
-            <!-- RESERVAS -->
             <section id="view-reservas" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
                 <div id="reservationsList"></div>
             </section>
-            <!-- DIRECTORIO -->
             <section id="view-directorio" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button></div>
                 <div class="directory-tabs" id="directoryTabs">
@@ -546,7 +533,6 @@
                 </div>
                 <div class="directory-grid" id="contactsGrid"></div>
             </section>
-            <!-- ANTICIPOS DE EMPLEADOS -->
             <section id="view-anticipos" class="view-section">
                 <div class="main-title">
                     <div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div>
@@ -566,7 +552,6 @@
 
                 <div class="advance-grid" id="employeesGrid"></div>
             </section>
-            <!-- REPORTES -->
             <section id="view-reportes" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div></div>
                 <div class="filter-section-sym">
@@ -588,7 +573,6 @@
         </main>
     </div>
 
-    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN DE ANTICIPOS -->
     <div id="advanceExportWrapper" style="position: absolute; left: -9999px; top: 0; width: 650px; background: #ffffff; padding: 30px; border-radius: 16px; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-green); font-size: 1.8rem; margin-bottom: 5px;">Hostal Reales Tamarindos</h2>
@@ -597,7 +581,6 @@
         <div id="advExportBody"></div>
     </div>
 
-    <!-- MODALES GENERALES Y DE SISTEMA -->
     <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div class="form-group"><label>Cédula</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button></div></div></div>
@@ -608,7 +591,6 @@
     
     <div class="modal-overlay" id="contactFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="contactFormTitle">Contacto</div><div class="form-group"><label>Nombre</label><input type="text" id="cName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Categoría</label><select id="cCategory"><option value="taxi">Taxis</option><option value="food">Comida</option><option value="places">Lugares</option><option value="services">Servicios</option></select></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="cPhone"></div></div><div class="form-group"><label>Descripción</label><textarea id="cDesc" rows="2"></textarea></div><div class="form-group"><label>Foto</label><input type="file" id="cImage" accept="image/*" onchange="previewImage(event)"><img id="cImagePreview" src=""></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('contactFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveContact()">Guardar</button></div></div></div>
     
-    <!-- MODALES ANTICIPOS -->
     <div class="modal-overlay" id="employeeFormModal"><div class="modal-content modal-sm"><div class="modal-title">Añadir Empleado</div><div class="form-group"><label>Nombre del Empleado</label><input type="text" id="empName" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('employeeFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveEmployee()">Guardar</button></div></div></div>
     
     <div class="modal-overlay" id="advanceFormModal"><div class="modal-content modal-sm"><div class="modal-title">Registrar Anticipo</div><div class="form-group"><label>Cantidad de Dinero ($)</label><input type="number" step="0.01" id="advAmount" placeholder="0.00"></div><div class="form-group"><label>Fecha y Hora</label><input type="datetime-local" id="advDateTime"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('advanceFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveAdvance()">Guardar Anticipo</button></div></div></div>
@@ -617,7 +599,6 @@
     
     <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
-    <!-- MODAL DE POLÍTICAS DE PRIVACIDAD Y AVISO LEGAL -->
     <div class="modal-overlay" id="legalModal">
         <div class="modal-content">
             <div class="modal-title"><span>Políticas de Privacidad y Aviso Legal</span><i class="fa-solid fa-shield-halved" style="color: var(--brand-peach);"></i></div>
@@ -637,14 +618,13 @@
         </div>
     </div>
 
-    <!-- MODAL DE MANUAL DE USUARIO / INSTRUCCIONES -->
     <div class="modal-overlay" id="manualModal">
         <div class="modal-content">
             <div class="modal-title"><span>Manual de Instrucciones</span><i class="fa-solid fa-book-open" style="color: var(--brand-peach);"></i></div>
             <div class="manual-popup-body">
                 <div class="manual-step">
                     <h4><i class="fa-solid fa-bed"></i> 1. Pestaña Habitaciones</h4>
-                    <p>Muestra el estado en tiempo real (Libre, Ocupada o Limpieza). Haz clic en una tarjeta para voltearla y realizar <strong>Check-In</strong>, cambiar a estado de <strong>Limpieza</strong>, marcar como <strong>M. Limpia</strong> o registrar la <strong>Salida (Checkout)</strong>.</p>
+                    <p>Muestra el estado en tiempo real (Libre, Ocupada o Limpieza). Haz clic en una tarjeta para voltearla y realizar <strong>Check-In</strong>, cambiar a estado de <strong>Limpieza</strong>, marcar como <strong>Limpieza completada</strong> o registrar la <strong>Salida (Checkout)</strong>.</p>
                 </div>
                 <div class="manual-step">
                     <h4><i class="fa-regular fa-calendar-check"></i> 2. Pestaña Reservas</h4>
@@ -669,9 +649,6 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- LOGICA SUPABASE Y JS -->
-    <!-- ========================================== -->
     <script>
         const SUPABASE_URL = 'https://wepjdpgwzdubzffabdol.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcGpkcGd3emR1YnpmZmFiZG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTE0NzMsImV4cCI6MjEwNDA2NzQ3M30.7rLJx7igmqMDEU3KJTwnD5V8Q93KyE2M3UtERbvX1kU';
@@ -815,10 +792,11 @@
                 if (r.status === 'available') {
                     frontHtml = `<div class="room-number">${r.id}</div><div class="status-pill">LIBRE</div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-bed" style="font-size:3.2rem;"></i></div>`;
                 } else {
-                    const txt = r.status === 'occupied' ? 'OCUPADA' : 'LIMPIEZA'; const ultLimp = r.last_cleaned_time || r.check_in_time;
+                    const txt = r.status === 'occupied' ? 'OCUPADA' : 'NECESITA LIMPIEZA'; 
+                    const ultLimp = r.last_cleaned_time || r.check_in_time;
                     frontHtml = `<div class="room-number">${r.id}</div><div class="status-pill">${txt}</div>${r.guest_name ? `<div class="guest-name" title="${r.guest_name}"><i class="fa-solid fa-user"></i> ${r.guest_name}</div>` : ''}<div class="badges-container"><div class="badge-row"><span>Llegada: ${formatFechaEcuador(r.check_in_time)}</span></div><div class="badge-row"><span class="live-timer-checkin" data-time="${r.check_in_time}"></span></div><div class="badge-row"><span class="live-timer-cleaned" data-time="${ultLimp}" data-status="${r.status}"></span></div></div>`;
                 }
-                grid.innerHTML += `<div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})"><div class="room-flipper"><div class="front ${rc}">${frontHtml}</div><div class="back" onclick="event.stopPropagation()">${r.status === 'available' ? `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>` : `${r.status === 'occupied' ? `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">LIMPIEZA</button>` : `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">M. LIMPIA</button>`}<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button>`}<button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button></div></div></div>`;
+                grid.innerHTML += `<div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})"><div class="room-flipper"><div class="front ${rc}">${frontHtml}</div><div class="back" onclick="event.stopPropagation()">${r.status === 'available' ? `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>` : `${r.status === 'occupied' ? `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">LIMPIEZA</button>` : `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`}<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button>`}<button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button></div></div></div>`;
             });
             container.appendChild(grid); updateLiveTimers();
         }
@@ -860,8 +838,8 @@
             document.querySelectorAll('.live-timer-cleaned').forEach(el => { 
                 const t = el.getAttribute('data-time'); 
                 const s = el.getAttribute('data-status'); 
-                if (s === 'occupied-cleaning') el.innerText = 'Últ. limpieza: En curso'; 
-                else if (t && t !== 'null') el.innerText = `Limpia hace ${calcularTiempoVivo(t)}`; 
+                if (s === 'occupied-cleaning') el.innerText = 'Necesita limpieza'; 
+                else if (t && t !== 'null') el.innerText = `Últ. Limpieza: ${calcularTiempoVivo(t)}`; 
             }); 
         }
 
