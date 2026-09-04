@@ -341,7 +341,7 @@
                 <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> Habitaciones</div>
                 <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> Reservas</div>
                 <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> Directorio</div>
-                <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> Anticipos</div>
+                <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> Anticipos $</div>
                 <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> Reportes</div>
             </nav>
             <button class="btn-logout" onclick="processLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span></button>
@@ -352,7 +352,7 @@
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
             <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
             <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> <span>Directorio</span></div>
-            <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Anticipos</span></div>
+            <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Anticipos $</span></div>
             <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> <span>Reportes</span></div>
         </div>
 
@@ -381,18 +381,11 @@
             </section>
             <!-- ANTICIPOS DE EMPLEADOS -->
             <section id="view-anticipos" class="view-section">
-                <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openEmployeeForm()"><i class="fa-solid fa-user-plus"></i> Agregar Empleado</button></div>
+                <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openEmployeeForm()"><i class="fa-solid fa-user-plus"></i> Agregar Empleado</button></div>
                 
-                <div class="filter-section-sym">
-                    <div class="filter-grid-sym">
-                        <div class="form-group" style="margin: 0;"><label>Desde:</label><input type="date" id="advFilterStart" onchange="loadAdvances()"></div>
-                        <div class="form-group" style="margin: 0;"><label>Hasta:</label><input type="date" id="advFilterEnd" onchange="loadAdvances()"></div>
-                    </div>
-                </div>
-
                 <div class="advance-summary-box">
                     <div>
-                        <span style="font-size: 0.85rem; color: var(--text-muted); display: block; font-weight: 600;">TOTAL ACUMULADO DE ANTICIPOS</span>
+                        <span style="font-size: 0.85rem; color: var(--text-muted); display: block; font-weight: 600;">TOTAL GENERAL DE ANTICIPOS</span>
                         <div class="advance-total-display" id="totalAdvancesSum">$0.00</div>
                     </div>
                 </div>
@@ -701,19 +694,8 @@
             if (advErr) { customAlert("Error cargando anticipos: " + advErr.message); return; }
             advancesData = advData || [];
 
-            const start = document.getElementById('advFilterStart').value;
-            const end = document.getElementById('advFilterEnd').value;
-
-            let filteredAdvances = advancesData;
-            if (start || end) {
-                filteredAdvances = advancesData.filter(a => {
-                    const dateStr = new Date(a.datetime).toISOString().split('T')[0];
-                    return (!start || dateStr >= start) && (!end || dateStr <= end);
-                });
-            }
-
             let totalSum = 0;
-            filteredAdvances.forEach(a => { totalSum += parseFloat(a.amount || 0); });
+            advancesData.forEach(a => { totalSum += parseFloat(a.amount || 0); });
             document.getElementById('totalAdvancesSum').innerText = `$${totalSum.toFixed(2)}`;
 
             const grid = document.getElementById('employeesGrid');
@@ -725,20 +707,20 @@
             }
 
             employeesData.forEach(emp => {
-                const empAdvances = filteredAdvances.filter(a => a.employee_id === emp.id);
+                const empAdvances = advancesData.filter(a => a.employee_id === emp.id);
                 let empTotal = 0;
                 empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
 
                 let listHtml = '';
                 if (empAdvances.length === 0) {
-                    listHtml = '<span style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:10px;">Sin anticipos en este periodo</span>';
+                    listHtml = '<span style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:10px;">Sin anticipos registrados</span>';
                 } else {
                     empAdvances.forEach(adv => {
                         listHtml += `<div class="advance-item-row"><div><strong>$${parseFloat(adv.amount).toFixed(2)}</strong><br><span style="font-size:0.7rem; color:var(--text-muted);">${formatFechaEcuador(adv.datetime)}</span></div><button class="btn-icon btn-delete-res" style="width:30px; height:30px; min-width:30px; font-size:0.8rem;" onclick="deleteAdvance(${adv.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div>`;
                     });
                 }
 
-                grid.innerHTML += `<div class="employee-card"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})" title="Eliminar Empleado"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total filtrado: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Agregar Anticipo</button></div>`;
+                grid.innerHTML += `<div class="employee-card"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})" title="Eliminar Empleado"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total acumulado: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Agregar Anticipo</button><button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar todo el historial</button></div>`;
             });
         }
 
@@ -761,6 +743,14 @@
             customConfirm("¿Eliminar este empleado y todos sus anticipos?", async () => {
                 await _supabase.from('advances').delete().eq('employee_id', empId);
                 await _supabase.from('employees').delete().eq('id', empId);
+                loadAdvances();
+            });
+        }
+
+        function clearEmployeeAdvances(empId) {
+            customConfirm("¿Estás seguro de borrar todo el historial de anticipos de este empleado?", async () => {
+                const { error } = await _supabase.from('advances').delete().eq('employee_id', empId);
+                if (error) { customAlert("Error al borrar historial: " + error.message); return; }
                 loadAdvances();
             });
         }
