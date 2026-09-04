@@ -107,7 +107,6 @@
         #hotelContainer { width: 100%; display: flex; justify-content: center; padding-bottom: 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 20px; width: 100%; max-width: 1100px; justify-items: center; }
         
-        /* Ajuste de altura a 320px para espacio extra de las notas y texto */
         .room-container { width: 100%; max-width: 210px; height: 320px; cursor: pointer; perspective: 1000px; border-radius: 20px; transition: transform 0.4s; }
         .room-container:hover { transform: translateY(-8px); z-index: 10; }
         .room-container.available { box-shadow: 0 12px 30px rgba(5, 150, 105, 0.15); }
@@ -117,7 +116,6 @@
         .room-flipper { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; }
         .room-container.flipped .room-flipper { transform: rotateY(180deg); }
         
-        /* ARREGLO DEL BUG DE FLIP: POSICIÓN ABSOLUTA ESTRICTA */
         .front, .back { width: 100%; height: 100%; position: absolute; top: 0; left: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 20px; overflow: hidden; }
         
         .front { padding: 20px 12px; display: flex; flex-direction: column; align-items: center; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
@@ -133,9 +131,34 @@
         .badges-container { width: 100%; display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
         .badge-row { background: rgba(0,0,0,0.18); border-radius: 8px; padding: 5px 8px; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; font-weight: 500; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .back { transform: rotateY(180deg); background: var(--white); padding: 20px 15px; display: flex; flex-direction: column; justify-content: center; gap: 10px; border: 1px solid rgba(11,66,26,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.08); overflow-y: auto;}
+        /* === AJUSTE DEL REVERSO (NOTAS + BOTONES) === */
+        .back { transform: rotateY(180deg); background: var(--white); padding: 15px 12px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid rgba(11,66,26,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
         
-        .btn { width: 100%; padding: 11px; border-radius: 10px; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; outline: none; letter-spacing: 0.5px;}
+        .room-notes-wrapper { flex: 1; display: flex; flex-direction: column; gap: 8px; overflow-y: auto; overflow-x: hidden; margin-bottom: 8px; padding-right: 4px;}
+        /* Modificando scrollbar para que sea sutil */
+        .room-notes-wrapper::-webkit-scrollbar { width: 4px; }
+        .room-notes-wrapper::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        
+        .room-notes-container { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 6px 8px; font-size: 0.72rem; color: #92400e; display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+        .room-note-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 6px; border-bottom: 1px solid rgba(253, 230, 138, 0.5); padding-bottom: 5px; }
+        .room-note-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .room-note-text { flex: 1; line-height: 1.35; word-wrap: break-word; overflow-wrap: break-word; }
+        
+        /* MEJORA UX BOTÓN CUMPLIR */
+        .btn-note-done { background: transparent; color: var(--status-free); border: 1px solid var(--status-free); border-radius: 6px; padding: 3px 6px; font-size: 0.65rem; cursor: pointer; font-weight: 600; flex-shrink: 0; transition: all 0.2s ease; }
+        .btn-note-done:hover { background: var(--status-free); color: white; }
+        
+        /* BOTÓN FIJO AGREGAR NOTA */
+        .btn-add-note-sm { background: transparent; color: var(--brand-peach); border: 1px dashed var(--brand-peach); padding: 8px; font-size: 0.75rem; font-weight: 600; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.2s; width: 100%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-add-note-sm:hover { background: rgba(245, 166, 115, 0.1); }
+        
+        .room-card-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
+
+        .note-badge-front { position: absolute; top: 12px; right: 12px; background: #eab308; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: pulseNote 2s infinite; }
+        @keyframes pulseNote { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* BOTONES GLOBALES DE TARJETA */
+        .btn { width: 100%; padding: 10px; border-radius: 10px; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; outline: none; letter-spacing: 0.5px;}
         .btn-checkin { background: var(--brand-green); color: var(--white); border: none; box-shadow: 0 4px 15px rgba(11,66,26,0.2); }
         .btn-checkin:hover { background: var(--brand-green-light); transform: translateY(-2px); }
         .btn-checkout { background: var(--white); color: var(--status-occ); border: 1px solid var(--status-occ); }
@@ -147,15 +170,6 @@
         .btn-blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
         .btn-blue:hover { background: #2563eb; color: var(--white); transform: translateY(-2px); }
 
-        /* NOTAS EN LA TARJETA DE LA HABITACIÓN */
-        .room-notes-container { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 6px; margin-bottom: 8px; font-size: 0.72rem; color: #92400e; display: flex; flex-direction: column; gap: 5px; max-height: 100px; overflow-y: auto; }
-        .room-note-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; border-bottom: 1px solid rgba(253, 230, 138, 0.5); padding-bottom: 4px; }
-        .room-note-item:last-child { border-bottom: none; padding-bottom: 0; }
-        .room-note-text { flex: 1; line-height: 1.3; }
-        .btn-note-done { background: var(--status-free); color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.65rem; cursor: pointer; font-weight: bold; flex-shrink: 0; }
-        .btn-note-done:hover { background: #047857; }
-        .note-badge-front { position: absolute; top: 12px; right: 12px; background: #eab308; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: pulseNote 2s infinite; }
-        @keyframes pulseNote { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
         /* === PESTAÑA NOTAS / NOVEDADES === */
         .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; width: 100%; padding-bottom: 40px; }
@@ -271,7 +285,7 @@
             .main-title button { width: 100% !important; }
             
             .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 100%; }
-            .room-container { max-width: 100%; height: 260px; } /* Adaptado para móvil pero con más espacio */
+            .room-container { max-width: 100%; height: 260px; }
             .room-number { font-size: 2.5rem; }
             .front { padding: 15px 8px; }
             .badge-row { font-size: 0.55rem; padding: 4px 4px; }
@@ -436,15 +450,12 @@
 
     <!-- MODALES GENERALES Y DE SISTEMA -->
     
-    <!-- MODAL CHECKIN (AGREGADO CAMPO PERSONAS) -->
     <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Cédula (Opcional)</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="guestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button></div></div></div>
     
-    <!-- MODAL RESERVA (AGREGADO CAMPO PERSONAS) -->
     <div class="modal-overlay" id="addReservationModal"><div class="modal-content modal-sm"><div class="modal-title" id="resModalTitle">Reserva</div><div class="form-group"><label>Huésped (Nombre)</label><input type="text" id="rName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Habitación</label><select id="rRoom"></select></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="rGuestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="rPhone"></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Llegada</label><input type="datetime-local" id="rArrival"></div></div><div class="form-group"><label>Nota adicional</label><input type="text" id="rNote"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveReservation()">Guardar</button></div></div></div>
     
-    <!-- MODAL NUEVA NOTA -->
     <div class="modal-overlay" id="noteFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="noteModalTitle">Añadir Nota</div><div class="form-group"><label>Asignación (Opcional)</label><select id="noteRoomSelect"><option value="0">Mensaje General (Todos)</option></select></div><div class="form-group"><label>Contenido / Recordatorio</label><textarea id="noteContent" rows="3" placeholder="Ej. El huésped dejó sus maletas..."></textarea></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('noteFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveNote()">Guardar Nota</button></div></div></div>
 
     <div class="modal-overlay" id="previewModal"><div class="modal-content" style="max-width: 800px;"><div class="modal-title">Previsualización</div><div class="preview-box"><img id="previewImage" src="" style="display:none;"><div id="excelPreview" style="display:none;"><div id="excelTableContainer"></div></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('previewModal')">Atrás</button><button class="btn btn-checkin" onclick="confirmDownload()"><i class="fa-solid fa-download"></i> Descargar Reporte</button></div></div></div>
@@ -508,7 +519,7 @@
         let contactsData = [];
         let employeesData = [];
         let advancesData = [];
-        let notesData = []; // ALMACENA LAS NOTAS Y NOVEDADES
+        let notesData = []; 
         
         let currentEmpIdForAdvance = null;
         let appInterval = null;
@@ -629,7 +640,7 @@
             });
         }
 
-        function openNoteForm(id = null) {
+        function openNoteForm(id = null, preselectRoomId = null) {
             currentNoteEditingId = id;
             const select = document.getElementById('noteRoomSelect');
             select.innerHTML = '<option value="0">Mensaje General (Todos)</option>';
@@ -643,7 +654,11 @@
                 document.getElementById('noteRoomSelect').value = note.room_id || 0;
             } else {
                 document.getElementById('noteContent').value = '';
-                document.getElementById('noteRoomSelect').value = '0';
+                if (preselectRoomId) {
+                    document.getElementById('noteRoomSelect').value = preselectRoomId;
+                } else {
+                    document.getElementById('noteRoomSelect').value = '0';
+                }
             }
             document.getElementById('noteFormModal').style.display = 'flex';
         }
@@ -661,17 +676,16 @@
             };
 
             const { error } = await _supabase.from('notes').upsert(payload);
-            if (error) { customAlert("Error guardando nota (Asegúrate de que la tabla 'notes' exista en Supabase): " + error.message); return; }
+            if (error) { customAlert("Error guardando nota: " + error.message); return; }
             
             closeModal('noteFormModal');
             await fetchNotesDB();
             loadNotesUI();
-            renderRooms(globalRooms); // Refrescar habitaciones para mostrar el badge
+            renderRooms(globalRooms); 
         }
 
         function deleteNote(id, fromRoom = false) {
             if(fromRoom) {
-                // Borrado directo (Cumplido)
                 _supabase.from('notes').delete().eq('id', id).then(() => {
                     fetchNotesDB().then(() => {
                         loadNotesUI(); renderRooms(globalRooms);
@@ -687,7 +701,7 @@
 
         // SUPABASE: HABITACIONES
         async function initDashboard() {
-            await fetchNotesDB(); // Cargar notas antes de las habitaciones
+            await fetchNotesDB(); 
             const { data, error } = await _supabase.from('rooms').select('*').order('id', { ascending: true });
             if (error) { customAlert("Error cargando habitaciones: " + error.message); return; }
             
@@ -703,7 +717,6 @@
         }
 
         function renderRooms(rooms) {
-            // Guardar estado de la tarjeta volteada actualmente
             let flippedId = null;
             document.querySelectorAll('.room-container.flipped').forEach(el => flippedId = el.id);
 
@@ -723,7 +736,7 @@
                 if(hasNotes) {
                     notesBackHtml = `<div class="room-notes-container">`;
                     roomNotes.forEach(n => {
-                        notesBackHtml += `<div class="room-note-item"><div class="room-note-text">${n.content}</div> <button class="btn-note-done" onclick="event.stopPropagation(); deleteNote(${n.id}, true)">Cumplido <i class="fa-solid fa-check"></i></button></div>`;
+                        notesBackHtml += `<div class="room-note-item"><div class="room-note-text">${n.content}</div> <button class="btn-note-done" onclick="event.stopPropagation(); deleteNote(${n.id}, true)">Cumplir <i class="fa-solid fa-check"></i></button></div>`;
                     });
                     notesBackHtml += `</div>`;
                 }
@@ -738,11 +751,34 @@
                     frontHtml = `${badgeHtml}<div class="room-number">${r.id}</div><div class="status-pill">${txt}</div>${r.guest_name ? `<div class="guest-name" title="${r.guest_name}"><i class="fa-solid fa-user"></i> ${r.guest_name} <span style="font-size:0.68rem; opacity:0.85;">${guestCountText}</span></div>` : ''}<div class="badges-container"><div class="badge-row"><span>Llegada: ${formatFechaEcuador(r.check_in_time)}</span></div><div class="badge-row"><span class="live-timer-checkin" data-time="${r.check_in_time}"></span></div><div class="badge-row"><span class="live-timer-cleaned" data-time="${ultLimp}" data-status="${r.status}"></span></div></div>`;
                 }
                 
-                grid.innerHTML += `<div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})"><div class="room-flipper"><div class="front ${rc}">${frontHtml}</div><div class="back" onclick="event.stopPropagation()">${notesBackHtml}${r.status === 'available' ? `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>` : `${r.status === 'occupied' ? `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">NECESITA LIMPIEZA</button>` : `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`}<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button>`}<button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button></div></div></div>`;
+                let actionButtonsHtml = '';
+                if (r.status === 'available') {
+                    actionButtonsHtml = `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>`;
+                } else if (r.status === 'occupied') {
+                    actionButtonsHtml = `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">NECESITA LIMPIEZA</button>`;
+                } else {
+                    actionButtonsHtml = `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`;
+                }
+                actionButtonsHtml += `<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button><button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button>`;
+
+                grid.innerHTML += `
+                <div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})">
+                    <div class="room-flipper">
+                        <div class="front ${rc}">${frontHtml}</div>
+                        <div class="back" onclick="event.stopPropagation()">
+                            <div class="room-notes-wrapper">
+                                ${notesBackHtml}
+                                <button class="btn-add-note-sm" onclick="openNoteForm(null, ${r.id})"><i class="fa-solid fa-plus"></i> Agregar Nota</button>
+                            </div>
+                            <div class="room-card-actions">
+                                ${actionButtonsHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
             });
             container.appendChild(grid); 
             
-            // Restaurar estado de volteo si existía
             if(flippedId && document.getElementById(flippedId)) { document.getElementById(flippedId).classList.add('flipped'); }
             updateLiveTimers();
         }
@@ -781,12 +817,11 @@
             if (payload.isCheckout) { room.check_in_time = null; room.last_cleaned_time = null; room.guest_name = null; room.guest_id = null; room.guest_count = null;} 
             else { if(payload.check_in_time) room.check_in_time = payload.check_in_time; if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; if(payload.guest_name) room.guest_name = payload.guest_name; if(payload.guest_id) room.guest_id = payload.guest_id; if(payload.guest_count) room.guest_count = payload.guest_count; }
             
-            // INTENTO DE ACTUALIZAR GUEST_COUNT (Manejo silencioso si la columna no existe aún en BD para evitar bloquear todo)
             let updatePayload = { status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id };
             if(room.guest_count !== undefined) updatePayload.guest_count = room.guest_count;
 
             const { error } = await _supabase.from('rooms').update(updatePayload).eq('id', id);
-            if (error) { customAlert("Error actualizando habitación (Asegúrate de haber creado la columna 'guest_count' en Supabase): " + error.message); return; }
+            if (error) { customAlert("Error actualizando habitación: " + error.message); return; }
             renderRooms(globalRooms);
         }
         function updateLiveTimers() { 
@@ -829,7 +864,7 @@
                 const payload = { id: currentResEditingId || Date.now(), name: name, room: parseInt(room), phone: document.getElementById('rPhone').value.trim(), arrival: dateObj.toISOString(), note: document.getElementById('rNote').value.trim(), guest_count: guest_count };
                 
                 const { error } = await _supabase.from('reservations').upsert(payload);
-                if (error) { customAlert("Error guardando reserva (Asegúrate de agregar columna 'guest_count'): " + error.message); return; }
+                if (error) { customAlert("Error guardando reserva: " + error.message); return; }
                 
                 closeModal('addReservationModal'); renderReservations();
             } catch (err) { customAlert("Error: " + err.message); }
