@@ -743,6 +743,9 @@
                 
                 actionButtonsHtml += `<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">CHECK-OUT</button><button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button>`;
 
+                // CORRECCIÓN: Botón "Agregar Nota" solo si la habitación no está libre.
+                let addNoteBtnHtml = (r.status !== 'available') ? `<button class="btn-add-note-sm" onclick="openNoteForm(null, ${r.id})"><i class="fa-solid fa-plus"></i> Agregar Nota</button>` : '';
+
                 grid.innerHTML += `
                 <div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})">
                     <div class="room-flipper">
@@ -750,7 +753,7 @@
                         <div class="back" onclick="event.stopPropagation()">
                             <div class="room-notes-wrapper">
                                 ${notesBackHtml}
-                                <button class="btn-add-note-sm" onclick="openNoteForm(null, ${r.id})"><i class="fa-solid fa-plus"></i> Agregar Nota</button>
+                                ${addNoteBtnHtml}
                             </div>
                             <div class="room-card-actions">
                                 ${actionButtonsHtml}
@@ -923,7 +926,6 @@
                 if (empAdvances.length === 0) { listHtml = '<span style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:10px;">Sin anticipos</span>'; } 
                 else { empAdvances.forEach(adv => { listHtml += `<div class="advance-item-row"><div><strong>$${parseFloat(adv.amount).toFixed(2)}</strong><br><span style="font-size:0.7rem; color:var(--text-muted);">${formatFechaEcuador(adv.datetime)}</span></div><button class="btn-icon btn-delete-res" style="width:30px; height:30px; min-width:30px; font-size:0.8rem;" onclick="deleteAdvance(${adv.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div>`; }); }
                 
-                // CORRECCIÓN DE VISIBILIDAD: Se quitó el color rojo forzado del texto para que se muestre blanco sobre rojo
                 grid.innerHTML += `<div class="employee-card" id="emp-card-${emp.id}"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Anticipo</button><button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar historial</button><div style="display: flex; gap: 8px; margin-top: 8px;"><button class="btn btn-blue" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'image')"><i class="fa-solid fa-image"></i> Img</button><button class="btn btn-checkout" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button></div></div>`;
             });
         }
