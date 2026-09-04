@@ -418,7 +418,7 @@
                 </div>
                 <div id="exportableArea" class="export-container">
                     <div class="export-header-report" id="reportHeader"><h2>Hostal Reales Tamarindos</h2><p id="reportDates" style="color: #64748b; font-weight: 500;"></p></div>
-                    <table class="export-table"><thead><tr><th>Hab.</th><th>Cliente</th><th>Cédula</th><th>Entrada</th><th>Salida</th><th>Tiempo Total</th></tr></thead><tbody id="exportTableBody"></tbody></table>
+                    <table class="export-table"><thead><tr><th>Hab.</th><th>Cliente</th><th>Cédula</th><th>Personas</th><th>Entrada</th><th>Salida</th><th>Tiempo Total</th></tr></thead><tbody id="exportTableBody"></tbody></table>
                 </div>
             </section>
         </main>
@@ -800,10 +800,18 @@
             updateRoomDB(id, py);
         }
 
+        // GUARDADO DE CHECKOUT EN HISTORIAL INCLUYENDO CANTIDAD DE PERSONAS (GUEST_COUNT)
         async function updateRoomDB(id, payload) {
             const index = globalRooms.findIndex(r => r.id === id); if(index === -1) return; const room = globalRooms[index];
             if (payload.isCheckout && room.check_in_time) {
-                await _supabase.from('history').insert([{ room: room.id, name: room.guest_name, cedula: room.guest_id, check_in: room.check_in_time, check_out: new Date().toISOString() }]);
+                await _supabase.from('history').insert([{ 
+                    room: room.id, 
+                    name: room.guest_name, 
+                    cedula: room.guest_id, 
+                    check_in: room.check_in_time, 
+                    check_out: new Date().toISOString(),
+                    guest_count: room.guest_count || 1 
+                }]);
             }
             
             if (payload.isCheckout) {
@@ -876,7 +884,6 @@
             document.getElementById('addReservationModal').style.display = 'flex';
         }
 
-        // FUNCIÓN GUARDAR RESERVA: HORA OPCIONAL
         async function saveReservation() {
             try {
                 const name = document.getElementById('rName').value.trim(); 
@@ -984,15 +991,22 @@
             const wrapper = document.getElementById('advanceExportWrapper'); html2canvas(wrapper, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => { const imgData = canvas.toDataURL('image/png'); if(format === 'image') { const link = document.createElement('a'); link.download = filename + '.png'; link.href = imgData; link.click(); } else if(format === 'pdf') { const { jsPDF } = window.jspdf; const pdf = new jsPDF('p', 'mm', 'a4'); const w = pdf.internal.pageSize.getWidth(); const props = pdf.getImageProperties(imgData); const h = (props.height * w) / props.width; pdf.addImage(imgData, 'PNG', 0, 0, w, h); pdf.save(filename + '.pdf'); } });
         }
 
-        // REPORTES
+        // CARGA DE HISTORIAL CON PERSONAS Y CÁLCULO EXACTO DE TIEMPO TOTAL
         async function loadHistory() {
             const { data, error } = await _supabase.from('history').select('*').order('check_out', { ascending: false });
             if (error) { customAlert("Error cargando historial: " + error.message); return; }
             let history = data || []; const start = document.getElementById('filterStart').value; const end = document.getElementById('filterEnd').value;
             if (start || end) { history = history.filter(h => { const checkOutLocalStr = new Date(h.check_out).toISOString().split('T')[0]; return (!start || checkOutLocalStr >= start) && (!end || checkOutLocalStr <= end); }); }
             const tbody = document.getElementById('exportTableBody'); tbody.innerHTML = '';
-            if (history.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay registros históricos.</td></tr>'; return; }
-            history.forEach(h => { const diffMs = new Date(h.check_out) - new Date(h.check_in); const diffHrs = Math.floor(diffMs / 3600000); tbody.innerHTML += `<tr><td>${h.room}</td><td><strong>${h.name}</strong></td><td>${h.cedula}</td><td>${formatFechaEcuador(h.check_in)}</td><td>${formatFechaEcuador(h.check_out)}</td><td>${diffHrs}h</td></tr>`; });
+            if (history.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay registros históricos.</td></tr>'; return; }
+            history.forEach(h => { 
+                const diffMs = new Date(h.check_out) - new Date(h.check_in); 
+                const diffHrs = Math.floor(diffMs / 3600000); 
+                const diffMins = Math.floor((diffMs % 3600000) / 60000);
+                const tiempoTotal = diffHrs > 0 ? `${diffHrs}h ${diffMins}m` : `${diffMins} min`;
+                const cantPersonas = h.guest_count ? `${h.guest_count} p.` : '1 p.';
+                tbody.innerHTML += `<tr><td>${h.room}</td><td><strong>${h.name}</strong></td><td>${h.cedula || 'N/A'}</td><td>${cantPersonas}</td><td>${formatFechaEcuador(h.check_in)}</td><td>${formatFechaEcuador(h.check_out)}</td><td>${tiempoTotal}</td></tr>`; 
+            });
         }
         function preparePreview(type) { 
             currentExportType = type; const tbody = document.getElementById('exportTableBody');
