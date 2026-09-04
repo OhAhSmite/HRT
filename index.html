@@ -80,10 +80,22 @@
         .btn-logout { margin: 15px; background: #fef2f2; color: var(--status-occ); border: 1px solid #fecaca; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .btn-logout:hover { background: var(--status-occ); color: var(--white); }
 
-        /* === ÁREA PRINCIPAL === */
+        /* === ÁREA PRINCIPAL Y TRANSICIÓN DE PESTAÑAS === */
         .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; padding: 30px; }
-        .view-section { display: none; opacity: 0; transform: translateY(12px); transition: opacity 0.35s ease, transform 0.35s ease; flex-direction: column; width: 100%; }
-        .view-section.active { display: flex; opacity: 1; transform: translateY(0); }
+        
+        .view-section { 
+            display: none; 
+            opacity: 0; 
+            transform: translateY(15px); 
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out; 
+            flex-direction: column; 
+            width: 100%; 
+        }
+        .view-section.active { 
+            display: flex; 
+            opacity: 1; 
+            transform: translateY(0); 
+        }
         
         .main-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--brand-green); margin-bottom: 25px; padding-bottom: 12px; border-bottom: 2px solid rgba(11, 66, 26, 0.08); display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
         .main-title-left { display: flex; align-items: center; gap: 15px; }
@@ -381,7 +393,14 @@
             </section>
             <!-- ANTICIPOS DE EMPLEADOS -->
             <section id="view-anticipos" class="view-section">
-                <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openEmployeeForm()"><i class="fa-solid fa-user-plus"></i> Agregar Empleado</button></div>
+                <div class="main-title">
+                    <div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div>
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button class="btn btn-blue" style="width: auto; padding: 10px 16px;" onclick="exportAllAdvances('image')"><i class="fa-solid fa-image"></i> Exportar Todo (Img)</button>
+                        <button class="btn btn-checkout" style="width: auto; padding: 10px 16px;" onclick="exportAllAdvances('pdf')"><i class="fa-solid fa-file-pdf"></i> Exportar Todo (PDF)</button>
+                        <button class="btn btn-checkin" style="width: auto; padding: 10px 16px;" onclick="openEmployeeForm()"><i class="fa-solid fa-user-plus"></i> Agregar Empleado</button>
+                    </div>
+                </div>
                 
                 <div class="advance-summary-box">
                     <div>
@@ -412,6 +431,15 @@
                 </div>
             </section>
         </main>
+    </div>
+
+    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN DE ANTICIPOS -->
+    <div id="advanceExportWrapper" style="position: absolute; left: -9999px; top: 0; width: 650px; background: #ffffff; padding: 30px; border-radius: 16px; color: #1e293b;">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-green); font-size: 1.8rem; margin-bottom: 5px;">Hostal Reales Tamarindos</h2>
+            <p style="font-size: 0.95rem; color: #64748b; font-weight: 600;" id="advExportTitle">Reporte de Anticipos</p>
+        </div>
+        <div id="advExportBody"></div>
     </div>
 
     <!-- MODALES -->
@@ -479,10 +507,13 @@
         document.getElementById('loginUser').addEventListener('keypress', e => { if (e.key === 'Enter') processLogin(); });
         window.onload = checkSession;
 
-        // UTILES UI
+        // UTILES UI (Con transición rápida y fluida)
         function switchView(viewId, element) { 
-            document.querySelectorAll('.view-section, .nav-item').forEach(el => el.classList.remove('active')); 
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); 
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
             document.getElementById('view-' + viewId).classList.add('active'); 
+            
             document.querySelectorAll('.nav-item').forEach(item => {
                 if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) {
                     item.classList.add('active');
@@ -720,7 +751,20 @@
                     });
                 }
 
-                grid.innerHTML += `<div class="employee-card"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})" title="Eliminar Empleado"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total acumulado: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Agregar Anticipo</button><button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar todo el historial</button></div>`;
+                grid.innerHTML += `<div class="employee-card" id="emp-card-${emp.id}">
+                    <div class="employee-card-header">
+                        <h3>${emp.name}</h3>
+                        <button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})" title="Eliminar Empleado"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total acumulado: $${empTotal.toFixed(2)}</div>
+                    <div class="advance-history-list">${listHtml}</div>
+                    <button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Agregar Anticipo</button>
+                    <button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar todo el historial</button>
+                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                        <button class="btn btn-blue" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'image')"><i class="fa-solid fa-image"></i> Img</button>
+                        <button class="btn btn-checkout" style="flex:1; padding:8px; font-size:0.75rem; color:var(--status-occ);" onclick="exportSingleEmployee(${emp.id}, 'pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+                    </div>
+                </div>`;
             });
         }
 
@@ -797,6 +841,90 @@
             customConfirm("¿Eliminar este registro de anticipo?", async () => {
                 await _supabase.from('advances').delete().eq('id', advId);
                 loadAdvances();
+            });
+        }
+
+        // FUNCIONES DE EXPORTACIÓN DE ANTICIPOS
+        function exportSingleEmployee(empId, format) {
+            const emp = employeesData.find(e => e.id === empId);
+            if(!emp) return;
+            const empAdvances = advancesData.filter(a => a.employee_id === empId);
+            let empTotal = 0;
+            empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
+
+            let htmlContent = `<h3 style="color: var(--brand-green); font-family: 'Playfair Display', serif; margin-bottom: 15px;">Empleado: ${emp.name}</h3>`;
+            htmlContent += `<p style="font-weight: 600; margin-bottom: 15px; color: var(--text-dark);">Total Acumulado: $${empTotal.toFixed(2)}</p>`;
+            
+            if(empAdvances.length === 0) {
+                htmlContent += `<p style="color: #64748b;">Sin anticipos registrados.</p>`;
+            } else {
+                htmlContent += `<table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">`;
+                htmlContent += `<thead><tr style="background: rgba(11, 66, 26, 0.05); color: var(--brand-green);"><th style="padding: 10px; border-bottom: 1px solid #cbd5e1; text-align: left;">Fecha y Hora</th><th style="padding: 10px; border-bottom: 1px solid #cbd5e1; text-align: right;">Cantidad</th></tr></thead><tbody>`;
+                empAdvances.forEach(a => {
+                    htmlContent += `<tr><td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${formatFechaEcuador(a.datetime)}</td><td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight:600;">$${parseFloat(a.amount).toFixed(2)}</td></tr>`;
+                });
+                htmlContent += `</tbody></table>`;
+            }
+
+            document.getElementById('advExportTitle').innerText = `Reporte de Anticipos - ${emp.name}`;
+            document.getElementById('advExportBody').innerHTML = htmlContent;
+            triggerExportAdvance(format, `Anticipos_${emp.name.replace(/\s+/g, '_')}`);
+        }
+
+        function exportAllAdvances(format) {
+            let totalGeneral = 0;
+            advancesData.forEach(a => { totalGeneral += parseFloat(a.amount || 0); });
+
+            let htmlContent = `<p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 20px; color: var(--brand-green);">Total General de Anticipos: $${totalGeneral.toFixed(2)}</p>`;
+            
+            if(employeesData.length === 0) {
+                htmlContent += `<p style="color: #64748b;">No hay empleados registrados.</p>`;
+            } else {
+                employeesData.forEach(emp => {
+                    const empAdvances = advancesData.filter(a => a.employee_id === emp.id);
+                    let empTotal = 0;
+                    empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
+
+                    htmlContent += `<div style="margin-bottom: 25px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; background: #f8fafc;">`;
+                    htmlContent += `<h4 style="color: var(--brand-green); font-family: 'Playfair Display', serif; margin-bottom: 8px;">${emp.name} (Total: $${empTotal.toFixed(2)})</h4>`;
+                    
+                    if(empAdvances.length === 0) {
+                        htmlContent += `<p style="font-size: 0.85rem; color: #64748b;">Sin anticipos.</p>`;
+                    } else {
+                        htmlContent += `<table style="width:100%; border-collapse: collapse; font-size: 0.85rem;">`;
+                        htmlContent += `<thead><tr style="background: #e2e8f0; color: #1e293b;"><th style="padding: 6px; text-align: left;">Fecha y Hora</th><th style="padding: 6px; text-align: right;">Cantidad</th></tr></thead><tbody>`;
+                        empAdvances.forEach(a => {
+                            htmlContent += `<tr><td style="padding: 6px; border-bottom: 1px solid #cbd5e1;">${formatFechaEcuador(a.datetime)}</td><td style="padding: 6px; border-bottom: 1px solid #cbd5e1; text-align: right; font-weight:600;">$${parseFloat(a.amount).toFixed(2)}</td></tr>`;
+                        });
+                        htmlContent += `</tbody></table>`;
+                    }
+                    htmlContent += `</div>`;
+                });
+            }
+
+            document.getElementById('advExportTitle').innerText = `Reporte General de Anticipos`;
+            document.getElementById('advExportBody').innerHTML = htmlContent;
+            triggerExportAdvance(format, `Reporte_General_Anticipos`);
+        }
+
+        function triggerExportAdvance(format, filename) {
+            const wrapper = document.getElementById('advanceExportWrapper');
+            html2canvas(wrapper, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                if(format === 'image') {
+                    const link = document.createElement('a');
+                    link.download = filename + '.png';
+                    link.href = imgData;
+                    link.click();
+                } else if(format === 'pdf') {
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF('p', 'mm', 'a4');
+                    const w = pdf.internal.pageSize.getWidth();
+                    const props = pdf.getImageProperties(imgData);
+                    const h = (props.height * w) / props.width;
+                    pdf.addImage(imgData, 'PNG', 0, 0, w, h);
+                    pdf.save(filename + '.pdf');
+                }
             });
         }
 
