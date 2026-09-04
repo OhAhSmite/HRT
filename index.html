@@ -437,18 +437,44 @@
             else { document.getElementById('rName').value = ''; document.getElementById('rPhone').value = ''; document.getElementById('rArrival').value = ''; document.getElementById('rNote').value = ''; }
             document.getElementById('addReservationModal').style.display = 'flex';
         }
+
         async function saveReservation() {
             try {
-                const name = document.getElementById('rName').value.trim(); const room = document.getElementById('rRoom').value; const arrival = document.getElementById('rArrival').value;
-                if (!name || !room || !arrival) { customAlert("Faltan datos obligatorios."); return; }
-                const payload = { id: currentResEditingId || Date.now(), name: name, room: parseInt(room), phone: document.getElementById('rPhone').value.trim(), arrival: new Date(arrival).toISOString(), note: document.getElementById('rNote').value.trim() };
+                const name = document.getElementById('rName').value.trim(); 
+                const room = document.getElementById('rRoom').value; 
+                const arrival = document.getElementById('rArrival').value;
+                
+                if (!name || !room || !arrival) { 
+                    customAlert("Faltan datos obligatorios. Asegúrate de ingresar el nombre, la habitación y la fecha/hora."); 
+                    return; 
+                }
+
+                // Validar que el navegador entienda la fecha antes de enviarla
+                const dateObj = new Date(arrival);
+                if (isNaN(dateObj.getTime())) {
+                    customAlert("La fecha y hora están incompletas. Por favor, selecciona el día y la hora exacta.");
+                    return;
+                }
+
+                const payload = { 
+                    id: currentResEditingId || Date.now(), 
+                    name: name, 
+                    room: parseInt(room), 
+                    phone: document.getElementById('rPhone').value.trim(), 
+                    arrival: dateObj.toISOString(), 
+                    note: document.getElementById('rNote').value.trim() 
+                };
+                
                 const { error } = await _supabase.from('reservations').upsert(payload);
                 if (error) { customAlert("Error guardando reserva (Supabase): " + error.message); return; }
-                closeModal('addReservationModal'); renderReservations();
+                
+                closeModal('addReservationModal'); 
+                renderReservations();
             } catch (err) {
                 customAlert("Error en tu navegador: " + err.message);
             }
         }
+        
         function deleteReservation(id) { customConfirm("¿Eliminar esta reserva?", async () => { await _supabase.from('reservations').delete().eq('id', id); renderReservations(); }); }
 
         // SUPABASE: DIRECTORIO
