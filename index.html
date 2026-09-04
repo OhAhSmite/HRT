@@ -628,8 +628,8 @@
             
             if (id) {
                 const note = notesData.find(x => x.id === id);
-                document.getElementById('noteContent').value = note.content;
-                document.getElementById('noteRoomSelect').value = note.room_id || 0;
+                document.getElementById('noteContent').value = note ? note.content : '';
+                document.getElementById('noteRoomSelect').value = note ? (note.room_id || 0) : 0;
             } else {
                 document.getElementById('noteContent').value = '';
                 if (preselectRoomId) {
@@ -641,7 +641,7 @@
             document.getElementById('noteFormModal').style.display = 'flex';
         }
 
-        // GUARDADO DE NOTAS ADAPTADO A RLS Y AUTOGENERACIÓN DE IDs
+        // GUARDADO DE NOTAS
         async function saveNote() {
             const content = document.getElementById('noteContent').value.trim();
             const room_id = parseInt(document.getElementById('noteRoomSelect').value);
@@ -809,7 +809,7 @@
             updateRoomDB(id, py);
         }
 
-        // ACTUALIZACIÓN DE HABITACIÓN Y GUARDADO DE HISTORIAL CON NÚMERO DE PERSONAS
+        // ACTUALIZACIÓN DE HABITACIÓN Y GUARDADO DE HISTORIAL
         async function updateRoomDB(id, payload) {
             const index = globalRooms.findIndex(r => r.id === id); if(index === -1) return; const room = globalRooms[index];
             
@@ -825,7 +825,6 @@
                     guest_count: cantPersonas
                 };
                 
-                // Intento primario: guardar con la columna guest_count
                 let { error: histErr } = await _supabase.from('history').insert([histPayload]);
                 
                 if (histErr) {
@@ -867,7 +866,6 @@
             };
             if(room.guest_count !== undefined) updatePayload.guest_count = room.guest_count;
 
-            // Actualizar estado de habitación en Supabase
             let { error: roomErr } = await _supabase.from('rooms').update(updatePayload).eq('id', id);
             
             if (roomErr) {
