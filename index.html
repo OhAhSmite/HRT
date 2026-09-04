@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostal Reales Tamarindos - Gestión</title>
     
-    <!-- MEDIDAS DE SEGURIDAD CONTRA MOTORES DE BÚSQUEDA Y RASTREADORES -->
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
     <meta name="googlebot" content="noindex, nofollow">
     
-    <!-- Fuentes Elegantes -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Librerías para Exportar y Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -299,7 +296,6 @@
 </head>
 <body>
 
-    <!-- PANTALLA LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <img src="image_d6cde8.png" alt="Logo Hostal">
@@ -316,10 +312,8 @@
         </div>
     </div>
 
-    <!-- APLICACIÓN PRINCIPAL -->
     <div id="app-container">
         
-        <!-- HEADER MÓVIL -->
         <div class="mobile-header">
             <div class="mobile-brand">
                 <img src="image_d6cde8.png" alt="Logo">
@@ -331,7 +325,6 @@
             </div>
         </div>
 
-        <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
@@ -348,7 +341,6 @@
             </div>
         </div>
 
-        <!-- BARRA MÓVIL INFERIOR -->
         <div class="mobile-bottom-bar">
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habit.</span></div>
             <div class="nav-item" onclick="switchView('notas', this)"><i class="fa-solid fa-clipboard-list"></i> <span>Notas</span></div>
@@ -363,13 +355,11 @@
                 <button class="btn-manual-top" onclick="openManualModal()"><i class="fa-solid fa-circle-question"></i> Manual de Usuario</button>
             </div>
 
-            <!-- HABITACIONES -->
             <section id="view-habitaciones" class="view-section active">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
                 <div id="hotelContainer"></div>
             </section>
             
-            <!-- NOTAS Y NOVEDADES -->
             <section id="view-notas" class="view-section">
                 <div class="main-title">
                     <div class="main-title-left"><i class="fa-solid fa-clipboard-list" style="color: var(--brand-peach);"></i> Notas y Novedades</div>
@@ -378,13 +368,11 @@
                 <div class="notes-grid" id="notesListContainer"></div>
             </section>
 
-            <!-- RESERVAS -->
             <section id="view-reservas" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
                 <div id="reservationsList"></div>
             </section>
             
-            <!-- DIRECTORIO -->
             <section id="view-directorio" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button></div>
                 <div class="directory-tabs" id="directoryTabs">
@@ -397,7 +385,6 @@
                 <div class="directory-grid" id="contactsGrid"></div>
             </section>
             
-            <!-- ANTICIPOS -->
             <section id="view-anticipos" class="view-section">
                 <div class="main-title">
                     <div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div>
@@ -416,7 +403,6 @@
                 <div class="advance-grid" id="employeesGrid"></div>
             </section>
             
-            <!-- REPORTES -->
             <section id="view-reportes" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div></div>
                 <div class="filter-section-sym">
@@ -438,7 +424,6 @@
         </main>
     </div>
 
-    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN -->
     <div id="advanceExportWrapper" style="position: absolute; left: -9999px; top: 0; width: 650px; background: #ffffff; padding: 30px; border-radius: 16px; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-green); font-size: 1.8rem; margin-bottom: 5px;">Hostal Reales Tamarindos</h2>
@@ -447,8 +432,6 @@
         <div id="advExportBody"></div>
     </div>
 
-    <!-- MODALES GENERALES Y DE SISTEMA -->
-    
     <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Cédula (Opcional)</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="guestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Check-Out</button></div></div></div>
@@ -467,7 +450,6 @@
     <div class="modal-overlay" id="customAlertModal"><div class="modal-content modal-sm" style="text-align: center;"><div id="alertIcon" style="font-size: 3.5rem; margin-bottom: 15px;"></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div><p id="alertMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" id="alertBtn" onclick="closeModal('customAlertModal')">Entendido</button></div></div></div>
     <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
-    <!-- MODALES DE MANUAL Y LEGAL -->
     <div class="modal-overlay" id="legalModal">
         <div class="modal-content">
             <div class="modal-title"><span>Políticas de Privacidad y Aviso Legal</span><i class="fa-solid fa-shield-halved" style="color: var(--brand-peach);"></i></div>
@@ -735,7 +717,6 @@
                 if(hasNotes) {
                     notesBackHtml = `<div class="room-notes-container">`;
                     roomNotes.forEach(n => {
-                        // AQUÍ HICE EL ARREGLO VISUAL: Ocultar al instante el recuadro "room-note-item" para mejor UX
                         notesBackHtml += `<div class="room-note-item" id="note-item-${n.id}"><div class="room-note-text">${n.content}</div> <button class="btn-note-done" onclick="event.stopPropagation(); document.getElementById('note-item-${n.id}').style.display='none'; deleteNote(${n.id}, true)">Cumplir <i class="fa-solid fa-check"></i></button></div>`;
                     });
                     notesBackHtml += `</div>`;
@@ -760,7 +741,6 @@
                     actionButtonsHtml = `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`;
                 }
                 
-                // AQUÍ CAMBIÉ EL BOTÓN A "CHECK-OUT"
                 actionButtonsHtml += `<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">CHECK-OUT</button><button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button>`;
 
                 grid.innerHTML += `
@@ -802,11 +782,9 @@
             document.getElementById('checkinModal').style.display = 'none'; updateRoomDB(currentRoomIdForCheckin, py);
         }
         
-        // AQUÍ HICE EL ARREGLO DEL GIRO: La tarjeta se voltea de inmediato y vuelve a verde.
         function executeCheckout() { 
             document.getElementById('confirmCheckoutModal').style.display = 'none'; 
             
-            // Retirar la clase flipped de inmediato para que renderRooms no la recuerde como volteada.
             const tarjetaRoom = document.getElementById(`room-${currentRoomIdForCheckout}`);
             if(tarjetaRoom) tarjetaRoom.classList.remove('flipped');
             
@@ -825,6 +803,13 @@
             if (payload.isCheckout && room.check_in_time) {
                 await _supabase.from('history').insert([{ room: room.id, name: room.guest_name, cedula: room.guest_id, check_in: room.check_in_time, check_out: new Date().toISOString() }]);
             }
+            
+            // BORRADO AUTOMÁTICO DE NOTAS PENDIENTES DE LA HABITACIÓN EN CHECK-OUT
+            if (payload.isCheckout) {
+                await _supabase.from('notes').delete().eq('room_id', id);
+                await fetchNotesDB();
+            }
+
             room.status = payload.status;
             if (payload.isCheckout) { room.check_in_time = null; room.last_cleaned_time = null; room.guest_name = null; room.guest_id = null; room.guest_count = null;} 
             else { if(payload.check_in_time) room.check_in_time = payload.check_in_time; if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; if(payload.guest_name) room.guest_name = payload.guest_name; if(payload.guest_id) room.guest_id = payload.guest_id; if(payload.guest_count) room.guest_count = payload.guest_count; }
@@ -836,6 +821,7 @@
             if (error) { customAlert("Error actualizando habitación: " + error.message); return; }
             renderRooms(globalRooms);
         }
+
         function updateLiveTimers() { 
             document.querySelectorAll('.live-timer-checkin').forEach(el => { const t = el.getAttribute('data-time'); if (t && t !== 'null') el.innerText = `Hospedaje: ${calcularTiempoVivo(t)}`; }); 
             document.querySelectorAll('.live-timer-cleaned').forEach(el => { const t = el.getAttribute('data-time'); const s = el.getAttribute('data-status'); if (s === 'occupied-cleaning') el.innerText = 'Necesita limpieza'; else if (t && t !== 'null') el.innerText = `Últ. Limpieza: ${calcularTiempoVivo(t)}`; }); 
@@ -936,7 +922,9 @@
                 let listHtml = '';
                 if (empAdvances.length === 0) { listHtml = '<span style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:10px;">Sin anticipos</span>'; } 
                 else { empAdvances.forEach(adv => { listHtml += `<div class="advance-item-row"><div><strong>$${parseFloat(adv.amount).toFixed(2)}</strong><br><span style="font-size:0.7rem; color:var(--text-muted);">${formatFechaEcuador(adv.datetime)}</span></div><button class="btn-icon btn-delete-res" style="width:30px; height:30px; min-width:30px; font-size:0.8rem;" onclick="deleteAdvance(${adv.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div>`; }); }
-                grid.innerHTML += `<div class="employee-card" id="emp-card-${emp.id}"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Anticipo</button><button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar historial</button><div style="display: flex; gap: 8px; margin-top: 8px;"><button class="btn btn-blue" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'image')"><i class="fa-solid fa-image"></i> Img</button><button class="btn btn-checkout" style="flex:1; padding:8px; font-size:0.75rem; color:var(--status-occ);" onclick="exportSingleEmployee(${emp.id}, 'pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button></div></div>`;
+                
+                // CORRECCIÓN DE VISIBILIDAD: Se quitó el color rojo forzado del texto para que se muestre blanco sobre rojo
+                grid.innerHTML += `<div class="employee-card" id="emp-card-${emp.id}"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Anticipo</button><button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar historial</button><div style="display: flex; gap: 8px; margin-top: 8px;"><button class="btn btn-blue" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'image')"><i class="fa-solid fa-image"></i> Img</button><button class="btn btn-checkout" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button></div></div>`;
             });
         }
         function openEmployeeForm() { document.getElementById('empName').value = ''; document.getElementById('employeeFormModal').style.display = 'flex'; }
