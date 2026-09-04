@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostal Reales Tamarindos - Gestión</title>
     
+    <!-- Fuentes Elegantes -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Librerías para Exportar y Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -297,6 +299,7 @@
 </head>
 <body>
 
+    <!-- PANTALLA LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <img src="image_d6cde8.png" alt="Logo Hostal">
@@ -308,8 +311,10 @@
         </div>
     </div>
 
+    <!-- APLICACIÓN PRINCIPAL -->
     <div id="app-container">
         
+        <!-- HEADER SUPERIOR EXCLUSIVO PARA MÓVILES -->
         <div class="mobile-header">
             <div class="mobile-brand">
                 <img src="image_d6cde8.png" alt="Logo">
@@ -318,33 +323,38 @@
             <button class="mobile-logout-btn" onclick="processLogout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
         </div>
 
+        <!-- SIDEBAR (ESCRITORIO) -->
         <div class="sidebar">
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
                 <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> Habitaciones</div>
                 <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> Reservas</div>
-                <div class="nav-item" onclick="switchView('directorio', this); renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab'));"><i class="fa-solid fa-address-book"></i> Directorio</div>
+                <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> Directorio</div>
                 <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> Reportes</div>
             </nav>
             <button class="btn-logout" onclick="processLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span></button>
         </div>
 
+        <!-- BARRA INFERIOR FLOTANTE EXCLUSIVA PARA MÓVILES -->
         <div class="mobile-bottom-bar">
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
             <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
-            <div class="nav-item" onclick="switchView('directorio', this); renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab'));"><i class="fa-solid fa-address-book"></i> <span>Directorio</span></div>
+            <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> <span>Directorio</span></div>
             <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> <span>Reportes</span></div>
         </div>
 
         <main class="main-content">
+            <!-- HABITACIONES -->
             <section id="view-habitaciones" class="view-section active">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
                 <div id="hotelContainer"></div>
             </section>
+            <!-- RESERVAS -->
             <section id="view-reservas" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
                 <div id="reservationsList"></div>
             </section>
+            <!-- DIRECTORIO -->
             <section id="view-directorio" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button></div>
                 <div class="directory-tabs" id="directoryTabs">
@@ -356,6 +366,7 @@
                 </div>
                 <div class="directory-grid" id="contactsGrid"></div>
             </section>
+            <!-- REPORTES -->
             <section id="view-reportes" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div></div>
                 <div class="filter-section-sym">
@@ -377,6 +388,7 @@
         </main>
     </div>
 
+    <!-- MODALES -->
     <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div class="form-group"><label>Cédula</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button></div></div></div>
@@ -391,6 +403,9 @@
     
     <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
+    <!-- ========================================== -->
+    <!-- LOGICA SUPABASE Y JS -->
+    <!-- ========================================== -->
     <script>
         const SUPABASE_URL = 'https://wepjdpgwzdubzffabdol.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcGpkcGd3emR1YnpmZmFiZG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTE0NzMsImV4cCI6MjEwNDA2NzQ3M30.7rLJx7igmqMDEU3KJTwnD5V8Q93KyE2M3UtERbvX1kU';
@@ -432,19 +447,13 @@
 
         // UTILES UI
         function switchView(viewId, element) { 
-            // Sincronizar todos los elementos de navegación (tanto escritorio como móvil)
             document.querySelectorAll('.view-section, .nav-item').forEach(el => el.classList.remove('active')); 
-            
-            // Activar la sección correspondiente
             document.getElementById('view-' + viewId).classList.add('active'); 
-            
-            // Activar los botones de los menús que correspondan a esta vista
             document.querySelectorAll('.nav-item').forEach(item => {
                 if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) {
                     item.classList.add('active');
                 }
             });
-
             window.scrollTo(0, 0);
         }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id==='checkinModal' && currentRoomIdForCheckin) flipCard(currentRoomIdForCheckin); if(id==='confirmCheckoutModal' && currentRoomIdForCheckout) flipCard(currentRoomIdForCheckout); }
@@ -602,17 +611,22 @@
         
         function deleteReservation(id) { customConfirm("¿Eliminar esta reserva?", async () => { await _supabase.from('reservations').delete().eq('id', id); renderReservations(); }); }
 
-        // SUPABASE: DIRECTORIO
-        async function renderDirectory(cat, tabElement = null) {
-            if(tabElement){ document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active')); tabElement.classList.add('active'); }
+        // SUPABASE: DIRECTORIO (OPTIMIZADO SIN RETRASO)
+        async function loadDirectoryData() {
             const { data, error } = await _supabase.from('contacts').select('*'); 
             if (error) { customAlert("Error al cargar directorio: " + error.message); return; }
             contactsData = data || [];
+            renderDirectory('all', document.querySelector('.cat-tab'));
+        }
+
+        function renderDirectory(cat, tabElement = null) {
+            if(tabElement){ document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active')); tabElement.classList.add('active'); }
             const grid = document.getElementById('contactsGrid'); grid.innerHTML = ''; let filtered = contactsData;
             if (cat !== 'all') filtered = contactsData.filter(c => c.category === cat);
             if (filtered.length === 0) { grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay contactos guardados.</p>'; return; }
             filtered.forEach(c => { grid.innerHTML += `<div class="contact-card"><div class="contact-actions-top"><button onclick="openContactForm(${c.id})" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="deleteContact(${c.id})" title="Eliminar"><i class="fa-solid fa-trash" style="color:var(--status-occ)"></i></button></div><div class="contact-img-box">${c.image?`<img src="${c.image}">`:'<i class="fa-solid fa-address-book"></i>'}</div><div class="contact-info"><h3>${c.name}</h3><p>${c.description || ''}</p><button class="btn-copy-phone" onclick="navigator.clipboard.writeText('${c.phone}'); customAlert('¡Número copiado al portapapeles!', 'Copiado', 'success')"><i class="fa-solid fa-phone"></i> ${c.phone}</button></div></div>`; });
         }
+
         function openContactForm(id = null) {
             currentEditingId = id; tempImageBase64 = ''; document.getElementById('cImagePreview').style.display = 'none'; document.getElementById('cImage').value = '';
             if (id) { const c = contactsData.find(x => x.id === id); document.getElementById('cName').value = c.name; document.getElementById('cCategory').value = c.category; document.getElementById('cPhone').value = c.phone; document.getElementById('cDesc').value = c.description; if(c.image){ tempImageBase64=c.image; document.getElementById('cImagePreview').src=c.image; document.getElementById('cImagePreview').style.display='block';} } 
@@ -627,12 +641,14 @@
                 const payload = { id: currentEditingId || Date.now(), name: name, category: document.getElementById('cCategory').value, phone: phone, description: document.getElementById('cDesc').value.trim(), image: tempImageBase64 };
                 const { error } = await _supabase.from('contacts').upsert(payload); 
                 if (error) { customAlert("Error guardando contacto (Supabase): " + error.message); return; }
-                closeModal('contactFormModal'); renderDirectory('all', document.querySelector('.cat-tab'));
+                closeModal('contactFormModal'); 
+                const { data } = await _supabase.from('contacts').select('*'); contactsData = data || [];
+                renderDirectory('all', document.querySelector('.cat-tab'));
             } catch (err) {
                 customAlert("Error en tu navegador: " + err.message);
             }
         }
-        function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { await _supabase.from('contacts').delete().eq('id', id); renderDirectory('all', document.querySelector('.cat-tab')); }); }
+        function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { await _supabase.from('contacts').delete().eq('id', id); const { data } = await _supabase.from('contacts').select('*'); contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab')); }); }
 
         // SUPABASE: REPORTES Y EXPORTACIÓN
         async function loadHistory() {
