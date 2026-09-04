@@ -63,44 +63,16 @@
         .login-box h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brand-green); margin-bottom: 25px; line-height: 1.2; }
         .login-error { color: var(--status-occ); font-size: 0.85rem; font-weight: 600; margin-top: 15px; display: none; background: #fef2f2; padding: 10px; border-radius: 8px; border: 1px solid #fecaca; }
         
-        /* AVISO LEGAL EN LOGIN CON ENLACE A POPUP */
-        .login-legal-notice {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(11, 66, 26, 0.08);
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            line-height: 1.4;
-            text-align: center;
-        }
-        .login-legal-notice a {
-            color: var(--brand-green);
-            font-weight: 600;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .login-legal-notice a:hover {
-            color: var(--brand-peach);
-        }
+        .login-legal-notice { margin-top: 25px; padding-top: 15px; border-top: 1px solid rgba(11, 66, 26, 0.08); font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; text-align: center; }
+        .login-legal-notice a { color: var(--brand-green); font-weight: 600; text-decoration: underline; cursor: pointer; }
+        .login-legal-notice a:hover { color: var(--brand-peach); }
 
-        /* === HEADER MÓVIL (Por defecto oculto en PC) === */
+        /* === HEADER Y BARRA MÓVIL === */
         .mobile-header { display: none; }
         .mobile-bottom-bar { display: none; }
 
-        /* === BARRA LATERAL (SIDEBAR - ESCRITORIO) === */
-        .sidebar { 
-            width: 280px; 
-            min-width: 280px; 
-            background-color: var(--sidebar-bg); 
-            display: flex; 
-            flex-direction: column; 
-            box-shadow: 4px 0 30px rgba(11, 66, 26, 0.05); 
-            z-index: 100; 
-            border-right: 1px solid rgba(0,0,0,0.05); 
-            position: sticky; 
-            top: 0; 
-            height: 100vh; 
-        }
+        /* === BARRA LATERAL (SIDEBAR) === */
+        .sidebar { width: 280px; min-width: 280px; background-color: var(--sidebar-bg); display: flex; flex-direction: column; box-shadow: 4px 0 30px rgba(11, 66, 26, 0.05); z-index: 100; border-right: 1px solid rgba(0,0,0,0.05); position: sticky; top: 0; height: 100vh; }
         .sidebar-header { padding: 30px 20px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
         .sidebar-header img { max-width: 100px; margin-bottom: 15px; transition: transform 0.3s ease; }
         .sidebar-header img:hover { transform: scale(1.05); }
@@ -110,79 +82,20 @@
         .nav-item:hover { background-color: rgba(11, 66, 26, 0.04); opacity: 1; transform: translateX(4px); }
         .nav-item.active { background-color: var(--brand-green); color: var(--white); opacity: 1; box-shadow: 0 8px 20px rgba(11, 66, 26, 0.2); }
         .nav-item i { width: 20px; text-align: center; font-size: 1rem; }
-        
         .sidebar-footer { padding: 15px; margin-top: auto; width: 100%; background: var(--sidebar-bg); display: flex; flex-direction: column; gap: 10px; }
         .btn-logout { width: 100%; background: #fef2f2; color: var(--status-occ); border: 1px solid #fecaca; padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .btn-logout:hover { background: var(--status-occ); color: var(--white); }
-        
-        /* ENLACE DE POLÍTICAS EN EL SIDEBAR */
-        .sidebar-legal-link {
-            text-align: center;
-            font-size: 0.73rem;
-            color: var(--text-muted);
-            cursor: pointer;
-            padding: 4px;
-            transition: 0.2s;
-            text-decoration: underline;
-        }
-        .sidebar-legal-link:hover {
-            color: var(--brand-green);
-            font-weight: 600;
-        }
+        .sidebar-legal-link { text-align: center; font-size: 0.73rem; color: var(--text-muted); cursor: pointer; padding: 4px; transition: 0.2s; text-decoration: underline; }
+        .sidebar-legal-link:hover { color: var(--brand-green); font-weight: 600; }
 
-        /* === ÁREA PRINCIPAL Y TRANSICIÓN FLUIDA ENTRE PESTAÑAS === */
+        /* === ÁREA PRINCIPAL === */
         .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; padding: 30px; min-height: 100vh; }
-        
-        /* BOTÓN DE MANUAL FLOTANTE EN ESCRITORIO (SUPERIOR DERECHA) */
-        .top-utility-bar {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 15px;
-        }
-        .btn-manual-top {
-            background: var(--white);
-            color: var(--brand-green);
-            border: 1px solid rgba(11, 66, 26, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: 0.3s;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
-        .btn-manual-top:hover {
-            background: var(--brand-green);
-            color: var(--white);
-            border-color: var(--brand-green);
-        }
+        .top-utility-bar { display: flex; justify-content: flex-end; margin-bottom: 15px; }
+        .btn-manual-top { background: var(--white); color: var(--brand-green); border: 1px solid rgba(11, 66, 26, 0.2); padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .btn-manual-top:hover { background: var(--brand-green); color: var(--white); border-color: var(--brand-green); }
 
-        .view-section { 
-            position: absolute;
-            top: 30px;
-            left: 30px;
-            right: 30px;
-            opacity: 0; 
-            visibility: hidden;
-            transform: translateY(12px); 
-            transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out, visibility 0.25s ease-in-out; 
-            display: flex; 
-            flex-direction: column; 
-            pointer-events: none;
-        }
-        .view-section.active { 
-            position: relative;
-            top: auto;
-            left: auto;
-            right: auto;
-            opacity: 1; 
-            visibility: visible;
-            transform: translateY(0); 
-            pointer-events: auto;
-        }
+        .view-section { position: absolute; top: 30px; left: 30px; right: 30px; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.25s ease-in-out, transform 0.25s ease-in-out, visibility 0.25s ease-in-out; display: flex; flex-direction: column; pointer-events: none; }
+        .view-section.active { position: relative; top: auto; left: auto; right: auto; opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
         
         .main-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--brand-green); margin-bottom: 25px; padding-bottom: 12px; border-bottom: 2px solid rgba(11, 66, 26, 0.08); display: flex; align-items: center; justify-content: space-between; gap: 15px; flex-wrap: wrap; }
         .main-title-left { display: flex; align-items: center; gap: 15px; }
@@ -191,7 +104,8 @@
         #hotelContainer { width: 100%; display: flex; justify-content: center; padding-bottom: 40px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 20px; width: 100%; max-width: 1100px; justify-items: center; }
         
-        .room-container { width: 100%; max-width: 210px; height: 270px; cursor: pointer; perspective: 1000px; border-radius: 20px; transition: transform 0.4s; }
+        /* Ajuste de altura a 320px para espacio extra de las notas y texto */
+        .room-container { width: 100%; max-width: 210px; height: 320px; cursor: pointer; perspective: 1000px; border-radius: 20px; transition: transform 0.4s; }
         .room-container:hover { transform: translateY(-8px); z-index: 10; }
         .room-container.available { box-shadow: 0 12px 30px rgba(5, 150, 105, 0.15); }
         .room-container.occupied { box-shadow: 0 12px 30px rgba(220, 38, 38, 0.15); }
@@ -201,20 +115,20 @@
         .room-container.flipped .room-flipper { transform: rotateY(180deg); }
         .front, .back { width: 100%; height: 100%; position: absolute; backface-visibility: hidden; border-radius: 20px; overflow: hidden; }
         
-        .front { padding: 20px 12px; display: flex; flex-direction: column; align-items: center; color: var(--white); border: 1px solid rgba(255,255,255,0.2); }
+        .front { padding: 20px 12px; display: flex; flex-direction: column; align-items: center; color: var(--white); border: 1px solid rgba(255,255,255,0.2); position: relative; }
         .front.available { background: linear-gradient(145deg, #059669, #047857); } 
         .front.occupied { background: linear-gradient(145deg, #dc2626, #b91c1c); } 
         .front.occupied-cleaning { background: linear-gradient(145deg, #d97706, #b45309); }
         
         .room-number { font-family: 'Playfair Display', serif; font-size: 3.2rem; font-weight: 700; line-height: 1; margin-bottom: 6px; text-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .status-pill { background-color: var(--white); color: var(--text-dark); padding: 4px 14px; border-radius: 25px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); letter-spacing: 0.5px;}
+        .status-pill { background-color: var(--white); color: var(--text-dark); padding: 4px 14px; border-radius: 25px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); letter-spacing: 0.5px; text-align: center;}
         
-        .guest-name { font-size: 0.78rem; font-weight: 600; background: rgba(0,0,0,0.25); padding: 5px 10px; border-radius: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); justify-content: center; }
+        .guest-name { font-size: 0.75rem; font-weight: 600; background: rgba(0,0,0,0.25); padding: 6px 10px; border-radius: 10px; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); justify-content: center; flex-wrap: wrap;}
         
         .badges-container { width: 100%; display: flex; flex-direction: column; gap: 4px; margin-top: auto; }
         .badge-row { background: rgba(0,0,0,0.18); border-radius: 8px; padding: 5px 8px; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; font-weight: 500; text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .back { transform: rotateY(180deg); background: var(--white); padding: 20px 15px; display: flex; flex-direction: column; justify-content: center; gap: 10px; border: 1px solid rgba(11,66,26,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.08); }
+        .back { transform: rotateY(180deg); background: var(--white); padding: 20px 15px; display: flex; flex-direction: column; justify-content: center; gap: 10px; border: 1px solid rgba(11,66,26,0.1); box-shadow: 0 15px 35px rgba(0,0,0,0.08); overflow-y: auto;}
         
         .btn { width: 100%; padding: 11px; border-radius: 10px; font-weight: 600; font-size: 0.82rem; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; outline: none; letter-spacing: 0.5px;}
         .btn-checkin { background: var(--brand-green); color: var(--white); border: none; box-shadow: 0 4px 15px rgba(11,66,26,0.2); }
@@ -228,6 +142,26 @@
         .btn-blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
         .btn-blue:hover { background: #2563eb; color: var(--white); transform: translateY(-2px); }
 
+        /* NOTAS EN LA TARJETA DE LA HABITACIÓN */
+        .room-notes-container { background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 6px; margin-bottom: 8px; font-size: 0.72rem; color: #92400e; display: flex; flex-direction: column; gap: 5px; max-height: 100px; overflow-y: auto; }
+        .room-note-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; border-bottom: 1px solid rgba(253, 230, 138, 0.5); padding-bottom: 4px; }
+        .room-note-item:last-child { border-bottom: none; padding-bottom: 0; }
+        .room-note-text { flex: 1; line-height: 1.3; }
+        .btn-note-done { background: var(--status-free); color: white; border: none; border-radius: 6px; padding: 4px 8px; font-size: 0.65rem; cursor: pointer; font-weight: bold; flex-shrink: 0; }
+        .btn-note-done:hover { background: #047857; }
+        .note-badge-front { position: absolute; top: 12px; right: 12px; background: #eab308; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.2); animation: pulseNote 2s infinite; }
+        @keyframes pulseNote { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+        /* === PESTAÑA NOTAS / NOVEDADES === */
+        .notes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; width: 100%; padding-bottom: 40px; }
+        .note-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; box-shadow: 0 4px 15px rgba(0,0,0,0.02); position: relative; border-left: 5px solid #eab308; }
+        .note-card.general { border-left-color: #3b82f6; }
+        .note-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+        .note-badge { padding: 3px 8px; border-radius: 6px; background: #fef08a; color: #854d0e; font-size: 0.7rem; }
+        .note-badge.general { background: #dbeafe; color: #1e40af; }
+        .note-content { font-size: 0.88rem; color: var(--text-dark); line-height: 1.5; margin-bottom: 15px; flex: 1; word-wrap: break-word; }
+        .note-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: auto; border-top: 1px solid #f1f5f9; padding-top: 10px; }
+        
         /* === MODALES === */
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.97) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 66, 26, 0.6); backdrop-filter: blur(8px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; overflow-y: auto; }
@@ -241,31 +175,10 @@
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--brand-peach); background: var(--white); box-shadow: 0 0 0 4px rgba(245, 166, 115, 0.15); }
         .modal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 25px; }
         .modal-actions button { flex: 1; padding: 12px; font-size: 0.92rem; }
-
-        /* ESTILOS PARA POPUPS DE LEGAL Y MANUAL */
-        .legal-popup-body, .manual-popup-body {
-            text-align: left;
-            font-size: 0.88rem;
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-        .legal-popup-body h4, .manual-popup-body h4 {
-            color: var(--brand-green);
-            font-family: 'Playfair Display', serif;
-            font-size: 1.1rem;
-            margin-top: 15px;
-            margin-bottom: 6px;
-        }
-        .manual-step {
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 10px;
-        }
-        .manual-step strong {
-            color: var(--brand-green);
-        }
+        .legal-popup-body, .manual-popup-body { text-align: left; font-size: 0.88rem; color: var(--text-dark); line-height: 1.6; }
+        .legal-popup-body h4, .manual-popup-body h4 { color: var(--brand-green); font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-top: 15px; margin-bottom: 6px; }
+        .manual-step { background: #f8fafc; padding: 12px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 10px; }
+        .manual-step strong { color: var(--brand-green); }
 
         /* === RESERVAS, REPORTES Y DIRECTORIO === */
         #reservationsList { width: 100%; margin-top: 5px; padding-bottom: 30px; }
@@ -317,7 +230,7 @@
         #excelTableContainer th, #excelTableContainer td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }
         #excelTableContainer th { background-color: #107c41; color: #ffffff; font-weight: 600; }
 
-        /* === ESTILOS SECCIÓN ANTICIPOS (RESTAURADOS Y MEJORADOS PARA 4 COLUMNAS) === */
+        /* === ESTILOS SECCIÓN ANTICIPOS === */
         .advance-summary-box { background: var(--white); padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
         .advance-total-display { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--brand-green); font-weight: 700; }
         .advance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; width: 100%; padding-bottom: 40px; }
@@ -332,123 +245,34 @@
         @media (max-width: 768px) {
             #app-container { flex-direction: column; padding-top: 65px; padding-bottom: 75px; }
             
-            .mobile-header {
-                display: flex;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 65px;
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                border-bottom: 1px solid rgba(11, 66, 26, 0.08);
-                z-index: 1000;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 15px;
-            }
-            .mobile-brand {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .mobile-brand img {
-                width: 36px;
-                height: 36px;
-                object-fit: contain;
-            }
-            .mobile-brand h2 {
-                font-family: 'Playfair Display', serif;
-                font-size: 0.95rem;
-                color: var(--brand-green);
-                line-height: 1.1;
-                text-transform: uppercase;
-                letter-spacing: 0.3px;
-            }
-            .mobile-top-actions {
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            }
-            .mobile-action-btn {
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                color: var(--brand-green);
-                width: 38px;
-                height: 38px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                font-size: 0.95rem;
-            }
-            .mobile-logout-btn {
-                background: #fef2f2;
-                border: 1px solid #fecaca;
-                color: var(--status-occ);
-                width: 38px;
-                height: 38px;
-                border-radius: 50%;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                cursor: pointer;
-                font-size: 1rem;
-            }
+            .mobile-header { display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 65px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(11, 66, 26, 0.08); z-index: 1000; align-items: center; justify-content: space-between; padding: 0 15px; }
+            .mobile-brand { display: flex; align-items: center; gap: 10px; }
+            .mobile-brand img { width: 36px; height: 36px; object-fit: contain; }
+            .mobile-brand h2 { font-family: 'Playfair Display', serif; font-size: 0.95rem; color: var(--brand-green); line-height: 1.1; text-transform: uppercase; letter-spacing: 0.3px; }
+            .mobile-top-actions { display: flex; align-items: center; gap: 8px; }
+            .mobile-action-btn { background: #f8fafc; border: 1px solid #e2e8f0; color: var(--brand-green); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.95rem; }
+            .mobile-logout-btn { background: #fef2f2; border: 1px solid #fecaca; color: var(--status-occ); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; }
 
             .sidebar { display: none !important; }
             
-            .mobile-bottom-bar {
-                display: flex;
-                width: 100%;
-                height: 65px;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                background: rgba(255, 255, 255, 0.95);
-                backdrop-filter: blur(10px);
-                border-top: 1px solid rgba(0, 0, 0, 0.08);
-                padding: 4px 4px;
-                justify-content: space-around;
-                align-items: center;
-                z-index: 1000;
-                flex-direction: row !important;
-            }
+            .mobile-bottom-bar { display: flex; width: 100%; height: 65px; position: fixed; bottom: 0; left: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-top: 1px solid rgba(0, 0, 0, 0.08); padding: 4px 1px; justify-content: space-around; align-items: center; z-index: 1000; flex-direction: row !important; }
             
-            .mobile-bottom-bar .nav-item {
-                flex-direction: column;
-                gap: 2px;
-                font-size: 0.58rem;
-                padding: 4px 2px;
-                align-items: center;
-                text-align: center;
-                flex: 1;
-            }
-            .mobile-bottom-bar .nav-item i {
-                font-size: 1.05rem;
-                width: auto;
-            }
+            .mobile-bottom-bar .nav-item { flex-direction: column; gap: 2px; font-size: 0.55rem; padding: 4px 1px; align-items: center; text-align: center; flex: 1; }
+            .mobile-bottom-bar .nav-item i { font-size: 1.05rem; width: auto; }
             
             .main-content { padding: 15px 12px; width: 100%; min-height: calc(100vh - 130px); }
-            
-            .view-section {
-                top: 15px;
-                left: 12px;
-                right: 12px;
-            }
-
+            .view-section { top: 15px; left: 12px; right: 12px; }
             .main-title { font-size: 1.35rem; flex-direction: column; align-items: flex-start; gap: 12px; margin-bottom: 20px; }
             .main-title button { width: 100% !important; }
             
             .grid { grid-template-columns: repeat(2, 1fr); gap: 12px; max-width: 100%; }
-            .room-container { max-width: 100%; height: 240px; }
+            .room-container { max-width: 100%; height: 260px; } /* Adaptado para móvil pero con más espacio */
             .room-number { font-size: 2.5rem; }
             .front { padding: 15px 8px; }
-            .badge-row { font-size: 0.58rem; padding: 4px 6px; }
-            .guest-name { font-size: 0.72rem; padding: 4px 8px; }
+            .badge-row { font-size: 0.55rem; padding: 4px 4px; }
+            .guest-name { font-size: 0.72rem; padding: 4px 8px; flex-direction: column; text-align:center;}
             
-            .directory-grid, .advance-grid { grid-template-columns: 1fr; }
+            .directory-grid, .advance-grid, .notes-grid { grid-template-columns: 1fr; }
             .filter-grid-sym { grid-template-columns: 1fr; gap: 12px; }
             .modal-content { padding: 20px 15px; width: 95%; max-height: 85vh; }
             .modal-title { font-size: 1.3rem; }
@@ -490,6 +314,7 @@
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
                 <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> Habitaciones</div>
+                <div class="nav-item" onclick="switchView('notas', this)"><i class="fa-solid fa-clipboard-list"></i> Notas</div>
                 <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> Reservas</div>
                 <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> Directorio</div>
                 <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> Anticipos $</div>
@@ -502,11 +327,12 @@
         </div>
 
         <div class="mobile-bottom-bar">
-            <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
-            <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
-            <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> <span>Directorio</span></div>
-            <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Anticipos $</span></div>
-            <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> <span>Reportes</span></div>
+            <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habit.</span></div>
+            <div class="nav-item" onclick="switchView('notas', this)"><i class="fa-solid fa-clipboard-list"></i> <span>Notas</span></div>
+            <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reserva</span></div>
+            <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> <span>Agenda</span></div>
+            <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Anticip.</span></div>
+            <div class="nav-item" onclick="switchView('reportes', this); loadHistory();"><i class="fa-solid fa-chart-pie"></i> <span>Reporte</span></div>
         </div>
 
         <main class="main-content">
@@ -518,10 +344,20 @@
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
                 <div id="hotelContainer"></div>
             </section>
+            
+            <section id="view-notas" class="view-section">
+                <div class="main-title">
+                    <div class="main-title-left"><i class="fa-solid fa-clipboard-list" style="color: var(--brand-peach);"></i> Notas y Novedades</div>
+                    <button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openNoteForm()"><i class="fa-solid fa-plus"></i> Nueva Nota</button>
+                </div>
+                <div class="notes-grid" id="notesListContainer"></div>
+            </section>
+
             <section id="view-reservas" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
                 <div id="reservationsList"></div>
             </section>
+            
             <section id="view-directorio" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button></div>
                 <div class="directory-tabs" id="directoryTabs">
@@ -533,6 +369,7 @@
                 </div>
                 <div class="directory-grid" id="contactsGrid"></div>
             </section>
+            
             <section id="view-anticipos" class="view-section">
                 <div class="main-title">
                     <div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div>
@@ -542,16 +379,15 @@
                         <button class="btn btn-checkin" style="width: auto; padding: 10px 16px;" onclick="openEmployeeForm()"><i class="fa-solid fa-user-plus"></i> Agregar Empleado</button>
                     </div>
                 </div>
-                
                 <div class="advance-summary-box">
                     <div>
                         <span style="font-size: 0.85rem; color: var(--text-muted); display: block; font-weight: 600;">TOTAL GENERAL DE ANTICIPOS</span>
                         <div class="advance-total-display" id="totalAdvancesSum">$0.00</div>
                     </div>
                 </div>
-
                 <div class="advance-grid" id="employeesGrid"></div>
             </section>
+            
             <section id="view-reportes" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div></div>
                 <div class="filter-section-sym">
@@ -576,27 +412,27 @@
     <div id="advanceExportWrapper" style="position: absolute; left: -9999px; top: 0; width: 650px; background: #ffffff; padding: 30px; border-radius: 16px; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-green); font-size: 1.8rem; margin-bottom: 5px;">Hostal Reales Tamarindos</h2>
-            <p style="font-size: 0.95rem; color: #64748b; font-weight: 600;" id="advExportTitle">Reporte de Anticipos</p>
+            <p style="font-size: 0.95rem; color: #64748b; font-weight: 600;" id="advExportTitle">Reporte</p>
         </div>
         <div id="advExportBody"></div>
     </div>
 
-    <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div class="form-group"><label>Cédula</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
+    <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Cédula (Opcional)</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="guestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button></div></div></div>
     
-    <div class="modal-overlay" id="addReservationModal"><div class="modal-content modal-sm"><div class="modal-title" id="resModalTitle">Reserva</div><div class="form-group"><label>Huésped</label><input type="text" id="rName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Habitación</label><select id="rRoom"></select></div><div class="form-group" style="flex: 2; min-width: 130px;"><label>Teléfono</label><input type="text" id="rPhone"></div></div><div class="form-group"><label>Llegada</label><input type="datetime-local" id="rArrival"></div><div class="form-group"><label>Nota</label><input type="text" id="rNote"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveReservation()">Guardar</button></div></div></div>
+    <div class="modal-overlay" id="addReservationModal"><div class="modal-content modal-sm"><div class="modal-title" id="resModalTitle">Reserva</div><div class="form-group"><label>Huésped (Nombre)</label><input type="text" id="rName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Habitación</label><select id="rRoom"></select></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="rGuestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="rPhone"></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Llegada</label><input type="datetime-local" id="rArrival"></div></div><div class="form-group"><label>Nota adicional</label><input type="text" id="rNote"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveReservation()">Guardar</button></div></div></div>
     
+    <div class="modal-overlay" id="noteFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="noteModalTitle">Añadir Nota</div><div class="form-group"><label>Asignación (Opcional)</label><select id="noteRoomSelect"><option value="0">Mensaje General (Todos)</option></select></div><div class="form-group"><label>Contenido / Recordatorio</label><textarea id="noteContent" rows="3" placeholder="Ej. El huésped dejó sus maletas..."></textarea></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('noteFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveNote()">Guardar Nota</button></div></div></div>
+
     <div class="modal-overlay" id="previewModal"><div class="modal-content" style="max-width: 800px;"><div class="modal-title">Previsualización</div><div class="preview-box"><img id="previewImage" src="" style="display:none;"><div id="excelPreview" style="display:none;"><div id="excelTableContainer"></div></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('previewModal')">Atrás</button><button class="btn btn-checkin" onclick="confirmDownload()"><i class="fa-solid fa-download"></i> Descargar Reporte</button></div></div></div>
     
     <div class="modal-overlay" id="contactFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="contactFormTitle">Contacto</div><div class="form-group"><label>Nombre</label><input type="text" id="cName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Categoría</label><select id="cCategory"><option value="taxi">Taxis</option><option value="food">Comida</option><option value="places">Lugares</option><option value="services">Servicios</option></select></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="cPhone"></div></div><div class="form-group"><label>Descripción</label><textarea id="cDesc" rows="2"></textarea></div><div class="form-group"><label>Foto</label><input type="file" id="cImage" accept="image/*" onchange="previewImage(event)"><img id="cImagePreview" src=""></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('contactFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveContact()">Guardar</button></div></div></div>
     
     <div class="modal-overlay" id="employeeFormModal"><div class="modal-content modal-sm"><div class="modal-title">Añadir Empleado</div><div class="form-group"><label>Nombre del Empleado</label><input type="text" id="empName" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('employeeFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveEmployee()">Guardar</button></div></div></div>
-    
     <div class="modal-overlay" id="advanceFormModal"><div class="modal-content modal-sm"><div class="modal-title">Registrar Anticipo</div><div class="form-group"><label>Cantidad de Dinero ($)</label><input type="number" step="0.01" id="advAmount" placeholder="0.00"></div><div class="form-group"><label>Fecha y Hora</label><input type="datetime-local" id="advDateTime"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('advanceFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveAdvance()">Guardar Anticipo</button></div></div></div>
 
     <div class="modal-overlay" id="customAlertModal"><div class="modal-content modal-sm" style="text-align: center;"><div id="alertIcon" style="font-size: 3.5rem; margin-bottom: 15px;"></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div><p id="alertMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" id="alertBtn" onclick="closeModal('customAlertModal')">Entendido</button></div></div></div>
-    
     <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
     <div class="modal-overlay" id="legalModal">
@@ -604,17 +440,13 @@
             <div class="modal-title"><span>Políticas de Privacidad y Aviso Legal</span><i class="fa-solid fa-shield-halved" style="color: var(--brand-peach);"></i></div>
             <div class="legal-popup-body">
                 <h4>1. Confidencialidad de la Información</h4>
-                <p>Este sistema es de propiedad exclusiva del <strong>Hostal Reales Tamarindos</strong>. Toda la información albergada en esta plataforma (datos de huéspedes, registros de entrada/salida, finanzas y anticipos de personal) es de carácter estrictamente confidencial y de uso corporativo interno.</p>
-                
+                <p>Este sistema es de propiedad exclusiva del <strong>Hostal Reales Tamarindos</strong>. Toda la información albergada en esta plataforma es confidencial y de uso corporativo interno.</p>
                 <h4>2. Protección de Datos de Huéspedes</h4>
-                <p>La recopilación de nombres y números de cédula se realiza exclusivamente con fines de registro de hospedaje y control de seguridad interna, cumpliendo con los estándares normativos de protección de información personal. Queda terminantemente prohibido extraer, fotografiar o divulgar estos datos a terceros.</p>
-                
+                <p>La recopilación de datos se realiza con fines de registro. Queda terminantemente prohibido extraer o divulgar estos datos a terceros.</p>
                 <h4>3. Responsabilidad del Personal</h4>
-                <p>Cada usuario es responsable del uso correcto de sus credenciales de acceso. La sesión cuenta con un sistema automático de cierre por inactividad para prevenir accesos no autorizados en caso de ausencia en recepción.</p>
+                <p>El sistema cuenta con un cierre automático por 15 minutos de inactividad para prevenir accesos no autorizados.</p>
             </div>
-            <div class="modal-actions">
-                <button class="btn btn-checkin" onclick="closeModal('legalModal')">Entendido</button>
-            </div>
+            <div class="modal-actions"><button class="btn btn-checkin" onclick="closeModal('legalModal')">Entendido</button></div>
         </div>
     </div>
 
@@ -623,36 +455,29 @@
             <div class="modal-title"><span>Manual de Instrucciones</span><i class="fa-solid fa-book-open" style="color: var(--brand-peach);"></i></div>
             <div class="manual-popup-body">
                 <div class="manual-step">
-                    <h4><i class="fa-solid fa-bed"></i> 1. Pestaña Habitaciones</h4>
-                    <p>Muestra el estado en tiempo real (Libre, Ocupada o Limpieza). Haz clic en una tarjeta para voltearla y realizar <strong>Check-In</strong>, cambiar a estado de <strong>Limpieza</strong>, marcar como <strong>Limpieza completada</strong> o registrar la <strong>Salida (Checkout)</strong>.</p>
+                    <h4><i class="fa-solid fa-bed"></i> 1. Habitaciones</h4>
+                    <p>Haz clic en una tarjeta para voltearla y realizar <strong>Check-In</strong>, cambiar a estado de <strong>Necesita Limpieza</strong>, marcar como <strong>Limpieza completada</strong> o registrar la <strong>Salida</strong>. Ahora también se muestran las notas dirigidas a cada cuarto en su reverso.</p>
                 </div>
                 <div class="manual-step">
-                    <h4><i class="fa-regular fa-calendar-check"></i> 2. Pestaña Reservas</h4>
-                    <p>Permite agendar futuras llegadas de huéspedes seleccionando la habitación y la fecha. Puedes enviar un mensaje directo por <strong>WhatsApp</strong> al número registrado, editar o eliminar la reserva.</p>
+                    <h4><i class="fa-solid fa-clipboard-list"></i> 2. Notas / Novedades</h4>
+                    <p>Crea recordatorios generales para el equipo o asigna una nota directamente a una habitación. Las de habitación aparecerán en la tarjeta y podrán marcarse como "Cumplidas" para borrarlas automáticamente.</p>
                 </div>
                 <div class="manual-step">
-                    <h4><i class="fa-solid fa-address-book"></i> 3. Pestaña Directorio</h4>
-                    <p>Directorio útil de contactos categorizados (Taxis, Comida, Lugares, Servicios). Puedes hacer clic en el botón de copiar número para pegarlo rápidamente o añadir nuevos contactos con foto.</p>
+                    <h4><i class="fa-regular fa-calendar-check"></i> 3. Reservas y Check-In</h4>
+                    <p>Permite agendar huéspedes indicando su nombre, cantidad de personas (hasta 10) y detalles. Puedes enviar un WhatsApp directo al número registrado.</p>
                 </div>
                 <div class="manual-step">
-                    <h4><i class="fa-solid fa-file-invoice-dollar"></i> 4. Pestaña Anticipos $</h4>
-                    <p>Control de adelantos económicos otorgados a los empleados del hostal. Permite registrar nuevos anticipos, ver el acumulado de cada empleado, borrar historiales o exportar reportes individuales/generales en PDF e Imagen.</p>
-                </div>
-                <div class="manual-step">
-                    <h4><i class="fa-solid fa-chart-pie"></i> 5. Pestaña Reportes</h4>
-                    <p>Historial contable de todos los hospedajes finalizados. Puedes filtrar por fechas de inicio y fin, y generar vistas previas para descargar los reportes en formato <strong>PDF</strong>, <strong>Imagen (PNG)</strong> o <strong>Excel</strong>.</p>
+                    <h4><i class="fa-solid fa-file-invoice-dollar"></i> 4. Anticipos $ y Reportes</h4>
+                    <p>Gestiona los adelantos a los empleados y genera historiales contables en PDF, Imagen o Excel de todos los hospedajes completados.</p>
                 </div>
             </div>
-            <div class="modal-actions">
-                <button class="btn btn-checkin" onclick="closeModal('manualModal')">Cerrar Manual</button>
-            </div>
+            <div class="modal-actions"><button class="btn btn-checkin" onclick="closeModal('manualModal')">Cerrar Manual</button></div>
         </div>
     </div>
 
     <script>
         const SUPABASE_URL = 'https://wepjdpgwzdubzffabdol.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcGpkcGd3emR1YnpmZmFiZG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTE0NzMsImV4cCI6MjEwNDA2NzQ3M30.7rLJx7igmqMDEU3KJTwnD5V8Q93KyE2M3UtERbvX1kU';
-
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let globalRooms = [];
@@ -660,6 +485,8 @@
         let contactsData = [];
         let employeesData = [];
         let advancesData = [];
+        let notesData = []; // ALMACENA LAS NOTAS Y NOVEDADES
+        
         let currentEmpIdForAdvance = null;
         let appInterval = null;
         let confirmCallback = null;
@@ -667,32 +494,26 @@
         let currentRoomIdForCheckout = null; 
         let currentResEditingId = null;
         let currentEditingId = null; 
+        let currentNoteEditingId = null;
         let tempImageBase64 = '';
         let currentExportType = ''; 
         let currentCanvasData = '';
 
-        // CONFIGURACIÓN DE INACTIVIDAD (15 MINUTOS)
+        // SEGURIDAD POR INACTIVIDAD (15 MINUTOS)
         let inactivityTimer = null;
-        const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutos en milisegundos
+        const INACTIVITY_LIMIT = 15 * 60 * 1000; 
 
         function resetInactivityTimer() {
             if (sessionStorage.getItem('hostal_auth_token') === 'active') {
                 clearTimeout(inactivityTimer);
                 inactivityTimer = setTimeout(() => {
-                    processLogoutDueToInactivity();
+                    sessionStorage.removeItem('hostal_auth_token');
+                    customAlert("La sesión se ha cerrado automáticamente por 15 minutos de inactividad.", "Seguridad", "warning");
+                    setTimeout(() => { location.reload(); }, 2000);
                 }, INACTIVITY_LIMIT);
             }
         }
 
-        function processLogoutDueToInactivity() {
-            sessionStorage.removeItem('hostal_auth_token');
-            customAlert("La sesión se ha cerrado automáticamente por 15 minutos de inactividad.", "Seguridad", "warning");
-            setTimeout(() => {
-                location.reload();
-            }, 2000);
-        }
-
-        // Eventos para detectar actividad del usuario en la interfaz
         window.onload = function() {
             checkSession();
             ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'].forEach(eventName => {
@@ -700,22 +521,11 @@
             });
         };
 
-        // FUNCIONES PARA ABRIR POP-UPS LEGALES Y DE MANUAL
-        function openLegalModal() {
-            document.getElementById('legalModal').style.display = 'flex';
-        }
-        function openManualModal() {
-            document.getElementById('manualModal').style.display = 'flex';
-        }
+        function openLegalModal() { document.getElementById('legalModal').style.display = 'flex'; }
+        function openManualModal() { document.getElementById('manualModal').style.display = 'flex'; }
 
         // LOGIN
-        function checkSession() { 
-            if (sessionStorage.getItem('hostal_auth_token') === 'active') {
-                showApp();
-                resetInactivityTimer();
-            } 
-        }
-
+        function checkSession() { if (sessionStorage.getItem('hostal_auth_token') === 'active') { showApp(); resetInactivityTimer(); } }
         function processLogin() {
             const user = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value;
             const uCode = [72, 82, 84]; const pCode = [77, 73, 68, 65, 76, 49, 57, 52, 48]; 
@@ -734,20 +544,14 @@
         document.getElementById('loginPass').addEventListener('keypress', e => { if (e.key === 'Enter') processLogin(); });
         document.getElementById('loginUser').addEventListener('keypress', e => { if (e.key === 'Enter') processLogin(); });
 
-        // UTILES UI (Controla el cambio de pestañas con transición suave)
+        // UTILES UI
         function switchView(viewId, element) { 
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active')); 
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            
-            // Activar la vista seleccionada aplicando la clase con animación
             document.getElementById('view-' + viewId).classList.add('active'); 
-            
-            document.querySelectorAll('.nav-item').forEach(item => {
-                if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) {
-                    item.classList.add('active');
-                }
-            });
+            document.querySelectorAll('.nav-item').forEach(item => { if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) item.classList.add('active'); });
             window.scrollTo(0, 0);
+            if(viewId === 'notas') loadNotesUI();
         }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id==='checkinModal' && currentRoomIdForCheckin) flipCard(currentRoomIdForCheckin); if(id==='confirmCheckoutModal' && currentRoomIdForCheckout) flipCard(currentRoomIdForCheckout); }
         function customAlert(msg, title="Atención", type="warning") { document.getElementById('alertTitle').innerText = title; document.getElementById('alertMessage').innerText = msg; document.getElementById('customAlertModal').style.display = 'flex'; }
@@ -768,8 +572,99 @@
             if (dias > 0) return `${dias}d ${horas}h ${mins}m`; else if (horas > 0) return `${horas}h ${mins}m`; else return `${mins} min`;
         }
 
+        // SUPABASE: NOTAS Y NOVEDADES
+        async function fetchNotesDB() {
+            try {
+                const { data, error } = await _supabase.from('notes').select('*').order('created_at', { ascending: false });
+                if (!error) notesData = data || [];
+            } catch(e) { notesData = []; }
+        }
+
+        async function loadNotesUI() {
+            await fetchNotesDB();
+            const container = document.getElementById('notesListContainer');
+            container.innerHTML = '';
+            if (notesData.length === 0) { container.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay notas o novedades registradas.</p>'; return; }
+            
+            notesData.forEach(n => {
+                const isGeneral = !n.room_id || n.room_id == 0;
+                const badgeHtml = isGeneral ? `<span class="note-badge general">General</span>` : `<span class="note-badge">Habitación ${n.room_id}</span>`;
+                const cardClass = isGeneral ? 'note-card general' : 'note-card';
+                
+                container.innerHTML += `
+                    <div class="${cardClass}">
+                        <div class="note-header">
+                            ${badgeHtml} 
+                            <span>${formatFechaEcuador(n.created_at)}</span>
+                        </div>
+                        <div class="note-content">${n.content}</div>
+                        <div class="note-actions">
+                            <button class="btn-icon btn-edit-res" onclick="openNoteForm(${n.id})" style="width:34px;height:34px;font-size:0.9rem;" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                            <button class="btn-icon btn-delete-res" onclick="deleteNote(${n.id})" style="width:34px;height:34px;font-size:0.9rem;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>`;
+            });
+        }
+
+        function openNoteForm(id = null) {
+            currentNoteEditingId = id;
+            const select = document.getElementById('noteRoomSelect');
+            select.innerHTML = '<option value="0">Mensaje General (Todos)</option>';
+            globalRooms.forEach(room => { 
+                const opt = document.createElement('option'); opt.value = room.id; opt.textContent = `Asignar a Habitación ${room.id}`; select.appendChild(opt); 
+            });
+            
+            if (id) {
+                const note = notesData.find(x => x.id === id);
+                document.getElementById('noteContent').value = note.content;
+                document.getElementById('noteRoomSelect').value = note.room_id || 0;
+            } else {
+                document.getElementById('noteContent').value = '';
+                document.getElementById('noteRoomSelect').value = '0';
+            }
+            document.getElementById('noteFormModal').style.display = 'flex';
+        }
+
+        async function saveNote() {
+            const content = document.getElementById('noteContent').value.trim();
+            const room_id = parseInt(document.getElementById('noteRoomSelect').value);
+            if (!content) { customAlert("Por favor, ingresa el contenido de la nota."); return; }
+
+            const payload = { 
+                id: currentNoteEditingId || Date.now(), 
+                content: content, 
+                room_id: room_id === 0 ? null : room_id,
+                created_at: new Date().toISOString()
+            };
+
+            const { error } = await _supabase.from('notes').upsert(payload);
+            if (error) { customAlert("Error guardando nota (Asegúrate de que la tabla 'notes' exista en Supabase): " + error.message); return; }
+            
+            closeModal('noteFormModal');
+            await fetchNotesDB();
+            loadNotesUI();
+            renderRooms(globalRooms); // Refrescar habitaciones para mostrar el badge
+        }
+
+        function deleteNote(id, fromRoom = false) {
+            if(fromRoom) {
+                // Borrado directo (Cumplido)
+                _supabase.from('notes').delete().eq('id', id).then(() => {
+                    fetchNotesDB().then(() => {
+                        loadNotesUI(); renderRooms(globalRooms);
+                    });
+                });
+            } else {
+                customConfirm("¿Eliminar esta nota?", async () => { 
+                    await _supabase.from('notes').delete().eq('id', id); 
+                    await fetchNotesDB(); loadNotesUI(); renderRooms(globalRooms); 
+                });
+            }
+        }
+
         // SUPABASE: HABITACIONES
         async function initDashboard() {
+            await fetchNotesDB(); // Cargar notas antes de las habitaciones
             const { data, error } = await _supabase.from('rooms').select('*').order('id', { ascending: true });
             if (error) { customAlert("Error cargando habitaciones: " + error.message); return; }
             
@@ -785,34 +680,71 @@
         }
 
         function renderRooms(rooms) {
+            // Guardar estado de la tarjeta volteada actualmente
+            let flippedId = null;
+            document.querySelectorAll('.room-container.flipped').forEach(el => flippedId = el.id);
+
             const container = document.getElementById('hotelContainer'); container.innerHTML = ''; 
             const grid = document.createElement('div'); grid.className = 'grid';
+            
             rooms.forEach(r => {
-                let frontHtml = ''; let rc = r.status === 'available' ? 'available' : (r.status === 'occupied' ? 'occupied' : 'occupied-cleaning');
+                let frontHtml = ''; 
+                let rc = r.status === 'available' ? 'available' : (r.status === 'occupied' ? 'occupied' : 'occupied-cleaning');
+                
+                // NOTAS EN HABITACIONES
+                const roomNotes = notesData.filter(n => n.room_id === r.id);
+                const hasNotes = roomNotes.length > 0;
+                const badgeHtml = hasNotes ? `<div class="note-badge-front"><i class="fa-regular fa-bell"></i></div>` : '';
+                
+                let notesBackHtml = '';
+                if(hasNotes) {
+                    notesBackHtml = `<div class="room-notes-container">`;
+                    roomNotes.forEach(n => {
+                        notesBackHtml += `<div class="room-note-item"><div class="room-note-text">${n.content}</div> <button class="btn-note-done" onclick="event.stopPropagation(); deleteNote(${n.id}, true)">Cumplido <i class="fa-solid fa-check"></i></button></div>`;
+                    });
+                    notesBackHtml += `</div>`;
+                }
+
                 if (r.status === 'available') {
-                    frontHtml = `<div class="room-number">${r.id}</div><div class="status-pill">LIBRE</div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-bed" style="font-size:3.2rem;"></i></div>`;
+                    frontHtml = `${badgeHtml}<div class="room-number">${r.id}</div><div class="status-pill">LIBRE</div><div style="flex:1;display:flex;align-items:center;justify-content:center;"><i class="fa-solid fa-bed" style="font-size:3.2rem;"></i></div>`;
                 } else {
                     const txt = r.status === 'occupied' ? 'OCUPADA' : 'NECESITA LIMPIEZA'; 
                     const ultLimp = r.last_cleaned_time || r.check_in_time;
-                    frontHtml = `<div class="room-number">${r.id}</div><div class="status-pill">${txt}</div>${r.guest_name ? `<div class="guest-name" title="${r.guest_name}"><i class="fa-solid fa-user"></i> ${r.guest_name}</div>` : ''}<div class="badges-container"><div class="badge-row"><span>Llegada: ${formatFechaEcuador(r.check_in_time)}</span></div><div class="badge-row"><span class="live-timer-checkin" data-time="${r.check_in_time}"></span></div><div class="badge-row"><span class="live-timer-cleaned" data-time="${ultLimp}" data-status="${r.status}"></span></div></div>`;
+                    const guestCountText = r.guest_count ? `(${r.guest_count} p.)` : `(1 p.)`;
+                    
+                    frontHtml = `${badgeHtml}<div class="room-number">${r.id}</div><div class="status-pill">${txt}</div>${r.guest_name ? `<div class="guest-name" title="${r.guest_name}"><i class="fa-solid fa-user"></i> ${r.guest_name} <span style="font-size:0.68rem; opacity:0.85;">${guestCountText}</span></div>` : ''}<div class="badges-container"><div class="badge-row"><span>Llegada: ${formatFechaEcuador(r.check_in_time)}</span></div><div class="badge-row"><span class="live-timer-checkin" data-time="${r.check_in_time}"></span></div><div class="badge-row"><span class="live-timer-cleaned" data-time="${ultLimp}" data-status="${r.status}"></span></div></div>`;
                 }
-                grid.innerHTML += `<div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})"><div class="room-flipper"><div class="front ${rc}">${frontHtml}</div><div class="back" onclick="event.stopPropagation()">${r.status === 'available' ? `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>` : `${r.status === 'occupied' ? `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">LIMPIEZA</button>` : `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`}<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button>`}<button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button></div></div></div>`;
+                
+                grid.innerHTML += `<div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})"><div class="room-flipper"><div class="front ${rc}">${frontHtml}</div><div class="back" onclick="event.stopPropagation()">${notesBackHtml}${r.status === 'available' ? `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>` : `${r.status === 'occupied' ? `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">NECESITA LIMPIEZA</button>` : `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`}<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">SALIDA</button>`}<button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button></div></div></div>`;
             });
-            container.appendChild(grid); updateLiveTimers();
+            container.appendChild(grid); 
+            
+            // Restaurar estado de volteo si existía
+            if(flippedId && document.getElementById(flippedId)) { document.getElementById(flippedId).classList.add('flipped'); }
+            updateLiveTimers();
         }
 
         function flipCard(id) { document.querySelectorAll('.room-container.flipped').forEach(el => { if (el.id !== `room-${id}`) el.classList.remove('flipped'); }); document.getElementById(`room-${id}`).classList.toggle('flipped'); }
-        function openCheckinModal(id) { currentRoomIdForCheckin = id; document.getElementById('guestName').value = ''; document.getElementById('guestCedula').value = ''; document.getElementById('checkinModal').style.display = 'flex'; }
+        
+        function openCheckinModal(id) { 
+            currentRoomIdForCheckin = id; 
+            document.getElementById('guestName').value = ''; 
+            document.getElementById('guestCedula').value = ''; 
+            document.getElementById('guestCount').value = '1';
+            document.getElementById('checkinModal').style.display = 'flex'; 
+        }
         function openConfirmCheckoutModal(id) { currentRoomIdForCheckout = id; document.getElementById('confirmCheckoutModal').style.display = 'flex'; }
 
         function submitCheckin() {
-            const py = { status: 'occupied', check_in_time: new Date().toISOString(), last_cleaned_time: new Date().toISOString(), guest_name: document.getElementById('guestName').value.trim() || 'Sin registrar', guest_id: document.getElementById('guestCedula').value.trim() || 'N/A', isCheckout: false };
+            const count = parseInt(document.getElementById('guestCount').value) || 1;
+            const py = { status: 'occupied', check_in_time: new Date().toISOString(), last_cleaned_time: new Date().toISOString(), guest_name: document.getElementById('guestName').value.trim() || 'Sin registrar', guest_id: document.getElementById('guestCedula').value.trim() || 'N/A', guest_count: count, isCheckout: false };
             document.getElementById('checkinModal').style.display = 'none'; updateRoomDB(currentRoomIdForCheckin, py);
         }
         function executeCheckout() { document.getElementById('confirmCheckoutModal').style.display = 'none'; accionHabitacion(currentRoomIdForCheckout, 'available', 'checkout'); }
+        
         function accionHabitacion(id, nuevoEstado, actionType) {
             const py = { status: nuevoEstado, isCheckout: false };
-            if (actionType === 'checkout') { py.check_in_time = null; py.last_cleaned_time = null; py.guest_name = null; py.guest_id = null; py.isCheckout = true; } 
+            if (actionType === 'checkout') { py.check_in_time = null; py.last_cleaned_time = null; py.guest_name = null; py.guest_id = null; py.guest_count = null; py.isCheckout = true; } 
             else if (actionType === 'cleaned') { py.last_cleaned_time = new Date().toISOString(); }
             updateRoomDB(id, py);
         }
@@ -823,24 +755,20 @@
                 await _supabase.from('history').insert([{ room: room.id, name: room.guest_name, cedula: room.guest_id, check_in: room.check_in_time, check_out: new Date().toISOString() }]);
             }
             room.status = payload.status;
-            if (payload.isCheckout) { room.check_in_time = null; room.last_cleaned_time = null; room.guest_name = null; room.guest_id = null; } 
-            else { if(payload.check_in_time) room.check_in_time = payload.check_in_time; if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; if(payload.guest_name) room.guest_name = payload.guest_name; if(payload.guest_id) room.guest_id = payload.guest_id; }
+            if (payload.isCheckout) { room.check_in_time = null; room.last_cleaned_time = null; room.guest_name = null; room.guest_id = null; room.guest_count = null;} 
+            else { if(payload.check_in_time) room.check_in_time = payload.check_in_time; if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; if(payload.guest_name) room.guest_name = payload.guest_name; if(payload.guest_id) room.guest_id = payload.guest_id; if(payload.guest_count) room.guest_count = payload.guest_count; }
             
-            const { error } = await _supabase.from('rooms').update({ status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id }).eq('id', id);
-            if (error) { customAlert("Error actualizando habitación: " + error.message); return; }
+            // INTENTO DE ACTUALIZAR GUEST_COUNT (Manejo silencioso si la columna no existe aún en BD para evitar bloquear todo)
+            let updatePayload = { status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id };
+            if(room.guest_count !== undefined) updatePayload.guest_count = room.guest_count;
+
+            const { error } = await _supabase.from('rooms').update(updatePayload).eq('id', id);
+            if (error) { customAlert("Error actualizando habitación (Asegúrate de haber creado la columna 'guest_count' en Supabase): " + error.message); return; }
             renderRooms(globalRooms);
         }
         function updateLiveTimers() { 
-            document.querySelectorAll('.live-timer-checkin').forEach(el => { 
-                const t = el.getAttribute('data-time'); 
-                if (t && t !== 'null') el.innerText = `Hospedaje: ${calcularTiempoVivo(t)}`; 
-            }); 
-            document.querySelectorAll('.live-timer-cleaned').forEach(el => { 
-                const t = el.getAttribute('data-time'); 
-                const s = el.getAttribute('data-status'); 
-                if (s === 'occupied-cleaning') el.innerText = 'Necesita limpieza'; 
-                else if (t && t !== 'null') el.innerText = `Últ. Limpieza: ${calcularTiempoVivo(t)}`; 
-            }); 
+            document.querySelectorAll('.live-timer-checkin').forEach(el => { const t = el.getAttribute('data-time'); if (t && t !== 'null') el.innerText = `Hospedaje: ${calcularTiempoVivo(t)}`; }); 
+            document.querySelectorAll('.live-timer-cleaned').forEach(el => { const t = el.getAttribute('data-time'); const s = el.getAttribute('data-status'); if (s === 'occupied-cleaning') el.innerText = 'Necesita limpieza'; else if (t && t !== 'null') el.innerText = `Últ. Limpieza: ${calcularTiempoVivo(t)}`; }); 
         }
 
         // SUPABASE: RESERVAS
@@ -850,20 +778,17 @@
             reservationsData = data || []; const list = document.getElementById('reservationsList'); list.innerHTML = '';
             if (reservationsData.length === 0) { list.innerHTML = '<p style="text-align:center; margin-top:30px; color:var(--text-muted);">No hay reservas registradas.</p>'; return; }
             reservationsData.forEach(res => {
-                list.innerHTML += `<div class="reservation-card"><div class="res-info"><h3>${res.name} <span class="res-room-badge">Hab. ${res.room}</span></h3><div class="res-dates"><i class="fa-regular fa-clock"></i> Llegada: ${formatFechaEcuador(res.arrival)}</div>${res.phone ? `<div class="res-dates"><i class="fa-solid fa-phone"></i> Tel: ${res.phone}</div>` : ''}${res.note ? `<div class="res-dates" style="color:var(--status-free); font-weight:700;"><i class="fa-solid fa-note-sticky"></i> Nota: ${res.note}</div>` : ''}</div><div class="res-actions">${res.phone ? `<button onclick="window.open('https://wa.me/593${res.phone}?text=Hola%20${encodeURIComponent(res.name)}')" class="btn-icon btn-whatsapp" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>` : ''}<button class="btn-icon btn-edit-res" onclick="openReservationForm(${res.id})" title="Editar"><i class="fa-solid fa-pen"></i></button><button class="btn-icon btn-delete-res" onclick="deleteReservation(${res.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div></div>`;
+                const pText = res.guest_count ? ` (${res.guest_count} p.)` : ``;
+                list.innerHTML += `<div class="reservation-card"><div class="res-info"><h3>${res.name} ${pText} <span class="res-room-badge">Hab. ${res.room}</span></h3><div class="res-dates"><i class="fa-regular fa-clock"></i> Llegada: ${formatFechaEcuador(res.arrival)}</div>${res.phone ? `<div class="res-dates"><i class="fa-solid fa-phone"></i> Tel: ${res.phone}</div>` : ''}${res.note ? `<div class="res-dates" style="color:var(--status-free); font-weight:700;"><i class="fa-solid fa-note-sticky"></i> Nota: ${res.note}</div>` : ''}</div><div class="res-actions">${res.phone ? `<button onclick="window.open('https://wa.me/593${res.phone}?text=Hola%20${encodeURIComponent(res.name)}')" class="btn-icon btn-whatsapp" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>` : ''}<button class="btn-icon btn-edit-res" onclick="openReservationForm(${res.id})" title="Editar"><i class="fa-solid fa-pen"></i></button><button class="btn-icon btn-delete-res" onclick="deleteReservation(${res.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div></div>`;
             });
         }
         function openReservationForm(id = null) {
             currentResEditingId = id; const select = document.getElementById('rRoom'); select.innerHTML = '';
             globalRooms.forEach(room => { 
-                const opt = document.createElement('option'); 
-                opt.value = room.id; 
-                const estadoTxt = room.status === 'available' ? '🟢 LIBRE' : '🔴 OCUPADA';
-                opt.textContent = `Habitación ${room.id} [${estadoTxt}]`; 
-                select.appendChild(opt); 
+                const opt = document.createElement('option'); opt.value = room.id; const estadoTxt = room.status === 'available' ? '🟢 LIBRE' : '🔴 OCUPADA'; opt.textContent = `Habitación ${room.id} [${estadoTxt}]`; select.appendChild(opt); 
             });
-            if (id) { const res = reservationsData.find(r => r.id === id); document.getElementById('rName').value = res.name; document.getElementById('rRoom').value = res.room; document.getElementById('rPhone').value = res.phone; document.getElementById('rArrival').value = new Date(res.arrival).toISOString().slice(0, 16); document.getElementById('rNote').value = res.note || ''; } 
-            else { document.getElementById('rName').value = ''; document.getElementById('rPhone').value = ''; document.getElementById('rArrival').value = ''; document.getElementById('rNote').value = ''; }
+            if (id) { const res = reservationsData.find(r => r.id === id); document.getElementById('rName').value = res.name; document.getElementById('rRoom').value = res.room; document.getElementById('rGuestCount').value = res.guest_count || 1; document.getElementById('rPhone').value = res.phone; document.getElementById('rArrival').value = new Date(res.arrival).toISOString().slice(0, 16); document.getElementById('rNote').value = res.note || ''; } 
+            else { document.getElementById('rName').value = ''; document.getElementById('rGuestCount').value = '1'; document.getElementById('rPhone').value = ''; document.getElementById('rArrival').value = ''; document.getElementById('rNote').value = ''; }
             document.getElementById('addReservationModal').style.display = 'flex';
         }
 
@@ -872,47 +797,28 @@
                 const name = document.getElementById('rName').value.trim(); 
                 const room = document.getElementById('rRoom').value; 
                 const arrival = document.getElementById('rArrival').value;
+                const guest_count = parseInt(document.getElementById('rGuestCount').value) || 1;
                 
-                if (!name || !room || !arrival) { 
-                    customAlert("Faltan datos obligatorios. Asegúrate de ingresar el nombre, la habitación y la fecha/hora."); 
-                    return; 
-                }
-
+                if (!name || !room || !arrival) { customAlert("Faltan datos obligatorios."); return; }
                 const dateObj = new Date(arrival);
-                if (isNaN(dateObj.getTime())) {
-                    customAlert("La fecha y hora están incompletas. Por favor, selecciona el día y la hora exacta.");
-                    return;
-                }
+                if (isNaN(dateObj.getTime())) { customAlert("Fecha incompleta."); return; }
 
-                const payload = { 
-                    id: currentResEditingId || Date.now(), 
-                    name: name, 
-                    room: parseInt(room), 
-                    phone: document.getElementById('rPhone').value.trim(), 
-                    arrival: dateObj.toISOString(), 
-                    note: document.getElementById('rNote').value.trim() 
-                };
+                const payload = { id: currentResEditingId || Date.now(), name: name, room: parseInt(room), phone: document.getElementById('rPhone').value.trim(), arrival: dateObj.toISOString(), note: document.getElementById('rNote').value.trim(), guest_count: guest_count };
                 
                 const { error } = await _supabase.from('reservations').upsert(payload);
-                if (error) { customAlert("Error guardando reserva (Supabase): " + error.message); return; }
+                if (error) { customAlert("Error guardando reserva (Asegúrate de agregar columna 'guest_count'): " + error.message); return; }
                 
-                closeModal('addReservationModal'); 
-                renderReservations();
-            } catch (err) {
-                customAlert("Error en tu navegador: " + err.message);
-            }
+                closeModal('addReservationModal'); renderReservations();
+            } catch (err) { customAlert("Error: " + err.message); }
         }
-        
         function deleteReservation(id) { customConfirm("¿Eliminar esta reserva?", async () => { await _supabase.from('reservations').delete().eq('id', id); renderReservations(); }); }
 
-        // SUPABASE: DIRECTORIO (OPTIMIZADO SIN RETRASO)
+        // SUPABASE: DIRECTORIO
         async function loadDirectoryData() {
             const { data, error } = await _supabase.from('contacts').select('*'); 
             if (error) { customAlert("Error al cargar directorio: " + error.message); return; }
-            contactsData = data || [];
-            renderDirectory('all', document.querySelector('.cat-tab'));
+            contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab'));
         }
-
         function renderDirectory(cat, tabElement = null) {
             if(tabElement){ document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active')); tabElement.classList.add('active'); }
             const grid = document.getElementById('contactsGrid'); grid.innerHTML = ''; let filtered = contactsData;
@@ -920,7 +826,6 @@
             if (filtered.length === 0) { grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay contactos guardados.</p>'; return; }
             filtered.forEach(c => { grid.innerHTML += `<div class="contact-card"><div class="contact-actions-top"><button onclick="openContactForm(${c.id})" title="Editar"><i class="fa-solid fa-pen"></i></button><button onclick="deleteContact(${c.id})" title="Eliminar"><i class="fa-solid fa-trash" style="color:var(--status-occ)"></i></button></div><div class="contact-img-box">${c.image?`<img src="${c.image}">`:'<i class="fa-solid fa-address-book"></i>'}</div><div class="contact-info"><h3>${c.name}</h3><p>${c.description || ''}</p><button class="btn-copy-phone" onclick="navigator.clipboard.writeText('${c.phone}'); customAlert('¡Número copiado al portapapeles!', 'Copiado', 'success')"><i class="fa-solid fa-phone"></i> ${c.phone}</button></div></div>`; });
         }
-
         function openContactForm(id = null) {
             currentEditingId = id; tempImageBase64 = ''; document.getElementById('cImagePreview').style.display = 'none'; document.getElementById('cImage').value = '';
             if (id) { const c = contactsData.find(x => x.id === id); document.getElementById('cName').value = c.name; document.getElementById('cCategory').value = c.category; document.getElementById('cPhone').value = c.phone; document.getElementById('cDesc').value = c.description; if(c.image){ tempImageBase64=c.image; document.getElementById('cImagePreview').src=c.image; document.getElementById('cImagePreview').style.display='block';} } 
@@ -934,230 +839,63 @@
                 if (!name || !phone) { customAlert("Faltan datos obligatorios."); return; }
                 const payload = { id: currentEditingId || Date.now(), name: name, category: document.getElementById('cCategory').value, phone: phone, description: document.getElementById('cDesc').value.trim(), image: tempImageBase64 };
                 const { error } = await _supabase.from('contacts').upsert(payload); 
-                if (error) { customAlert("Error guardando contacto (Supabase): " + error.message); return; }
-                closeModal('contactFormModal'); 
-                const { data } = await _supabase.from('contacts').select('*'); contactsData = data || [];
-                renderDirectory('all', document.querySelector('.cat-tab'));
-            } catch (err) {
-                customAlert("Error en tu navegador: " + err.message);
-            }
+                if (error) { customAlert("Error guardando contacto: " + error.message); return; }
+                closeModal('contactFormModal'); const { data } = await _supabase.from('contacts').select('*'); contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab'));
+            } catch (err) { customAlert("Error: " + err.message); }
         }
         function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { await _supabase.from('contacts').delete().eq('id', id); const { data } = await _supabase.from('contacts').select('*'); contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab')); }); }
 
-        // SUPABASE: ANTICIPOS DE EMPLEADOS
+        // SUPABASE: ANTICIPOS
         async function loadAdvances() {
             const { data: empData, error: empErr } = await _supabase.from('employees').select('*').order('name', { ascending: true });
             if (empErr) { customAlert("Error cargando empleados: " + empErr.message); return; }
             employeesData = empData || [];
-
             const { data: advData, error: advErr } = await _supabase.from('advances').select('*').order('datetime', { ascending: false });
             if (advErr) { customAlert("Error cargando anticipos: " + advErr.message); return; }
             advancesData = advData || [];
 
-            let totalSum = 0;
-            advancesData.forEach(a => { totalSum += parseFloat(a.amount || 0); });
+            let totalSum = 0; advancesData.forEach(a => { totalSum += parseFloat(a.amount || 0); });
             document.getElementById('totalAdvancesSum').innerText = `$${totalSum.toFixed(2)}`;
 
-            const grid = document.getElementById('employeesGrid');
-            grid.innerHTML = '';
-
-            if (employeesData.length === 0) {
-                grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay empleados registrados. Agrega uno nuevo.</p>';
-                return;
-            }
+            const grid = document.getElementById('employeesGrid'); grid.innerHTML = '';
+            if (employeesData.length === 0) { grid.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay empleados registrados.</p>'; return; }
 
             employeesData.forEach(emp => {
                 const empAdvances = advancesData.filter(a => a.employee_id === emp.id);
-                let empTotal = 0;
-                empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
-
+                let empTotal = 0; empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
                 let listHtml = '';
-                if (empAdvances.length === 0) {
-                    listHtml = '<span style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:10px;">Sin anticipos registrados</span>';
-                } else {
-                    empAdvances.forEach(adv => {
-                        listHtml += `<div class="advance-item-row"><div><strong>$${parseFloat(adv.amount).toFixed(2)}</strong><br><span style="font-size:0.7rem; color:var(--text-muted);">${formatFechaEcuador(adv.datetime)}</span></div><button class="btn-icon btn-delete-res" style="width:30px; height:30px; min-width:30px; font-size:0.8rem;" onclick="deleteAdvance(${adv.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div>`;
-                    });
-                }
-
-                grid.innerHTML += `<div class="employee-card" id="emp-card-${emp.id}">
-                    <div class="employee-card-header">
-                        <h3>${emp.name}</h3>
-                        <button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})" title="Eliminar Empleado"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                    <div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total acumulado: $${empTotal.toFixed(2)}</div>
-                    <div class="advance-history-list">${listHtml}</div>
-                    <button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Agregar Anticipo</button>
-                    <button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar todo el historial</button>
-                    <div style="display: flex; gap: 8px; margin-top: 8px;">
-                        <button class="btn btn-blue" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'image')"><i class="fa-solid fa-image"></i> Img</button>
-                        <button class="btn btn-checkout" style="flex:1; padding:8px; font-size:0.75rem; color:var(--status-occ);" onclick="exportSingleEmployee(${emp.id}, 'pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    </div>
-                </div>`;
+                if (empAdvances.length === 0) { listHtml = '<span style="color:var(--text-muted); font-size:0.78rem; text-align:center; padding:10px;">Sin anticipos</span>'; } 
+                else { empAdvances.forEach(adv => { listHtml += `<div class="advance-item-row"><div><strong>$${parseFloat(adv.amount).toFixed(2)}</strong><br><span style="font-size:0.7rem; color:var(--text-muted);">${formatFechaEcuador(adv.datetime)}</span></div><button class="btn-icon btn-delete-res" style="width:30px; height:30px; min-width:30px; font-size:0.8rem;" onclick="deleteAdvance(${adv.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div>`; }); }
+                grid.innerHTML += `<div class="employee-card" id="emp-card-${emp.id}"><div class="employee-card-header"><h3>${emp.name}</h3><button class="btn-icon btn-delete-res" style="width:32px; height:32px; min-width:32px; font-size:0.85rem;" onclick="deleteEmployee(${emp.id})"><i class="fa-solid fa-trash"></i></button></div><div style="font-size:0.85rem; font-weight:600; color:var(--brand-green);">Total: $${empTotal.toFixed(2)}</div><div class="advance-history-list">${listHtml}</div><button class="btn btn-checkin" onclick="openAdvanceForm(${emp.id})"><i class="fa-solid fa-plus"></i> Anticipo</button><button class="btn btn-checkout" style="margin-top: 8px;" onclick="clearEmployeeAdvances(${emp.id})"><i class="fa-solid fa-trash-can"></i> Borrar historial</button><div style="display: flex; gap: 8px; margin-top: 8px;"><button class="btn btn-blue" style="flex:1; padding:8px; font-size:0.75rem;" onclick="exportSingleEmployee(${emp.id}, 'image')"><i class="fa-solid fa-image"></i> Img</button><button class="btn btn-checkout" style="flex:1; padding:8px; font-size:0.75rem; color:var(--status-occ);" onclick="exportSingleEmployee(${emp.id}, 'pdf')"><i class="fa-solid fa-file-pdf"></i> PDF</button></div></div>`;
             });
         }
+        function openEmployeeForm() { document.getElementById('empName').value = ''; document.getElementById('employeeFormModal').style.display = 'flex'; }
+        async function saveEmployee() { const name = document.getElementById('empName').value.trim(); if (!name) return; await _supabase.from('employees').insert([{ id: Date.now(), name: name }]); closeModal('employeeFormModal'); loadAdvances(); }
+        function deleteEmployee(empId) { customConfirm("¿Eliminar empleado?", async () => { await _supabase.from('advances').delete().eq('employee_id', empId); await _supabase.from('employees').delete().eq('id', empId); loadAdvances(); }); }
+        function clearEmployeeAdvances(empId) { customConfirm("¿Borrar historial de anticipos?", async () => { await _supabase.from('advances').delete().eq('employee_id', empId); loadAdvances(); }); }
+        function openAdvanceForm(empId) { currentEmpIdForAdvance = empId; document.getElementById('advAmount').value = ''; const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); document.getElementById('advDateTime').value = now.toISOString().slice(0, 16); document.getElementById('advanceFormModal').style.display = 'flex'; }
+        async function saveAdvance() { const amount = document.getElementById('advAmount').value; const datetime = document.getElementById('advDateTime').value; if (!amount || !datetime) return; await _supabase.from('advances').insert([{ id: Date.now(), employee_id: currentEmpIdForAdvance, amount: parseFloat(amount), datetime: new Date(datetime).toISOString() }]); closeModal('advanceFormModal'); loadAdvances(); }
+        async function deleteAdvance(advId) { customConfirm("¿Eliminar anticipo?", async () => { await _supabase.from('advances').delete().eq('id', advId); loadAdvances(); }); }
 
-        function openEmployeeForm() {
-            document.getElementById('empName').value = '';
-            document.getElementById('employeeFormModal').style.display = 'flex';
-        }
-
-        async function saveEmployee() {
-            const name = document.getElementById('empName').value.trim();
-            if (!name) { customAlert("Ingresa el nombre del empleado."); return; }
-            const payload = { id: Date.now(), name: name };
-            const { error } = await _supabase.from('employees').insert([payload]);
-            if (error) { customAlert("Error guardando empleado: " + error.message); return; }
-            closeModal('employeeFormModal');
-            loadAdvances();
-        }
-
-        function deleteEmployee(empId) {
-            customConfirm("¿Eliminar este empleado y todos sus anticipos?", async () => {
-                await _supabase.from('advances').delete().eq('employee_id', empId);
-                await _supabase.from('employees').delete().eq('id', empId);
-                loadAdvances();
-            });
-        }
-
-        function clearEmployeeAdvances(empId) {
-            customConfirm("¿Estás seguro de borrar todo el historial de anticipos de este empleado?", async () => {
-                const { error } = await _supabase.from('advances').delete().eq('employee_id', empId);
-                if (error) { customAlert("Error al borrar historial: " + error.message); return; }
-                loadAdvances();
-            });
-        }
-
-        function openAdvanceForm(empId) {
-            currentEmpIdForAdvance = empId;
-            document.getElementById('advAmount').value = '';
-            const now = new Date();
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
-            document.getElementById('advDateTime').value = now.toISOString().slice(0, 16);
-            document.getElementById('advanceFormModal').style.display = 'flex';
-        }
-
-        async function saveAdvance() {
-            const amount = document.getElementById('advAmount').value.trim();
-            const datetime = document.getElementById('advDateTime').value;
-
-            if (!amount || !datetime) {
-                customAlert("Ingresa la cantidad y selecciona la fecha y hora obligatorias.");
-                return;
-            }
-
-            const dateObj = new Date(datetime);
-            if (isNaN(dateObj.getTime())) {
-                customAlert("Fecha y hora inválidas.");
-                return;
-            }
-
-            const payload = {
-                id: Date.now(),
-                employee_id: currentEmpIdForAdvance,
-                amount: parseFloat(amount),
-                datetime: dateObj.toISOString()
-            };
-
-            const { error } = await _supabase.from('advances').insert([payload]);
-            if (error) { customAlert("Error guardando anticipo: " + error.message); return; }
-
-            closeModal('advanceFormModal');
-            loadAdvances();
-        }
-
-        async function deleteAdvance(advId) {
-            customConfirm("¿Eliminar este registro de anticipo?", async () => {
-                await _supabase.from('advances').delete().eq('id', advId);
-                loadAdvances();
-            });
-        }
-
-        // FUNCIONES DE EXPORTACIÓN DE ANTICIPOS
         function exportSingleEmployee(empId, format) {
-            const emp = employeesData.find(e => e.id === empId);
-            if(!emp) return;
+            const emp = employeesData.find(e => e.id === empId); if(!emp) return;
             const empAdvances = advancesData.filter(a => a.employee_id === empId);
-            let empTotal = 0;
-            empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
-
-            let htmlContent = `<h3 style="color: var(--brand-green); font-family: 'Playfair Display', serif; margin-bottom: 15px;">Empleado: ${emp.name}</h3>`;
-            htmlContent += `<p style="font-weight: 600; margin-bottom: 15px; color: var(--text-dark);">Total Acumulado: $${empTotal.toFixed(2)}</p>`;
-            
-            if(empAdvances.length === 0) {
-                htmlContent += `<p style="color: #64748b;">Sin anticipos registrados.</p>`;
-            } else {
-                htmlContent += `<table style="width:100%; border-collapse: collapse; font-size: 0.9rem;">`;
-                htmlContent += `<thead><tr style="background: rgba(11, 66, 26, 0.05); color: var(--brand-green);"><th style="padding: 10px; border-bottom: 1px solid #cbd5e1; text-align: left;">Fecha y Hora</th><th style="padding: 10px; border-bottom: 1px solid #cbd5e1; text-align: right;">Cantidad</th></tr></thead><tbody>`;
-                empAdvances.forEach(a => {
-                    htmlContent += `<tr><td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${formatFechaEcuador(a.datetime)}</td><td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight:600;">$${parseFloat(a.amount).toFixed(2)}</td></tr>`;
-                });
-                htmlContent += `</tbody></table>`;
-            }
-
-            document.getElementById('advExportTitle').innerText = `Reporte de Anticipos - ${emp.name}`;
-            document.getElementById('advExportBody').innerHTML = htmlContent;
-            triggerExportAdvance(format, `Anticipos_${emp.name.replace(/\s+/g, '_')}`);
+            let empTotal = 0; empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
+            let htmlContent = `<h3 style="color: var(--brand-green); font-family: 'Playfair Display', serif; margin-bottom: 15px;">Empleado: ${emp.name}</h3><p style="font-weight: 600; margin-bottom: 15px; color: var(--text-dark);">Total Acumulado: $${empTotal.toFixed(2)}</p>`;
+            if(empAdvances.length === 0) { htmlContent += `<p style="color: #64748b;">Sin anticipos registrados.</p>`; } else { htmlContent += `<table style="width:100%; border-collapse: collapse; font-size: 0.9rem;"><thead><tr style="background: rgba(11, 66, 26, 0.05); color: var(--brand-green);"><th style="padding: 10px; border-bottom: 1px solid #cbd5e1; text-align: left;">Fecha y Hora</th><th style="padding: 10px; border-bottom: 1px solid #cbd5e1; text-align: right;">Cantidad</th></tr></thead><tbody>`; empAdvances.forEach(a => { htmlContent += `<tr><td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${formatFechaEcuador(a.datetime)}</td><td style="padding: 10px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight:600;">$${parseFloat(a.amount).toFixed(2)}</td></tr>`; }); htmlContent += `</tbody></table>`; }
+            document.getElementById('advExportTitle').innerText = `Reporte de Anticipos - ${emp.name}`; document.getElementById('advExportBody').innerHTML = htmlContent; triggerExportAdvance(format, `Anticipos_${emp.name.replace(/\s+/g, '_')}`);
         }
-
         function exportAllAdvances(format) {
-            let totalGeneral = 0;
-            advancesData.forEach(a => { totalGeneral += parseFloat(a.amount || 0); });
-
-            let htmlContent = `<p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 20px; color: var(--brand-green);">Total General de Anticipos: $${totalGeneral.toFixed(2)}</p>`;
-            
-            if(employeesData.length === 0) {
-                htmlContent += `<p style="color: #64748b;">No hay empleados registrados.</p>`;
-            } else {
-                employeesData.forEach(emp => {
-                    const empAdvances = advancesData.filter(a => a.employee_id === emp.id);
-                    let empTotal = 0;
-                    empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); });
-
-                    htmlContent += `<div style="margin-bottom: 25px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; background: #f8fafc;">`;
-                    htmlContent += `<h4 style="color: var(--brand-green); font-family: 'Playfair Display', serif; margin-bottom: 8px;">${emp.name} (Total: $${empTotal.toFixed(2)})</h4>`;
-                    
-                    if(empAdvances.length === 0) {
-                        htmlContent += `<p style="font-size: 0.85rem; color: #64748b;">Sin anticipos.</p>`;
-                    } else {
-                        htmlContent += `<table style="width:100%; border-collapse: collapse; font-size: 0.85rem;">`;
-                        htmlContent += `<thead><tr style="background: #e2e8f0; color: #1e293b;"><th style="padding: 6px; text-align: left;">Fecha y Hora</th><th style="padding: 6px; text-align: right;">Cantidad</th></tr></thead><tbody>`;
-                        empAdvances.forEach(a => {
-                            htmlContent += `<tr><td style="padding: 6px; border-bottom: 1px solid #cbd5e1;">${formatFechaEcuador(a.datetime)}</td><td style="padding: 6px; border-bottom: 1px solid #cbd5e1; text-align: right; font-weight:600;">$${parseFloat(a.amount).toFixed(2)}</td></tr>`;
-                        });
-                        htmlContent += `</tbody></table>`;
-                    }
-                    htmlContent += `</div>`;
-                });
-            }
-
-            document.getElementById('advExportTitle').innerText = `Reporte General de Anticipos`;
-            document.getElementById('advExportBody').innerHTML = htmlContent;
-            triggerExportAdvance(format, `Reporte_General_Anticipos`);
+            let totalGeneral = 0; advancesData.forEach(a => { totalGeneral += parseFloat(a.amount || 0); });
+            let htmlContent = `<p style="font-weight: 600; font-size: 1.1rem; margin-bottom: 20px; color: var(--brand-green);">Total General: $${totalGeneral.toFixed(2)}</p>`;
+            if(employeesData.length === 0) { htmlContent += `<p style="color: #64748b;">No hay empleados.</p>`; } else { employeesData.forEach(emp => { const empAdvances = advancesData.filter(a => a.employee_id === emp.id); let empTotal = 0; empAdvances.forEach(a => { empTotal += parseFloat(a.amount || 0); }); htmlContent += `<div style="margin-bottom: 25px; border: 1px solid #cbd5e1; padding: 15px; border-radius: 12px; background: #f8fafc;"><h4 style="color: var(--brand-green); font-family: 'Playfair Display', serif; margin-bottom: 8px;">${emp.name} (Total: $${empTotal.toFixed(2)})</h4>`; if(empAdvances.length === 0) { htmlContent += `<p style="font-size: 0.85rem; color: #64748b;">Sin anticipos.</p>`; } else { htmlContent += `<table style="width:100%; border-collapse: collapse; font-size: 0.85rem;"><thead><tr style="background: #e2e8f0; color: #1e293b;"><th style="padding: 6px; text-align: left;">Fecha y Hora</th><th style="padding: 6px; text-align: right;">Cantidad</th></tr></thead><tbody>`; empAdvances.forEach(a => { htmlContent += `<tr><td style="padding: 6px; border-bottom: 1px solid #cbd5e1;">${formatFechaEcuador(a.datetime)}</td><td style="padding: 6px; border-bottom: 1px solid #cbd5e1; text-align: right; font-weight:600;">$${parseFloat(a.amount).toFixed(2)}</td></tr>`; }); htmlContent += `</tbody></table>`; } htmlContent += `</div>`; }); }
+            document.getElementById('advExportTitle').innerText = `Reporte General de Anticipos`; document.getElementById('advExportBody').innerHTML = htmlContent; triggerExportAdvance(format, `Reporte_General_Anticipos`);
         }
-
         function triggerExportAdvance(format, filename) {
-            const wrapper = document.getElementById('advanceExportWrapper');
-            html2canvas(wrapper, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                if(format === 'image') {
-                    const link = document.createElement('a');
-                    link.download = filename + '.png';
-                    link.href = imgData;
-                    link.click();
-                } else if(format === 'pdf') {
-                    const { jsPDF } = window.jspdf;
-                    const pdf = new jsPDF('p', 'mm', 'a4');
-                    const w = pdf.internal.pageSize.getWidth();
-                    const props = pdf.getImageProperties(imgData);
-                    const h = (props.height * w) / props.width;
-                    pdf.addImage(imgData, 'PNG', 0, 0, w, h);
-                    pdf.save(filename + '.pdf');
-                }
-            });
+            const wrapper = document.getElementById('advanceExportWrapper'); html2canvas(wrapper, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => { const imgData = canvas.toDataURL('image/png'); if(format === 'image') { const link = document.createElement('a'); link.download = filename + '.png'; link.href = imgData; link.click(); } else if(format === 'pdf') { const { jsPDF } = window.jspdf; const pdf = new jsPDF('p', 'mm', 'a4'); const w = pdf.internal.pageSize.getWidth(); const props = pdf.getImageProperties(imgData); const h = (props.height * w) / props.width; pdf.addImage(imgData, 'PNG', 0, 0, w, h); pdf.save(filename + '.pdf'); } });
         }
 
-        // SUPABASE: REPORTES Y EXPORTACIÓN
+        // REPORTES
         async function loadHistory() {
             const { data, error } = await _supabase.from('history').select('*').order('check_out', { ascending: false });
             if (error) { customAlert("Error cargando historial: " + error.message); return; }
@@ -1167,31 +905,16 @@
             if (history.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">No hay registros históricos.</td></tr>'; return; }
             history.forEach(h => { const diffMs = new Date(h.check_out) - new Date(h.check_in); const diffHrs = Math.floor(diffMs / 3600000); tbody.innerHTML += `<tr><td>${h.room}</td><td><strong>${h.name}</strong></td><td>${h.cedula}</td><td>${formatFechaEcuador(h.check_in)}</td><td>${formatFechaEcuador(h.check_out)}</td><td>${diffHrs}h</td></tr>`; });
         }
-
         function preparePreview(type) { 
             currentExportType = type; const tbody = document.getElementById('exportTableBody');
             if (tbody.children.length === 0 || tbody.children[0].innerText.includes("No hay registros")) { customAlert("No hay datos para exportar."); return; }
-            if (type === 'excel') {
-                document.getElementById('excelTableContainer').innerHTML = document.querySelector(".export-table").outerHTML;
-                document.getElementById('previewImage').style.display = 'none'; document.getElementById('excelPreview').style.display = 'block'; document.getElementById('previewModal').style.display = 'flex';
-            } else {
-                document.getElementById('previewImage').style.display = 'none'; document.getElementById('excelPreview').style.display = 'none'; document.getElementById('reportHeader').style.display = 'block'; 
-                html2canvas(document.getElementById('exportableArea'), { scale: 2, backgroundColor: "#ffffff" }).then(canvas => { 
-                    currentCanvasData = canvas.toDataURL('image/png'); document.getElementById('previewImage').src = currentCanvasData; document.getElementById('previewImage').style.display = 'block'; document.getElementById('reportHeader').style.display = 'none'; document.getElementById('previewModal').style.display = 'flex'; 
-                }); 
-            }
+            if (type === 'excel') { document.getElementById('excelTableContainer').innerHTML = document.querySelector(".export-table").outerHTML; document.getElementById('previewImage').style.display = 'none'; document.getElementById('excelPreview').style.display = 'block'; document.getElementById('previewModal').style.display = 'flex'; } 
+            else { document.getElementById('previewImage').style.display = 'none'; document.getElementById('excelPreview').style.display = 'none'; document.getElementById('reportHeader').style.display = 'block'; html2canvas(document.getElementById('exportableArea'), { scale: 2, backgroundColor: "#ffffff" }).then(canvas => { currentCanvasData = canvas.toDataURL('image/png'); document.getElementById('previewImage').src = currentCanvasData; document.getElementById('previewImage').style.display = 'block'; document.getElementById('reportHeader').style.display = 'none'; document.getElementById('previewModal').style.display = 'flex'; }); }
         }
         function confirmDownload() {
-            if (currentExportType === 'excel') {
-                const wb = XLSX.utils.table_to_book(document.querySelector(".export-table"), {sheet: "Reporte"});
-                XLSX.writeFile(wb, 'Reporte_Hostal.xlsx');
-            } else if (currentExportType === 'image') { 
-                const link = document.createElement('a'); link.download = 'Reporte.png'; link.href = currentCanvasData; link.click(); 
-            } else if (currentExportType === 'pdf') { 
-                const { jsPDF } = window.jspdf; const pdf = new jsPDF('p', 'mm', 'a4'); const w = pdf.internal.pageSize.getWidth(); 
-                const props = pdf.getImageProperties(currentCanvasData); const h = (props.height * w) / props.width; 
-                pdf.addImage(currentCanvasData, 'PNG', 0, 0, w, h); pdf.save('Reporte.pdf'); 
-            }
+            if (currentExportType === 'excel') { const wb = XLSX.utils.table_to_book(document.querySelector(".export-table"), {sheet: "Reporte"}); XLSX.writeFile(wb, 'Reporte_Hostal.xlsx'); } 
+            else if (currentExportType === 'image') { const link = document.createElement('a'); link.download = 'Reporte.png'; link.href = currentCanvasData; link.click(); } 
+            else if (currentExportType === 'pdf') { const { jsPDF } = window.jspdf; const pdf = new jsPDF('p', 'mm', 'a4'); const w = pdf.internal.pageSize.getWidth(); const props = pdf.getImageProperties(currentCanvasData); const h = (props.height * w) / props.width; pdf.addImage(currentCanvasData, 'PNG', 0, 0, w, h); pdf.save('Reporte.pdf'); }
             closeModal('previewModal');
         }
     </script>
