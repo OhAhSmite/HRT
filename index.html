@@ -63,15 +63,24 @@
         .login-box h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brand-green); margin-bottom: 25px; line-height: 1.2; }
         .login-error { color: var(--status-occ); font-size: 0.85rem; font-weight: 600; margin-top: 15px; display: none; background: #fef2f2; padding: 10px; border-radius: 8px; border: 1px solid #fecaca; }
         
-        /* AVISO LEGAL INTERNO EN LOGIN */
+        /* AVISO LEGAL EN LOGIN CON ENLACE A POPUP */
         .login-legal-notice {
             margin-top: 25px;
             padding-top: 15px;
             border-top: 1px solid rgba(11, 66, 26, 0.08);
-            font-size: 0.72rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             line-height: 1.4;
             text-align: center;
+        }
+        .login-legal-notice a {
+            color: var(--brand-green);
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .login-legal-notice a:hover {
+            color: var(--brand-peach);
         }
 
         /* === HEADER MÓVIL (Por defecto oculto en PC) === */
@@ -108,6 +117,33 @@
         /* === ÁREA PRINCIPAL Y TRANSICIÓN FLUIDA ENTRE PESTAÑAS === */
         .main-content { flex: 1; display: flex; flex-direction: column; min-width: 0; position: relative; padding: 30px; min-height: 100vh; }
         
+        /* BOTÓN DE MANUAL FLOTANTE EN ESCRITORIO (SUPERIOR DERECHA) */
+        .top-utility-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 15px;
+        }
+        .btn-manual-top {
+            background: var(--white);
+            color: var(--brand-green);
+            border: 1px solid rgba(11, 66, 26, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+        }
+        .btn-manual-top:hover {
+            background: var(--brand-green);
+            color: var(--white);
+            border-color: var(--brand-green);
+        }
+
         .view-section { 
             position: absolute;
             top: 30px;
@@ -190,6 +226,31 @@
         .modal-actions { display: flex; justify-content: center; gap: 12px; margin-top: 25px; }
         .modal-actions button { flex: 1; padding: 12px; font-size: 0.92rem; }
 
+        /* ESTILOS PARA POPUPS DE LEGAL Y MANUAL */
+        .legal-popup-body, .manual-popup-body {
+            text-align: left;
+            font-size: 0.88rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        .legal-popup-body h4, .manual-popup-body h4 {
+            color: var(--brand-green);
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            margin-top: 15px;
+            margin-bottom: 6px;
+        }
+        .manual-step {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 10px;
+        }
+        .manual-step strong {
+            color: var(--brand-green);
+        }
+
         /* === RESERVAS, REPORTES, ANTICIPOS Y DIRECTORIO === */
         #reservationsList { width: 100%; margin-top: 5px; padding-bottom: 30px; }
         .reservation-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; transition: 0.3s; border-left: 6px solid var(--brand-peach); gap: 15px; flex-wrap: wrap; }
@@ -239,16 +300,6 @@
         #excelTableContainer table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 450px; }
         #excelTableContainer th, #excelTableContainer td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }
         #excelTableContainer th { background-color: #107c41; color: #ffffff; font-weight: 600; }
-
-        /* === ESTILOS SECCIÓN ANTICIPOS === */
-        .advance-summary-box { background: var(--white); padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-        .advance-total-display { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--brand-green); font-weight: 700; }
-        .advance-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; width: 100%; padding-bottom: 40px; }
-        .employee-card { background: var(--white); border: 1px solid #e2e8f0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); }
-        .employee-card-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 10px; }
-        .employee-card-header h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--brand-green); }
-        .advance-history-list { max-height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 0.82rem; }
-        .advance-item-row { display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 8px 12px; border-radius: 10px; border: 1px solid #e2e8f0; }
 
         /* === RESPONSIVE MÓVILES === */
         @media (max-width: 768px) {
@@ -371,7 +422,8 @@
             <div class="login-error" id="loginError"><i class="fa-solid fa-triangle-exclamation"></i> Credenciales incorrectas</div>
             
             <div class="login-legal-notice">
-                <i class="fa-solid fa-shield-halved"></i> Sistema informático corporativo privado. Acceso restringido exclusivamente a personal autorizado del Hostal Reales Tamarindos. Toda la información operada está protegida por leyes de confidencialidad y privacidad de datos.
+                <i class="fa-solid fa-shield-halved"></i> Sistema privado protegido. <br>
+                <a onclick="openLegalModal()">Ver Políticas de Privacidad y Aviso Legal</a>
             </div>
         </div>
     </div>
@@ -409,6 +461,10 @@
         </div>
 
         <main class="main-content">
+            <div class="top-utility-bar">
+                <button class="btn-manual-top" onclick="openManualModal()"><i class="fa-solid fa-circle-question"></i> Manual de Usuario</button>
+            </div>
+
             <section id="view-habitaciones" class="view-section active">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
                 <div id="hotelContainer"></div>
@@ -492,7 +548,57 @@
 
     <div class="modal-overlay" id="customAlertModal"><div class="modal-content modal-sm" style="text-align: center;"><div id="alertIcon" style="font-size: 3.5rem; margin-bottom: 15px;"></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div><p id="alertMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" id="alertBtn" onclick="closeModal('customAlertModal')">Entendido</button></div></div></div>
     
-    <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
+    <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="¿Estás seguro?">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
+
+    <div class="modal-overlay" id="legalModal">
+        <div class="modal-content">
+            <div class="modal-title"><span>Políticas de Privacidad y Aviso Legal</span><i class="fa-solid fa-shield-halved" style="color: var(--brand-peach);"></i></div>
+            <div class="legal-popup-body">
+                <h4>1. Confidencialidad de la Información</h4>
+                <p>Este sistema es de propiedad exclusiva del <strong>Hostal Reales Tamarindos</strong>. Toda la información albergada en esta plataforma (datos de huéspedes, registros de entrada/salida, finanzas y anticipos de personal) es de carácter estrictamente confidencial y de uso corporativo interno.</p>
+                
+                <h4>2. Protección de Datos de Huéspedes</h4>
+                <p>La recopilación de nombres y números de cédula se realiza exclusivamente con fines de registro de hospedaje y control de seguridad interna, cumpliendo con los estándares normativos de protección de información personal. Queda terminantemente prohibido extraer, fotografiar o divulgar estos datos a terceros.</p>
+                
+                <h4>3. Responsabilidad del Personal</h4>
+                <p>Cada usuario es responsable del uso correcto de sus credenciales de acceso. La sesión cuenta con un sistema automático de cierre por inactividad para prevenir accesos no autorizados en caso de ausencia en recepción.</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-checkin" onclick="closeModal('legalModal')">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="manualModal">
+        <div class="modal-content">
+            <div class="modal-title"><span>Manual de Instrucciones</span><i class="fa-solid fa-book-open" style="color: var(--brand-peach);"></i></div>
+            <div class="manual-popup-body">
+                <div class="manual-step">
+                    <h4><i class="fa-solid fa-bed"></i> 1. Pestaña Habitaciones</h4>
+                    <p>Muestra el estado en tiempo real (Libre, Ocupada o Limpieza). Haz clic en una tarjeta para voltearla y realizar <strong>Check-In</strong>, cambiar a estado de <strong>Limpieza</strong>, marcar como <strong>M. Limpia</strong> o registrar la <strong>Salida (Checkout)</strong>.</p>
+                </div>
+                <div class="manual-step">
+                    <h4><i class="fa-regular fa-calendar-check"></i> 2. Pestaña Reservas</h4>
+                    <p>Permite agendar futuras llegadas de huéspedes seleccionando la habitación y la fecha. Puedes enviar un mensaje directo por <strong>WhatsApp</strong> al número registrado, editar o eliminar la reserva.</p>
+                </div>
+                <div class="manual-step">
+                    <h4><i class="fa-solid fa-address-book"></i> 3. Pestaña Directorio</h4>
+                    <p>Directorio útil de contactos categorizados (Taxis, Comida, Lugares, Servicios). Puedes hacer clic en el botón de copiar número para pegarlo rápidamente o añadir nuevos contactos con foto.</p>
+                </div>
+                <div class="manual-step">
+                    <h4><i class="fa-solid fa-file-invoice-dollar"></i> 4. Pestaña Anticipos $</h4>
+                    <p>Control de adelantos económicos otorgados a los empleados del hostal. Permite registrar nuevos anticipos, ver el acumulado de cada empleado, borrar historiales o exportar reportes individuales/generales en PDF e Imagen.</p>
+                </div>
+                <div class="manual-step">
+                    <h4><i class="fa-solid fa-chart-pie"></i> 5. Pestaña Reportes</h4>
+                    <p>Historial contable de todos los hospedajes finalizados. Puedes filtrar por fechas de inicio y fin, y generar vistas previas para descargar los reportes en formato <strong>PDF</strong>, <strong>Imagen (PNG)</strong> o <strong>Excel</strong>.</p>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-checkin" onclick="closeModal('manualModal')">Cerrar Manual</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const SUPABASE_URL = 'https://wepjdpgwzdubzffabdol.supabase.co';
@@ -545,6 +651,14 @@
             });
         };
 
+        // FUNCIONES PARA ABRIR POP-UPS LEGALES Y DE MANUAL
+        function openLegalModal() {
+            document.getElementById('legalModal').style.display = 'flex';
+        }
+        function openManualModal() {
+            document.getElementById('manualModal').style.display = 'flex';
+        }
+
         // LOGIN
         function checkSession() { 
             if (sessionStorage.getItem('hostal_auth_token') === 'active') {
@@ -580,7 +694,7 @@
             document.getElementById('view-' + viewId).classList.add('active'); 
             
             document.querySelectorAll('.nav-item').forEach(item => {
-                if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) {
+                if(item.getAttribute('onclick') && item.getAttribute('onclick'].includes(viewId)) {
                     item.classList.add('active');
                 }
             });
