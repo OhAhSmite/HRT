@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostal Reales Tamarindos - Gestión</title>
     
+    <!-- MEDIDAS DE SEGURIDAD CONTRA MOTORES DE BÚSQUEDA Y RASTREADORES -->
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
     <meta name="googlebot" content="noindex, nofollow">
     
+    <!-- Fuentes Elegantes -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Librerías para Exportar y Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -296,6 +299,7 @@
 </head>
 <body>
 
+    <!-- PANTALLA LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <img src="image_d6cde8.png" alt="Logo Hostal">
@@ -312,8 +316,10 @@
         </div>
     </div>
 
+    <!-- APLICACIÓN PRINCIPAL -->
     <div id="app-container">
         
+        <!-- HEADER MÓVIL -->
         <div class="mobile-header">
             <div class="mobile-brand">
                 <img src="image_d6cde8.png" alt="Logo">
@@ -325,6 +331,7 @@
             </div>
         </div>
 
+        <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
@@ -341,6 +348,7 @@
             </div>
         </div>
 
+        <!-- BARRA MÓVIL INFERIOR -->
         <div class="mobile-bottom-bar">
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habit.</span></div>
             <div class="nav-item" onclick="switchView('notas', this)"><i class="fa-solid fa-clipboard-list"></i> <span>Notas</span></div>
@@ -355,11 +363,13 @@
                 <button class="btn-manual-top" onclick="openManualModal()"><i class="fa-solid fa-circle-question"></i> Manual de Usuario</button>
             </div>
 
+            <!-- HABITACIONES -->
             <section id="view-habitaciones" class="view-section active">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
                 <div id="hotelContainer"></div>
             </section>
             
+            <!-- NOTAS Y NOVEDADES -->
             <section id="view-notas" class="view-section">
                 <div class="main-title">
                     <div class="main-title-left"><i class="fa-solid fa-clipboard-list" style="color: var(--brand-peach);"></i> Notas y Novedades</div>
@@ -368,11 +378,13 @@
                 <div class="notes-grid" id="notesListContainer"></div>
             </section>
 
+            <!-- RESERVAS -->
             <section id="view-reservas" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
                 <div id="reservationsList"></div>
             </section>
             
+            <!-- DIRECTORIO -->
             <section id="view-directorio" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button></div>
                 <div class="directory-tabs" id="directoryTabs">
@@ -385,6 +397,7 @@
                 <div class="directory-grid" id="contactsGrid"></div>
             </section>
             
+            <!-- ANTICIPOS -->
             <section id="view-anticipos" class="view-section">
                 <div class="main-title">
                     <div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div>
@@ -403,6 +416,7 @@
                 <div class="advance-grid" id="employeesGrid"></div>
             </section>
             
+            <!-- REPORTES -->
             <section id="view-reportes" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div></div>
                 <div class="filter-section-sym">
@@ -424,6 +438,7 @@
         </main>
     </div>
 
+    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN -->
     <div id="advanceExportWrapper" style="position: absolute; left: -9999px; top: 0; width: 650px; background: #ffffff; padding: 30px; border-radius: 16px; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-green); font-size: 1.8rem; margin-bottom: 5px;">Hostal Reales Tamarindos</h2>
@@ -432,6 +447,8 @@
         <div id="advExportBody"></div>
     </div>
 
+    <!-- MODALES GENERALES Y DE SISTEMA -->
+    
     <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Cédula (Opcional)</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="guestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Check-Out</button></div></div></div>
@@ -450,6 +467,7 @@
     <div class="modal-overlay" id="customAlertModal"><div class="modal-content modal-sm" style="text-align: center;"><div id="alertIcon" style="font-size: 3.5rem; margin-bottom: 15px;"></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;" id="alertTitle">Atención</div><p id="alertMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" id="alertBtn" onclick="closeModal('customAlertModal')">Entendido</button></div></div></div>
     <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
+    <!-- MODALES DE MANUAL Y LEGAL -->
     <div class="modal-overlay" id="legalModal">
         <div class="modal-content">
             <div class="modal-title"><span>Políticas de Privacidad y Aviso Legal</span><i class="fa-solid fa-shield-halved" style="color: var(--brand-peach);"></i></div>
@@ -800,18 +818,29 @@
             updateRoomDB(id, py);
         }
 
-        // GUARDADO DE CHECKOUT EN HISTORIAL INCLUYENDO CANTIDAD DE PERSONAS (GUEST_COUNT)
+        // GUARDADO DE CHECKOUT EN HISTORIAL CON MECANISMO DE RESPALDO ANTI-ERRORES
         async function updateRoomDB(id, payload) {
             const index = globalRooms.findIndex(r => r.id === id); if(index === -1) return; const room = globalRooms[index];
+            
+            // 1. Guardar en Historial si es Check-Out
             if (payload.isCheckout && room.check_in_time) {
-                await _supabase.from('history').insert([{ 
+                let histPayload = { 
                     room: room.id, 
                     name: room.guest_name, 
                     cedula: room.guest_id, 
                     check_in: room.check_in_time, 
                     check_out: new Date().toISOString(),
                     guest_count: room.guest_count || 1 
-                }]);
+                };
+                
+                // Intento 1: Guardar con la nueva columna guest_count
+                let { error: histErr } = await _supabase.from('history').insert([histPayload]);
+                
+                // FALLBACK: Si falla (porque la base de datos no tiene la columna creada), guardamos de la forma tradicional
+                if (histErr) {
+                    delete histPayload.guest_count;
+                    await _supabase.from('history').insert([histPayload]);
+                }
             }
             
             if (payload.isCheckout) {
@@ -826,8 +855,16 @@
             let updatePayload = { status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id };
             if(room.guest_count !== undefined) updatePayload.guest_count = room.guest_count;
 
-            const { error } = await _supabase.from('rooms').update(updatePayload).eq('id', id);
-            if (error) { customAlert("Error actualizando habitación: " + error.message); return; }
+            // 2. Actualizar Estado de Habitación
+            let { error: roomErr } = await _supabase.from('rooms').update(updatePayload).eq('id', id);
+            
+            // FALLBACK: Si falla la actualización de la tabla rooms por la misma razón
+            if (roomErr) {
+                delete updatePayload.guest_count;
+                let fallback = await _supabase.from('rooms').update(updatePayload).eq('id', id);
+                if (fallback.error) { customAlert("Error actualizando habitación: " + fallback.error.message); return; }
+            }
+            
             renderRooms(globalRooms);
         }
 
