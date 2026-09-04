@@ -436,7 +436,7 @@
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Check-Out</button></div></div></div>
     
-    <div class="modal-overlay" id="addReservationModal"><div class="modal-content modal-sm"><div class="modal-title" id="resModalTitle">Reserva</div><div class="form-group"><label>Huésped (Nombre)</label><input type="text" id="rName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Habitación</label><select id="rRoom"></select></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="rGuestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="rPhone"></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Llegada</label><input type="datetime-local" id="rArrival"></div></div><div class="form-group"><label>Nota adicional</label><input type="text" id="rNote"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveReservation()">Guardar</button></div></div></div>
+    <div class="modal-overlay" id="addReservationModal"><div class="modal-content modal-sm"><div class="modal-title" id="resModalTitle">Reserva</div><div class="form-group"><label>Huésped (Nombre)</label><input type="text" id="rName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 2; min-width: 140px;"><label>Habitación</label><select id="rRoom"></select></div><div class="form-group" style="flex: 1; min-width: 80px;"><label>Personas</label><select id="rGuestCount"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option></select></div></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 120px;"><label>Teléfono</label><input type="text" id="rPhone"></div><div class="form-group" style="flex: 1; min-width: 120px;"><label>Fecha Llegada</label><input type="date" id="rArrivalDate"></div><div class="form-group" style="flex: 1; min-width: 100px;"><label>Hora (Opcional)</label><input type="time" id="rArrivalTime"></div></div><div class="form-group"><label>Nota adicional</label><input type="text" id="rNote"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('addReservationModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveReservation()">Guardar</button></div></div></div>
     
     <div class="modal-overlay" id="noteFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="noteModalTitle">Añadir Nota</div><div class="form-group"><label>Asignación (Opcional)</label><select id="noteRoomSelect"><option value="0">Mensaje General (Todos)</option></select></div><div class="form-group"><label>Contenido / Recordatorio</label><textarea id="noteContent" rows="3" placeholder="Ej. El huésped dejó sus maletas..."></textarea></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('noteFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveNote()">Guardar Nota</button></div></div></div>
 
@@ -743,7 +743,6 @@
                 
                 actionButtonsHtml += `<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">CHECK-OUT</button><button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button>`;
 
-                // CORRECCIÓN: Botón "Agregar Nota" solo si la habitación no está libre.
                 let addNoteBtnHtml = (r.status !== 'available') ? `<button class="btn-add-note-sm" onclick="openNoteForm(null, ${r.id})"><i class="fa-solid fa-plus"></i> Agregar Nota</button>` : '';
 
                 grid.innerHTML += `
@@ -807,7 +806,6 @@
                 await _supabase.from('history').insert([{ room: room.id, name: room.guest_name, cedula: room.guest_id, check_in: room.check_in_time, check_out: new Date().toISOString() }]);
             }
             
-            // BORRADO AUTOMÁTICO DE NOTAS PENDIENTES DE LA HABITACIÓN EN CHECK-OUT
             if (payload.isCheckout) {
                 await _supabase.from('notes').delete().eq('room_id', id);
                 await fetchNotesDB();
@@ -846,21 +844,52 @@
             globalRooms.forEach(room => { 
                 const opt = document.createElement('option'); opt.value = room.id; const estadoTxt = room.status === 'available' ? '🟢 LIBRE' : '🔴 OCUPADA'; opt.textContent = `Habitación ${room.id} [${estadoTxt}]`; select.appendChild(opt); 
             });
-            if (id) { const res = reservationsData.find(r => r.id === id); document.getElementById('rName').value = res.name; document.getElementById('rRoom').value = res.room; document.getElementById('rGuestCount').value = res.guest_count || 1; document.getElementById('rPhone').value = res.phone; document.getElementById('rArrival').value = new Date(res.arrival).toISOString().slice(0, 16); document.getElementById('rNote').value = res.note || ''; } 
-            else { document.getElementById('rName').value = ''; document.getElementById('rGuestCount').value = '1'; document.getElementById('rPhone').value = ''; document.getElementById('rArrival').value = ''; document.getElementById('rNote').value = ''; }
+            if (id) { 
+                const res = reservationsData.find(r => r.id === id); 
+                document.getElementById('rName').value = res.name; 
+                document.getElementById('rRoom').value = res.room; 
+                document.getElementById('rGuestCount').value = res.guest_count || 1; 
+                document.getElementById('rPhone').value = res.phone; 
+                if(res.arrival) {
+                    const d = new Date(res.arrival);
+                    const yyyy = d.getFullYear();
+                    const mm = String(d.getMonth() + 1).padStart(2, '0');
+                    const dd = String(d.getDate()).padStart(2, '0');
+                    document.getElementById('rArrivalDate').value = `${yyyy}-${mm}-${dd}`;
+                    const hh = String(d.getHours()).padStart(2, '0');
+                    const min = String(d.getMinutes()).padStart(2, '0');
+                    document.getElementById('rArrivalTime').value = `${hh}:${min}`;
+                } else {
+                    document.getElementById('rArrivalDate').value = '';
+                    document.getElementById('rArrivalTime').value = '';
+                }
+                document.getElementById('rNote').value = res.note || ''; 
+            } 
+            else { 
+                document.getElementById('rName').value = ''; 
+                document.getElementById('rGuestCount').value = '1'; 
+                document.getElementById('rPhone').value = ''; 
+                document.getElementById('rArrivalDate').value = ''; 
+                document.getElementById('rArrivalTime').value = ''; 
+                document.getElementById('rNote').value = ''; 
+            }
             document.getElementById('addReservationModal').style.display = 'flex';
         }
 
+        // FUNCIÓN GUARDAR RESERVA: HORA OPCIONAL
         async function saveReservation() {
             try {
                 const name = document.getElementById('rName').value.trim(); 
                 const room = document.getElementById('rRoom').value; 
-                const arrival = document.getElementById('rArrival').value;
+                const arrivalDate = document.getElementById('rArrivalDate').value;
+                const arrivalTime = document.getElementById('rArrivalTime').value;
                 const guest_count = parseInt(document.getElementById('rGuestCount').value) || 1;
                 
-                if (!name || !room || !arrival) { customAlert("Faltan datos obligatorios."); return; }
-                const dateObj = new Date(arrival);
-                if (isNaN(dateObj.getTime())) { customAlert("Fecha incompleta."); return; }
+                if (!name || !room || !arrivalDate) { customAlert("Faltan datos obligatorios (Nombre, Habitación y Fecha)."); return; }
+                
+                const timePart = arrivalTime ? arrivalTime : '12:00';
+                const dateObj = new Date(`${arrivalDate}T${timePart}`);
+                if (isNaN(dateObj.getTime())) { customAlert("Fecha u hora no válida."); return; }
 
                 const payload = { id: currentResEditingId || Date.now(), name: name, room: parseInt(room), phone: document.getElementById('rPhone').value.trim(), arrival: dateObj.toISOString(), note: document.getElementById('rNote').value.trim(), guest_count: guest_count };
                 
