@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hostal Reales Tamarindos - Gestión</title>
     
-    <!-- MEDIDAS DE SEGURIDAD CONTRA MOTORES DE BÚSQUEDA Y RASTREADORES -->
     <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
     <meta name="googlebot" content="noindex, nofollow">
     
-    <!-- Fuentes Elegantes -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Librerías para Exportar y Supabase -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -59,12 +56,23 @@
         }
         .login-box {
             background: var(--white); padding: 40px 30px; border-radius: 24px;
-            box-shadow: 0 25px 50px rgba(11, 66, 26, 0.08); width: 100%; max-width: 420px;
+            box-shadow: 0 25px 50px rgba(11, 66, 26, 0.08); width: 100%; max-width: 440px;
             text-align: center; border: 1px solid rgba(11, 66, 26, 0.05); margin: 20px;
         }
         .login-box img { max-width: 110px; margin-bottom: 20px; }
-        .login-box h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brand-green); margin-bottom: 30px; line-height: 1.2; }
+        .login-box h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--brand-green); margin-bottom: 25px; line-height: 1.2; }
         .login-error { color: var(--status-occ); font-size: 0.85rem; font-weight: 600; margin-top: 15px; display: none; background: #fef2f2; padding: 10px; border-radius: 8px; border: 1px solid #fecaca; }
+        
+        /* AVISO LEGAL INTERNO EN LOGIN */
+        .login-legal-notice {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(11, 66, 26, 0.08);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            text-align: center;
+        }
 
         /* === HEADER MÓVIL (Por defecto oculto en PC) === */
         .mobile-header { display: none; }
@@ -353,7 +361,6 @@
 </head>
 <body>
 
-    <!-- PANTALLA LOGIN -->
     <div id="login-screen">
         <div class="login-box">
             <img src="image_d6cde8.png" alt="Logo Hostal">
@@ -362,13 +369,15 @@
             <div class="form-group"><label>Contraseña</label><input type="password" id="loginPass" placeholder="••••••••"></div>
             <button class="btn btn-checkin" onclick="processLogin()">Iniciar Sesión</button>
             <div class="login-error" id="loginError"><i class="fa-solid fa-triangle-exclamation"></i> Credenciales incorrectas</div>
+            
+            <div class="login-legal-notice">
+                <i class="fa-solid fa-shield-halved"></i> Sistema informático corporativo privado. Acceso restringido exclusivamente a personal autorizado del Hostal Reales Tamarindos. Toda la información operada está protegida por leyes de confidencialidad y privacidad de datos.
+            </div>
         </div>
     </div>
 
-    <!-- APLICACIÓN PRINCIPAL -->
     <div id="app-container">
         
-        <!-- HEADER SUPERIOR EXCLUSIVO PARA MÓVILES -->
         <div class="mobile-header">
             <div class="mobile-brand">
                 <img src="image_d6cde8.png" alt="Logo">
@@ -377,7 +386,6 @@
             <button class="mobile-logout-btn" onclick="processLogout()" title="Cerrar Sesión"><i class="fa-solid fa-power-off"></i></button>
         </div>
 
-        <!-- SIDEBAR (ESCRITORIO) -->
         <div class="sidebar">
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
@@ -392,7 +400,6 @@
             </div>
         </div>
 
-        <!-- BARRA INFERIOR FLOTANTE EXCLUSIVA PARA MÓVILES -->
         <div class="mobile-bottom-bar">
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habitaciones</span></div>
             <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reservas</span></div>
@@ -402,17 +409,14 @@
         </div>
 
         <main class="main-content">
-            <!-- HABITACIONES -->
             <section id="view-habitaciones" class="view-section active">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-door-open" style="color: var(--brand-peach);"></i> Recepción & Habitaciones</div></div>
                 <div id="hotelContainer"></div>
             </section>
-            <!-- RESERVAS -->
             <section id="view-reservas" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-regular fa-calendar-check" style="color: var(--brand-peach);"></i> Agenda de Reservas</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openReservationForm()"><i class="fa-solid fa-plus"></i> Nueva Reserva</button></div>
                 <div id="reservationsList"></div>
             </section>
-            <!-- DIRECTORIO -->
             <section id="view-directorio" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-address-book" style="color: var(--brand-peach);"></i> Directorio & Contactos</div><button class="btn btn-checkin" style="width: auto; padding: 10px 20px;" onclick="openContactForm()"><i class="fa-solid fa-plus"></i> Añadir Contacto</button></div>
                 <div class="directory-tabs" id="directoryTabs">
@@ -424,7 +428,6 @@
                 </div>
                 <div class="directory-grid" id="contactsGrid"></div>
             </section>
-            <!-- ANTICIPOS DE EMPLEADOS -->
             <section id="view-anticipos" class="view-section">
                 <div class="main-title">
                     <div class="main-title-left"><i class="fa-solid fa-file-invoice-dollar" style="color: var(--brand-peach);"></i> Anticipos de Empleados $</div>
@@ -444,7 +447,6 @@
 
                 <div class="advance-grid" id="employeesGrid"></div>
             </section>
-            <!-- REPORTES -->
             <section id="view-reportes" class="view-section">
                 <div class="main-title"><div class="main-title-left"><i class="fa-solid fa-database" style="color: var(--brand-peach);"></i> Historial Contable</div></div>
                 <div class="filter-section-sym">
@@ -466,7 +468,6 @@
         </main>
     </div>
 
-    <!-- CONTENEDOR OCULTO PARA EXPORTACIÓN DE ANTICIPOS -->
     <div id="advanceExportWrapper" style="position: absolute; left: -9999px; top: 0; width: 650px; background: #ffffff; padding: 30px; border-radius: 16px; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="font-family: 'Playfair Display', serif; color: var(--brand-green); font-size: 1.8rem; margin-bottom: 5px;">Hostal Reales Tamarindos</h2>
@@ -475,7 +476,6 @@
         <div id="advExportBody"></div>
     </div>
 
-    <!-- MODALES -->
     <div class="modal-overlay" id="checkinModal"><div class="modal-content modal-sm"><div class="modal-title"><span>Check-In</span><i class="fa-solid fa-key" style="color: var(--brand-peach);"></i></div><div class="form-group"><label>Nombre del Cliente</label><input type="text" id="guestName" autocomplete="off"></div><div class="form-group"><label>Cédula</label><input type="text" id="guestCedula" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('checkinModal')">Cancelar</button><button class="btn btn-checkin" onclick="submitCheckin()">Ocupar</button></div></div></div>
     
     <div class="modal-overlay" id="confirmCheckoutModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-power-off"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Finalizar Hospedaje?</div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('confirmCheckoutModal')">Cancelar</button><button class="btn btn-checkout" onclick="executeCheckout()">Confirmar Salida</button></div></div></div>
@@ -486,7 +486,6 @@
     
     <div class="modal-overlay" id="contactFormModal"><div class="modal-content modal-sm"><div class="modal-title" id="contactFormTitle">Contacto</div><div class="form-group"><label>Nombre</label><input type="text" id="cName"></div><div style="display: flex; gap: 12px; flex-wrap: wrap;"><div class="form-group" style="flex: 1; min-width: 130px;"><label>Categoría</label><select id="cCategory"><option value="taxi">Taxis</option><option value="food">Comida</option><option value="places">Lugares</option><option value="services">Servicios</option></select></div><div class="form-group" style="flex: 1; min-width: 130px;"><label>Teléfono</label><input type="text" id="cPhone"></div></div><div class="form-group"><label>Descripción</label><textarea id="cDesc" rows="2"></textarea></div><div class="form-group"><label>Foto</label><input type="file" id="cImage" accept="image/*" onchange="previewImage(event)"><img id="cImagePreview" src=""></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('contactFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveContact()">Guardar</button></div></div></div>
     
-    <!-- MODALES ANTICIPOS -->
     <div class="modal-overlay" id="employeeFormModal"><div class="modal-content modal-sm"><div class="modal-title">Añadir Empleado</div><div class="form-group"><label>Nombre del Empleado</label><input type="text" id="empName" autocomplete="off"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('employeeFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveEmployee()">Guardar</button></div></div></div>
     
     <div class="modal-overlay" id="advanceFormModal"><div class="modal-content modal-sm"><div class="modal-title">Registrar Anticipo</div><div class="form-group"><label>Cantidad de Dinero ($)</label><input type="number" step="0.01" id="advAmount" placeholder="0.00"></div><div class="form-group"><label>Fecha y Hora</label><input type="datetime-local" id="advDateTime"></div><div class="modal-actions"><button class="btn btn-cancel" onclick="closeModal('advanceFormModal')">Cancelar</button><button class="btn btn-checkin" onclick="saveAdvance()">Guardar Anticipo</button></div></div></div>
@@ -495,9 +494,6 @@
     
     <div class="modal-overlay" id="customConfirmModal"><div class="modal-content modal-sm" style="text-align: center;"><div style="font-size: 3.5rem; color: var(--status-occ); margin-bottom: 15px;"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="modal-title" style="justify-content: center; border:none; margin-bottom: 10px;">¿Estás seguro?</div><p id="confirmMessage" style="font-size: 0.92rem;"></p><div class="modal-actions"><button class="btn btn-cancel" onclick="closeConfirmModal()">Cancelar</button><button class="btn btn-checkout" onclick="executeConfirm()">Sí, confirmar</button></div></div></div>
 
-    <!-- ========================================== -->
-    <!-- LOGICA SUPABASE Y JS -->
-    <!-- ========================================== -->
     <script>
         const SUPABASE_URL = 'https://wepjdpgwzdubzffabdol.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcGpkcGd3emR1YnpmZmFiZG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTE0NzMsImV4cCI6MjEwNDA2NzQ3M30.7rLJx7igmqMDEU3KJTwnD5V8Q93KyE2M3UtERbvX1kU';
@@ -520,8 +516,43 @@
         let currentExportType = ''; 
         let currentCanvasData = '';
 
+        // CONFIGURACIÓN DE INACTIVIDAD (15 MINUTOS)
+        let inactivityTimer = null;
+        const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutos en milisegundos
+
+        function resetInactivityTimer() {
+            if (sessionStorage.getItem('hostal_auth_token') === 'active') {
+                clearTimeout(inactivityTimer);
+                inactivityTimer = setTimeout(() => {
+                    processLogoutDueToInactivity();
+                }, INACTIVITY_LIMIT);
+            }
+        }
+
+        function processLogoutDueToInactivity() {
+            sessionStorage.removeItem('hostal_auth_token');
+            customAlert("La sesión se ha cerrado automáticamente por 15 minutos de inactividad.", "Seguridad", "warning");
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        }
+
+        // Eventos para detectar actividad del usuario en la interfaz
+        window.onload = function() {
+            checkSession();
+            ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'].forEach(eventName => {
+                document.addEventListener(eventName, resetInactivityTimer, true);
+            });
+        };
+
         // LOGIN
-        function checkSession() { if (sessionStorage.getItem('hostal_auth_token') === 'active') showApp(); }
+        function checkSession() { 
+            if (sessionStorage.getItem('hostal_auth_token') === 'active') {
+                showApp();
+                resetInactivityTimer();
+            } 
+        }
+
         function processLogin() {
             const user = document.getElementById('loginUser').value; const pass = document.getElementById('loginPass').value;
             const uCode = [72, 82, 84]; const pCode = [77, 73, 68, 65, 76, 49, 57, 52, 48]; 
@@ -535,10 +566,10 @@
         function showApp() { 
             document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-container').style.display = 'flex';
             initDashboard(); if (!appInterval) appInterval = setInterval(updateLiveTimers, 1000); 
+            resetInactivityTimer();
         }
         document.getElementById('loginPass').addEventListener('keypress', e => { if (e.key === 'Enter') processLogin(); });
         document.getElementById('loginUser').addEventListener('keypress', e => { if (e.key === 'Enter') processLogin(); });
-        window.onload = checkSession;
 
         // UTILES UI (Controla el cambio de pestañas con transición suave)
         function switchView(viewId, element) { 
