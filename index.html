@@ -326,7 +326,7 @@
             <div class="sidebar-header"><img src="image_d6cde8.png" alt="Logo"><h1>Hostal<br>Reales Tamarindos</h1></div>
             <nav class="nav-menu">
                 <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> Habitaciones</div>
-                <div class="nav-item" onclick="switchView('notas', this)"><i class="fa-solid fa-clipboard-list"></i> Notas</div>
+                <div class="nav-item" onclick="switchView('notas', this); loadNotesUI();"><i class="fa-solid fa-clipboard-list"></i> Notas</div>
                 <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> Reservas</div>
                 <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> Directorio</div>
                 <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> Anticipos $</div>
@@ -340,7 +340,7 @@
 
         <div class="mobile-bottom-bar">
             <div class="nav-item active" onclick="switchView('habitaciones', this)"><i class="fa-solid fa-bed"></i> <span>Habit.</span></div>
-            <div class="nav-item" onclick="switchView('notas', this)"><i class="fa-solid fa-clipboard-list"></i> <span>Notas</span></div>
+            <div class="nav-item" onclick="switchView('notas', this); loadNotesUI();"><i class="fa-solid fa-clipboard-list"></i> <span>Notas</span></div>
             <div class="nav-item" onclick="switchView('reservas', this); renderReservations();"><i class="fa-regular fa-calendar-check"></i> <span>Reserva</span></div>
             <div class="nav-item" onclick="switchView('directorio', this); loadDirectoryData();"><i class="fa-solid fa-address-book"></i> <span>Agenda</span></div>
             <div class="nav-item" onclick="switchView('anticipos', this); loadAdvances();"><i class="fa-solid fa-file-invoice-dollar"></i> <span>Anticip.</span></div>
@@ -495,12 +495,14 @@
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcGpkcGd3emR1YnpmZmFiZG9sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0OTE0NzMsImV4cCI6MjEwNDA2NzQ3M30.7rLJx7igmqMDEU3KJTwnD5V8Q93KyE2M3UtERbvX1kU';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        // Variables de almacenamiento en Caché Local
         let globalRooms = [];
         let reservationsData = [];
         let contactsData = [];
         let employeesData = [];
         let advancesData = [];
         let notesData = []; 
+        let historyData = [];
         
         let currentEmpIdForAdvance = null;
         let appInterval = null;
@@ -551,6 +553,7 @@
             } else { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginPass').value = ''; }
         }
         function processLogout() { sessionStorage.removeItem('hostal_auth_token'); location.reload(); }
+        
         function showApp() { 
             document.getElementById('login-screen').style.display = 'none'; document.getElementById('app-container').style.display = 'flex';
             initDashboard(); if (!appInterval) appInterval = setInterval(updateLiveTimers, 1000); 
@@ -566,9 +569,17 @@
             document.getElementById('view-' + viewId).classList.add('active'); 
             document.querySelectorAll('.nav-item').forEach(item => { if(item.getAttribute('onclick') && item.getAttribute('onclick').includes(viewId)) item.classList.add('active'); });
             window.scrollTo(0, 0);
-            if(viewId === 'notas') loadNotesUI();
         }
         function closeModal(id) { document.getElementById(id).style.display = 'none'; if(id==='checkinModal' && currentRoomIdForCheckin) flipCard(currentRoomIdForCheckin); if(id==='confirmCheckoutModal' && currentRoomIdForCheckout) flipCard(currentRoomIdForCheckout); }
+        
+        function handleSupabaseError(error, context) {
+            let msg = error.message;
+            if (msg.includes('Failed to fetch')) {
+                msg = "No se pudo conectar a la base de datos. Si usas Supabase gratuito, es probable que tu proyecto esté en 'Pausa' por inactividad. Ingresa a Supabase.com y haz clic en 'Restore'.";
+            }
+            customAlert(context + ": " + msg);
+        }
+
         function customAlert(msg, title="Atención", type="warning") { document.getElementById('alertTitle').innerText = title; document.getElementById('alertMessage').innerText = msg; document.getElementById('customAlertModal').style.display = 'flex'; }
         function customConfirm(msg, callback) { document.getElementById('confirmMessage').innerText = msg; confirmCallback = callback; document.getElementById('customConfirmModal').style.display = 'flex'; }
         function executeConfirm() { document.getElementById('customConfirmModal').style.display = 'none'; if(confirmCallback) { confirmCallback(); confirmCallback = null; } }
@@ -584,125 +595,47 @@
         function calcularTiempoVivo(iso) {
             if (!iso) return '--'; const diffSecs = Math.max(0, Math.floor((new Date() - new Date(iso)) / 1000));
             const dias = Math.floor(diffSecs / 86400); const horas = Math.floor((diffSecs % 86400) / 3600); const mins = Math.floor((diffSecs % 3600) / 60);
-            if (dias > 0) return `${dias}d ${horas}h ${mins}m`; else if (horas > 0) return `${horas}h ${mins}m`; else return `${mins} min`;
+            if (dias > 0) return `${dias}d ${horas}h${mins}m`; else if (horas > 0) return `${horas}h${mins}m`; else return `${mins} min`;
         }
 
-        // SUPABASE: NOTAS Y NOVEDADES
-        async function fetchNotesDB() {
-            try {
-                const { data, error } = await _supabase.from('notes').select('*').order('created_at', { ascending: false });
-                if (!error) notesData = data || [];
-            } catch(e) { notesData = []; }
-        }
+        // ==========================================
+        // FUNCIONES DE PRECARGA EN SEGUNDO PLANO
+        // ==========================================
+        async function fetchNotesDB() { try { const { data } = await _supabase.from('notes').select('*').order('created_at', { ascending: false }); if (data) notesData = data; } catch(e){} }
+        async function fetchReservationsDB() { try { const { data } = await _supabase.from('reservations').select('*').order('arrival', { ascending: true }); if (data) reservationsData = data; } catch(e){} }
+        async function fetchDirectoryDB() { try { const { data } = await _supabase.from('contacts').select('*'); if (data) contactsData = data; } catch(e){} }
+        async function fetchAdvancesDB() { try { const { data: empData } = await _supabase.from('employees').select('*').order('name', { ascending: true }); if(empData) employeesData = empData; const { data: advData } = await _supabase.from('advances').select('*').order('datetime', { ascending: false }); if(advData) advancesData = advData; } catch(e){} }
+        async function fetchHistoryDB() { try { const { data } = await _supabase.from('history').select('*').order('check_out', { ascending: false }); if (data) historyData = data; } catch(e){} }
 
-        async function loadNotesUI() {
-            await fetchNotesDB();
-            const container = document.getElementById('notesListContainer');
-            container.innerHTML = '';
-            if (notesData.length === 0) { container.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay notas o novedades registradas.</p>'; return; }
-            
-            notesData.forEach(n => {
-                const isGeneral = !n.room_id || n.room_id == 0;
-                const badgeHtml = isGeneral ? `<span class="note-badge general">General</span>` : `<span class="note-badge">Habitación ${n.room_id}</span>`;
-                const cardClass = isGeneral ? 'note-card general' : 'note-card';
-                
-                container.innerHTML += `
-                    <div class="${cardClass}">
-                        <div class="note-header">
-                            ${badgeHtml} 
-                            <span>${formatFechaEcuador(n.created_at)}</span>
-                        </div>
-                        <div class="note-content">${n.content}</div>
-                        <div class="note-actions">
-                            <button class="btn-icon btn-edit-res" onclick="openNoteForm(${n.id})" style="width:34px;height:34px;font-size:0.9rem;" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                            <button class="btn-icon btn-delete-res" onclick="deleteNote(${n.id})" style="width:34px;height:34px;font-size:0.9rem;" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function openNoteForm(id = null, preselectRoomId = null) {
-            currentNoteEditingId = id;
-            const select = document.getElementById('noteRoomSelect');
-            select.innerHTML = '<option value="0">Mensaje General (Todos)</option>';
-            globalRooms.forEach(room => { 
-                const opt = document.createElement('option'); opt.value = room.id; opt.textContent = `Asignar a Habitación ${room.id}`; select.appendChild(opt); 
-            });
-            
-            if (id) {
-                const note = notesData.find(x => x.id === id);
-                document.getElementById('noteContent').value = note ? note.content : '';
-                document.getElementById('noteRoomSelect').value = note ? (note.room_id || 0) : 0;
-            } else {
-                document.getElementById('noteContent').value = '';
-                if (preselectRoomId) {
-                    document.getElementById('noteRoomSelect').value = preselectRoomId;
-                } else {
-                    document.getElementById('noteRoomSelect').value = '0';
-                }
-            }
-            document.getElementById('noteFormModal').style.display = 'flex';
-        }
-
-        // GUARDADO DE NOTAS
-        async function saveNote() {
-            const content = document.getElementById('noteContent').value.trim();
-            const room_id = parseInt(document.getElementById('noteRoomSelect').value);
-            if (!content) { customAlert("Por favor, ingresa el contenido de la nota."); return; }
-
-            const payload = { 
-                id: currentNoteEditingId || Date.now(),
-                content: content, 
-                room_id: room_id === 0 ? null : room_id,
-                created_at: new Date().toISOString()
-            };
-
-            const { error } = await _supabase.from('notes').upsert(payload);
-
-            if (error) { 
-                console.error("Error guardando nota:", error);
-                customAlert("Error guardando nota: " + error.message); 
-                return; 
-            }
-            
-            closeModal('noteFormModal');
-            await fetchNotesDB();
-            loadNotesUI();
-            renderRooms(globalRooms); 
-        }
-
-        function deleteNote(id, fromRoom = false) {
-            if(fromRoom) {
-                _supabase.from('notes').delete().eq('id', id).then(() => {
-                    fetchNotesDB().then(() => {
-                        loadNotesUI(); renderRooms(globalRooms);
-                    });
-                });
-            } else {
-                customConfirm("¿Eliminar esta nota?", async () => { 
-                    await _supabase.from('notes').delete().eq('id', id); 
-                    await fetchNotesDB(); loadNotesUI(); renderRooms(globalRooms); 
-                });
-            }
-        }
-
-        // SUPABASE: HABITACIONES
+        // ==========================================
+        // CARGA PRINCIPAL INICIAL
+        // ==========================================
         async function initDashboard() {
-            await fetchNotesDB(); 
-            const { data, error } = await _supabase.from('rooms').select('*').order('id', { ascending: true });
-            if (error) { customAlert("Error cargando habitaciones: " + error.message); return; }
-            
-            if (data.length === 0) {
-                let defaultRooms = [];
-                for (let i = 1; i <= 10; i++) defaultRooms.push({ id: i, floor: i<=5?1:2, status: 'available' });
-                await _supabase.from('rooms').insert(defaultRooms);
-                globalRooms = defaultRooms;
-            } else {
-                globalRooms = data;
-            }
-            renderRooms(globalRooms);
+            try {
+                // Iniciar pre-carga secreta sin pausar la app
+                fetchNotesDB();
+                fetchReservationsDB();
+                fetchDirectoryDB();
+                fetchAdvancesDB();
+                fetchHistoryDB();
+
+                // Cargar solo las habitaciones visiblemente
+                const { data, error } = await _supabase.from('rooms').select('*').order('id', { ascending: true });
+                if (error) { handleSupabaseError(error, "Error cargando habitaciones"); return; }
+                
+                if (data.length === 0) {
+                    let defaultRooms = [];
+                    for (let i = 1; i <= 10; i++) defaultRooms.push({ id: i, floor: i<=5?1:2, status: 'available' });
+                    await _supabase.from('rooms').insert(defaultRooms);
+                    globalRooms = defaultRooms;
+                } else {
+                    globalRooms = data;
+                }
+                renderRooms(globalRooms);
+            } catch(e) { customAlert("Error inicializando: " + e.message); }
         }
 
+        // HABITACIONES (Render)
         function renderRooms(rooms) {
             let flippedId = null;
             document.querySelectorAll('.room-container.flipped').forEach(el => flippedId = el.id);
@@ -714,7 +647,6 @@
                 let frontHtml = ''; 
                 let rc = r.status === 'available' ? 'available' : (r.status === 'occupied' ? 'occupied' : 'occupied-cleaning');
                 
-                // NOTAS EN HABITACIONES
                 const roomNotes = notesData.filter(n => n.room_id === r.id);
                 const hasNotes = roomNotes.length > 0;
                 const badgeHtml = hasNotes ? `<div class="note-badge-front"><i class="fa-regular fa-bell"></i></div>` : '';
@@ -734,147 +666,59 @@
                     const txt = r.status === 'occupied' ? 'OCUPADA' : 'NECESITA LIMPIEZA'; 
                     const ultLimp = r.last_cleaned_time || r.check_in_time;
                     const guestCountText = r.guest_count ? `(${r.guest_count} p.)` : `(1 p.)`;
-                    
                     frontHtml = `${badgeHtml}<div class="room-number">${r.id}</div><div class="status-pill">${txt}</div>${r.guest_name ? `<div class="guest-name" title="${r.guest_name}"><i class="fa-solid fa-user"></i> ${r.guest_name} <span style="font-size:0.68rem; opacity:0.85;">${guestCountText}</span></div>` : ''}<div class="badges-container"><div class="badge-row"><span>Llegada: ${formatFechaEcuador(r.check_in_time)}</span></div><div class="badge-row"><span class="live-timer-checkin" data-time="${r.check_in_time}"></span></div><div class="badge-row"><span class="live-timer-cleaned" data-time="${ultLimp}" data-status="${r.status}"></span></div></div>`;
                 }
                 
                 let actionButtonsHtml = '';
-                if (r.status === 'available') {
-                    actionButtonsHtml = `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>`;
-                } else if (r.status === 'occupied') {
-                    actionButtonsHtml = `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">NECESITA LIMPIEZA</button>`;
-                } else {
-                    actionButtonsHtml = `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`;
-                }
-                
+                if (r.status === 'available') { actionButtonsHtml = `<button class="btn btn-checkin" onclick="openCheckinModal(${r.id})">CHECK-IN</button>`; } 
+                else if (r.status === 'occupied') { actionButtonsHtml = `<button class="btn btn-clean" onclick="accionHabitacion(${r.id}, 'occupied-cleaning', 'none')">NECESITA LIMPIEZA</button>`; } 
+                else { actionButtonsHtml = `<button class="btn btn-checkin" onclick="accionHabitacion(${r.id}, 'occupied', 'cleaned')">LIMPIEZA COMPLETADA</button>`; }
                 actionButtonsHtml += `<button class="btn btn-checkout" onclick="openConfirmCheckoutModal(${r.id})">CHECK-OUT</button><button class="btn btn-cancel" onclick="flipCard(${r.id})">VOLVER</button>`;
-
                 let addNoteBtnHtml = (r.status !== 'available') ? `<button class="btn-add-note-sm" onclick="openNoteForm(null, ${r.id})"><i class="fa-solid fa-plus"></i> Agregar Nota</button>` : '';
 
-                grid.innerHTML += `
-                <div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})">
-                    <div class="room-flipper">
-                        <div class="front ${rc}">${frontHtml}</div>
-                        <div class="back" onclick="event.stopPropagation()">
-                            <div class="room-notes-wrapper">
-                                ${notesBackHtml}
-                                ${addNoteBtnHtml}
-                            </div>
-                            <div class="room-card-actions">
-                                ${actionButtonsHtml}
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
+                grid.innerHTML += `<div class="room-container ${rc}" id="room-${r.id}" onclick="flipCard(${r.id})"><div class="room-flipper"><div class="front ${rc}">${frontHtml}</div><div class="back" onclick="event.stopPropagation()"><div class="room-notes-wrapper">${notesBackHtml}${addNoteBtnHtml}</div><div class="room-card-actions">${actionButtonsHtml}</div></div></div></div>`;
             });
             container.appendChild(grid); 
-            
             if(flippedId && document.getElementById(flippedId)) { document.getElementById(flippedId).classList.add('flipped'); }
             updateLiveTimers();
         }
 
         function flipCard(id) { document.querySelectorAll('.room-container.flipped').forEach(el => { if (el.id !== `room-${id}`) el.classList.remove('flipped'); }); document.getElementById(`room-${id}`).classList.toggle('flipped'); }
-        
-        function openCheckinModal(id) { 
-            currentRoomIdForCheckin = id; 
-            document.getElementById('guestName').value = ''; 
-            document.getElementById('guestCedula').value = ''; 
-            document.getElementById('guestCount').value = '1';
-            document.getElementById('checkinModal').style.display = 'flex'; 
-        }
+        function openCheckinModal(id) { currentRoomIdForCheckin = id; document.getElementById('guestName').value = ''; document.getElementById('guestCedula').value = ''; document.getElementById('guestCount').value = '1'; document.getElementById('checkinModal').style.display = 'flex'; }
         function openConfirmCheckoutModal(id) { currentRoomIdForCheckout = id; document.getElementById('confirmCheckoutModal').style.display = 'flex'; }
+        function submitCheckin() { const count = parseInt(document.getElementById('guestCount').value) || 1; const py = { status: 'occupied', check_in_time: new Date().toISOString(), last_cleaned_time: new Date().toISOString(), guest_name: document.getElementById('guestName').value.trim() || 'Sin registrar', guest_id: document.getElementById('guestCedula').value.trim() || 'N/A', guest_count: count, isCheckout: false }; document.getElementById('checkinModal').style.display = 'none'; updateRoomDB(currentRoomIdForCheckin, py); }
+        function executeCheckout() { document.getElementById('confirmCheckoutModal').style.display = 'none'; const tarjetaRoom = document.getElementById(`room-${currentRoomIdForCheckout}`); if(tarjetaRoom) tarjetaRoom.classList.remove('flipped'); accionHabitacion(currentRoomIdForCheckout, 'available', 'checkout'); }
+        function accionHabitacion(id, nuevoEstado, actionType) { const py = { status: nuevoEstado, isCheckout: false }; if (actionType === 'checkout') { py.check_in_time = null; py.last_cleaned_time = null; py.guest_name = null; py.guest_id = null; py.guest_count = null; py.isCheckout = true; } else if (actionType === 'cleaned') { py.last_cleaned_time = new Date().toISOString(); } updateRoomDB(id, py); }
 
-        function submitCheckin() {
-            const count = parseInt(document.getElementById('guestCount').value) || 1;
-            const py = { status: 'occupied', check_in_time: new Date().toISOString(), last_cleaned_time: new Date().toISOString(), guest_name: document.getElementById('guestName').value.trim() || 'Sin registrar', guest_id: document.getElementById('guestCedula').value.trim() || 'N/A', guest_count: count, isCheckout: false };
-            document.getElementById('checkinModal').style.display = 'none'; updateRoomDB(currentRoomIdForCheckin, py);
-        }
-        
-        function executeCheckout() { 
-            document.getElementById('confirmCheckoutModal').style.display = 'none'; 
-            
-            const tarjetaRoom = document.getElementById(`room-${currentRoomIdForCheckout}`);
-            if(tarjetaRoom) tarjetaRoom.classList.remove('flipped');
-            
-            accionHabitacion(currentRoomIdForCheckout, 'available', 'checkout'); 
-        }
-        
-        function accionHabitacion(id, nuevoEstado, actionType) {
-            const py = { status: nuevoEstado, isCheckout: false };
-            if (actionType === 'checkout') { py.check_in_time = null; py.last_cleaned_time = null; py.guest_name = null; py.guest_id = null; py.guest_count = null; py.isCheckout = true; } 
-            else if (actionType === 'cleaned') { py.last_cleaned_time = new Date().toISOString(); }
-            updateRoomDB(id, py);
-        }
-
-        // ACTUALIZACIÓN DE HABITACIÓN Y GUARDADO DE HISTORIAL
         async function updateRoomDB(id, payload) {
-            const index = globalRooms.findIndex(r => r.id === id); if(index === -1) return; const room = globalRooms[index];
-            
-            // 1. Guardar en Historial al hacer Check-Out
-            if (payload.isCheckout && room.check_in_time) {
-                const cantPersonas = parseInt(room.guest_count) || 1;
-                let histPayload = { 
-                    room: room.id, 
-                    name: room.guest_name || 'Sin registrar', 
-                    cedula: room.guest_id || 'N/A', 
-                    check_in: room.check_in_time, 
-                    check_out: new Date().toISOString(),
-                    guest_count: cantPersonas
-                };
+            try {
+                const index = globalRooms.findIndex(r => r.id === id); if(index === -1) return; const room = globalRooms[index];
                 
-                let { error: histErr } = await _supabase.from('history').insert([histPayload]);
+                if (payload.isCheckout && room.check_in_time) {
+                    const cantPersonas = parseInt(room.guest_count) || 1;
+                    let histPayload = { room: room.id, name: room.guest_name || 'Sin registrar', cedula: room.guest_id || 'N/A', check_in: room.check_in_time, check_out: new Date().toISOString(), guest_count: cantPersonas };
+                    let { error: histErr } = await _supabase.from('history').insert([histPayload]);
+                    if (histErr) { delete histPayload.guest_count; await _supabase.from('history').insert([histPayload]); }
+                    fetchHistoryDB(); // Actualizar caché sin bloquear la pantalla
+                }
                 
-                if (histErr) {
-                    console.warn("Reintentando inserción en historial...", histErr.message);
-                    delete histPayload.guest_count;
-                    let retry = await _supabase.from('history').insert([histPayload]);
-                    if (retry.error) {
-                        customAlert("Error al guardar en historial: " + retry.error.message);
-                    }
+                if (payload.isCheckout) {
+                    await _supabase.from('notes').delete().eq('room_id', id);
+                    await fetchNotesDB();
                 }
-            }
-            
-            if (payload.isCheckout) {
-                await _supabase.from('notes').delete().eq('room_id', id);
-                await fetchNotesDB();
-            }
 
-            room.status = payload.status;
-            if (payload.isCheckout) { 
-                room.check_in_time = null; 
-                room.last_cleaned_time = null; 
-                room.guest_name = null; 
-                room.guest_id = null; 
-                room.guest_count = null;
-            } else { 
-                if(payload.check_in_time) room.check_in_time = payload.check_in_time; 
-                if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; 
-                if(payload.guest_name) room.guest_name = payload.guest_name; 
-                if(payload.guest_id) room.guest_id = payload.guest_id; 
-                if(payload.guest_count !== undefined) room.guest_count = payload.guest_count; 
-            }
-            
-            let updatePayload = { 
-                status: room.status, 
-                check_in_time: room.check_in_time, 
-                last_cleaned_time: room.last_cleaned_time, 
-                guest_name: room.guest_name, 
-                guest_id: room.guest_id 
-            };
-            if(room.guest_count !== undefined) updatePayload.guest_count = room.guest_count;
+                room.status = payload.status;
+                if (payload.isCheckout) { room.check_in_time = null; room.last_cleaned_time = null; room.guest_name = null; room.guest_id = null; room.guest_count = null; } 
+                else { if(payload.check_in_time) room.check_in_time = payload.check_in_time; if(payload.last_cleaned_time) room.last_cleaned_time = payload.last_cleaned_time; if(payload.guest_name) room.guest_name = payload.guest_name; if(payload.guest_id) room.guest_id = payload.guest_id; if(payload.guest_count !== undefined) room.guest_count = payload.guest_count; }
+                
+                let updatePayload = { status: room.status, check_in_time: room.check_in_time, last_cleaned_time: room.last_cleaned_time, guest_name: room.guest_name, guest_id: room.guest_id };
+                if(room.guest_count !== undefined) updatePayload.guest_count = room.guest_count;
 
-            let { error: roomErr } = await _supabase.from('rooms').update(updatePayload).eq('id', id);
-            
-            if (roomErr) {
-                delete updatePayload.guest_count;
-                let fallback = await _supabase.from('rooms').update(updatePayload).eq('id', id);
-                if (fallback.error) { 
-                    customAlert("Error actualizando habitación: " + fallback.error.message); 
-                    return; 
-                }
-            }
-            
-            renderRooms(globalRooms);
+                let { error: roomErr } = await _supabase.from('rooms').update(updatePayload).eq('id', id);
+                if (roomErr) { delete updatePayload.guest_count; await _supabase.from('rooms').update(updatePayload).eq('id', id); }
+                
+                renderRooms(globalRooms);
+            } catch(e) { customAlert("Error de conexión: " + e.message); }
         }
 
         function updateLiveTimers() { 
@@ -882,84 +726,78 @@
             document.querySelectorAll('.live-timer-cleaned').forEach(el => { const t = el.getAttribute('data-time'); const s = el.getAttribute('data-status'); if (s === 'occupied-cleaning') el.innerText = 'Necesita limpieza'; else if (t && t !== 'null') el.innerText = `Últ. Limpieza: ${calcularTiempoVivo(t)}`; }); 
         }
 
-        // SUPABASE: RESERVAS
-        async function renderReservations() {
-            const { data, error } = await _supabase.from('reservations').select('*').order('arrival', { ascending: true });
-            if (error) { customAlert("Error al cargar reservas: " + error.message); return; }
-            reservationsData = data || []; const list = document.getElementById('reservationsList'); list.innerHTML = '';
+        // NOTAS (Render)
+        function loadNotesUI() {
+            const container = document.getElementById('notesListContainer'); container.innerHTML = '';
+            if (notesData.length === 0) { container.innerHTML = '<p style="text-align:center; width:100%; margin-top:30px; color:var(--text-muted);">No hay notas o novedades registradas.</p>'; return; }
+            notesData.forEach(n => {
+                const isGeneral = !n.room_id || n.room_id == 0;
+                const badgeHtml = isGeneral ? `<span class="note-badge general">General</span>` : `<span class="note-badge">Habitación ${n.room_id}</span>`;
+                const cardClass = isGeneral ? 'note-card general' : 'note-card';
+                container.innerHTML += `<div class="${cardClass}"><div class="note-header">${badgeHtml}<span>${formatFechaEcuador(n.created_at)}</span></div><div class="note-content">${n.content}</div><div class="note-actions"><button class="btn-icon btn-edit-res" onclick="openNoteForm(${n.id})" style="width:34px;height:34px;font-size:0.9rem;" title="Editar"><i class="fa-solid fa-pen"></i></button><button class="btn-icon btn-delete-res" onclick="deleteNote(${n.id})" style="width:34px;height:34px;font-size:0.9rem;" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div></div>`;
+            });
+        }
+        function openNoteForm(id = null, preselectRoomId = null) {
+            currentNoteEditingId = id; const select = document.getElementById('noteRoomSelect'); select.innerHTML = '<option value="0">Mensaje General (Todos)</option>';
+            globalRooms.forEach(room => { const opt = document.createElement('option'); opt.value = room.id; opt.textContent = `Asignar a Habitación ${room.id}`; select.appendChild(opt); });
+            if (id) { const note = notesData.find(x => x.id === id); document.getElementById('noteContent').value = note ? note.content : ''; document.getElementById('noteRoomSelect').value = note ? (note.room_id || 0) : 0; } 
+            else { document.getElementById('noteContent').value = ''; if (preselectRoomId) { document.getElementById('noteRoomSelect').value = preselectRoomId; } else { document.getElementById('noteRoomSelect').value = '0'; } }
+            document.getElementById('noteFormModal').style.display = 'flex';
+        }
+        async function saveNote() {
+            try {
+                const content = document.getElementById('noteContent').value.trim(); const room_id = parseInt(document.getElementById('noteRoomSelect').value);
+                if (!content) { customAlert("Por favor, ingresa el contenido de la nota."); return; }
+                const payload = { id: currentNoteEditingId || Date.now(), content: content, room_id: room_id === 0 ? null : room_id, created_at: new Date().toISOString() };
+                if (currentNoteEditingId) { await _supabase.from('notes').update(payload).eq('id', currentNoteEditingId); } else { await _supabase.from('notes').insert([payload]); }
+                closeModal('noteFormModal'); 
+                await fetchNotesDB(); loadNotesUI(); renderRooms(globalRooms); 
+            } catch(err) { customAlert("Error de red: " + err.message); }
+        }
+        function deleteNote(id, fromRoom = false) {
+            if(fromRoom) {
+                _supabase.from('notes').delete().eq('id', id).then(() => { fetchNotesDB().then(() => { loadNotesUI(); renderRooms(globalRooms); }); }).catch(e => console.error(e));
+            } else {
+                customConfirm("¿Eliminar esta nota?", async () => { try { await _supabase.from('notes').delete().eq('id', id); await fetchNotesDB(); loadNotesUI(); renderRooms(globalRooms); } catch(e){} });
+            }
+        }
+
+        // RESERVAS (Render)
+        function renderReservations() {
+            const list = document.getElementById('reservationsList'); list.innerHTML = '';
             if (reservationsData.length === 0) { list.innerHTML = '<p style="text-align:center; margin-top:30px; color:var(--text-muted);">No hay reservas registradas.</p>'; return; }
             reservationsData.forEach(res => {
                 const pText = res.guest_count ? ` (${res.guest_count} p.)` : ``;
-                list.innerHTML += `<div class="reservation-card"><div class="res-info"><h3>${res.name} ${pText} <span class="res-room-badge">Hab. ${res.room}</span></h3><div class="res-dates"><i class="fa-regular fa-clock"></i> Llegada: ${formatFechaEcuador(res.arrival)}</div>${res.phone ? `<div class="res-dates"><i class="fa-solid fa-phone"></i> Tel: ${res.phone}</div>` : ''}${res.note ? `<div class="res-dates" style="color:var(--status-free); font-weight:700;"><i class="fa-solid fa-note-sticky"></i> Nota: ${res.note}</div>` : ''}</div><div class="res-actions">${res.phone ? `<button onclick="window.open('https://wa.me/593${res.phone}?text=Hola%20${encodeURIComponent(res.name)}')" class="btn-icon btn-whatsapp" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>` : ''}<button class="btn-icon btn-edit-res" onclick="openReservationForm(${res.id})" title="Editar"><i class="fa-solid fa-pen"></i></button><button class="btn-icon btn-delete-res" onclick="deleteReservation(${res.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div></div>`;
+                list.innerHTML += `<div class="reservation-card"><div class="res-info"><h3>${res.name} ${pText} <span class="res-room-badge">Hab. ${res.room}</span></h3><div class="res-dates"><i class="fa-regular fa-clock"></i> Llegada: ${formatFechaEcuador(res.arrival)}</div>${res.phone ? `<div class="res-dates"><i class="fa-solid fa-phone"></i> Tel: ${res.phone}</div>` : ''}${res.note ? `<div class="res-dates" style="color:var(--status-free); font-weight:700;"><i class="fa-solid fa-note-sticky"></i> Nota: ${res.note}</div>` : ''}</div><div class="res-actions">${res.phone ? `<button onclick="window.open('https://wa.me/593${res.phone}?text=Hola\%20${encodeURIComponent(res.name)}')" class="btn-icon btn-whatsapp" title="Enviar WhatsApp"><i class="fa-brands fa-whatsapp"></i></button>` : ''}<button class="btn-icon btn-edit-res" onclick="openReservationForm(${res.id})" title="Editar"><i class="fa-solid fa-pen"></i></button><button class="btn-icon btn-delete-res" onclick="deleteReservation(${res.id})" title="Eliminar"><i class="fa-solid fa-trash"></i></button></div></div>`;
             });
         }
         function openReservationForm(id = null) {
             currentResEditingId = id; const select = document.getElementById('rRoom'); select.innerHTML = '';
-            globalRooms.forEach(room => { 
-                const opt = document.createElement('option'); opt.value = room.id; const estadoTxt = room.status === 'available' ? '🟢 LIBRE' : '🔴 OCUPADA'; opt.textContent = `Habitación ${room.id} [${estadoTxt}]`; select.appendChild(opt); 
-            });
+            globalRooms.forEach(room => { const opt = document.createElement('option'); opt.value = room.id; const estadoTxt = room.status === 'available' ? '🟢 LIBRE' : '🔴 OCUPADA'; opt.textContent = `Habitación ${room.id} [${estadoTxt}]`; select.appendChild(opt); });
             if (id) { 
-                const res = reservationsData.find(r => r.id === id); 
-                document.getElementById('rName').value = res.name; 
-                document.getElementById('rRoom').value = res.room; 
-                document.getElementById('rGuestCount').value = res.guest_count || 1; 
-                document.getElementById('rPhone').value = res.phone; 
-                if(res.arrival) {
-                    const d = new Date(res.arrival);
-                    const yyyy = d.getFullYear();
-                    const mm = String(d.getMonth() + 1).padStart(2, '0');
-                    const dd = String(d.getDate()).padStart(2, '0');
-                    document.getElementById('rArrivalDate').value = `${yyyy}-${mm}-${dd}`;
-                    const hh = String(d.getHours()).padStart(2, '0');
-                    const min = String(d.getMinutes()).padStart(2, '0');
-                    document.getElementById('rArrivalTime').value = `${hh}:${min}`;
-                } else {
-                    document.getElementById('rArrivalDate').value = '';
-                    document.getElementById('rArrivalTime').value = '';
-                }
+                const res = reservationsData.find(r => r.id === id); document.getElementById('rName').value = res.name; document.getElementById('rRoom').value = res.room; document.getElementById('rGuestCount').value = res.guest_count || 1; document.getElementById('rPhone').value = res.phone; 
+                if(res.arrival) { const d = new Date(res.arrival); document.getElementById('rArrivalDate').value = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; document.getElementById('rArrivalTime').value = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; } else { document.getElementById('rArrivalDate').value = ''; document.getElementById('rArrivalTime').value = ''; }
                 document.getElementById('rNote').value = res.note || ''; 
             } 
-            else { 
-                document.getElementById('rName').value = ''; 
-                document.getElementById('rGuestCount').value = '1'; 
-                document.getElementById('rPhone').value = ''; 
-                document.getElementById('rArrivalDate').value = ''; 
-                document.getElementById('rArrivalTime').value = ''; 
-                document.getElementById('rNote').value = ''; 
-            }
+            else { document.getElementById('rName').value = ''; document.getElementById('rGuestCount').value = '1'; document.getElementById('rPhone').value = ''; document.getElementById('rArrivalDate').value = ''; document.getElementById('rArrivalTime').value = ''; document.getElementById('rNote').value = ''; }
             document.getElementById('addReservationModal').style.display = 'flex';
         }
-
         async function saveReservation() {
             try {
-                const name = document.getElementById('rName').value.trim(); 
-                const room = document.getElementById('rRoom').value; 
-                const arrivalDate = document.getElementById('rArrivalDate').value;
-                const arrivalTime = document.getElementById('rArrivalTime').value;
-                const guest_count = parseInt(document.getElementById('rGuestCount').value) || 1;
-                
+                const name = document.getElementById('rName').value.trim(); const room = document.getElementById('rRoom').value; const arrivalDate = document.getElementById('rArrivalDate').value; const arrivalTime = document.getElementById('rArrivalTime').value; const guest_count = parseInt(document.getElementById('rGuestCount').value) || 1;
                 if (!name || !room || !arrivalDate) { customAlert("Faltan datos obligatorios (Nombre, Habitación y Fecha)."); return; }
-                
-                const timePart = arrivalTime ? arrivalTime : '12:00';
-                const dateObj = new Date(`${arrivalDate}T${timePart}`);
+                const dateObj = new Date(`${arrivalDate}T${arrivalTime ? arrivalTime : '12:00'}`);
                 if (isNaN(dateObj.getTime())) { customAlert("Fecha u hora no válida."); return; }
-
                 const payload = { id: currentResEditingId || Date.now(), name: name, room: parseInt(room), phone: document.getElementById('rPhone').value.trim(), arrival: dateObj.toISOString(), note: document.getElementById('rNote').value.trim(), guest_count: guest_count };
-                
-                const { error } = await _supabase.from('reservations').upsert(payload);
-                if (error) { customAlert("Error guardando reserva: " + error.message); return; }
-                
-                closeModal('addReservationModal'); renderReservations();
-            } catch (err) { customAlert("Error: " + err.message); }
+                await _supabase.from('reservations').upsert(payload); 
+                closeModal('addReservationModal'); 
+                await fetchReservationsDB(); renderReservations();
+            } catch (err) {}
         }
-        function deleteReservation(id) { customConfirm("¿Eliminar esta reserva?", async () => { await _supabase.from('reservations').delete().eq('id', id); renderReservations(); }); }
+        function deleteReservation(id) { customConfirm("¿Eliminar esta reserva?", async () => { try { await _supabase.from('reservations').delete().eq('id', id); await fetchReservationsDB(); renderReservations(); } catch(e){} }); }
 
-        // SUPABASE: DIRECTORIO
-        async function loadDirectoryData() {
-            const { data, error } = await _supabase.from('contacts').select('*'); 
-            if (error) { customAlert("Error al cargar directorio: " + error.message); return; }
-            contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab'));
-        }
+        // DIRECTORIO (Render)
+        function loadDirectoryData() { renderDirectory('all', document.querySelector('.cat-tab.active') || document.querySelector('.cat-tab')); }
         function renderDirectory(cat, tabElement = null) {
             if(tabElement){ document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active')); tabElement.classList.add('active'); }
             const grid = document.getElementById('contactsGrid'); grid.innerHTML = ''; let filtered = contactsData;
@@ -979,22 +817,15 @@
                 const name = document.getElementById('cName').value.trim(); const phone = document.getElementById('cPhone').value.trim();
                 if (!name || !phone) { customAlert("Faltan datos obligatorios."); return; }
                 const payload = { id: currentEditingId || Date.now(), name: name, category: document.getElementById('cCategory').value, phone: phone, description: document.getElementById('cDesc').value.trim(), image: tempImageBase64 };
-                const { error } = await _supabase.from('contacts').upsert(payload); 
-                if (error) { customAlert("Error guardando contacto: " + error.message); return; }
-                closeModal('contactFormModal'); const { data } = await _supabase.from('contacts').select('*'); contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab'));
-            } catch (err) { customAlert("Error: " + err.message); }
+                await _supabase.from('contacts').upsert(payload); 
+                closeModal('contactFormModal'); 
+                await fetchDirectoryDB(); renderDirectory('all', document.querySelector('.cat-tab.active'));
+            } catch (err) {}
         }
-        function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { await _supabase.from('contacts').delete().eq('id', id); const { data } = await _supabase.from('contacts').select('*'); contactsData = data || []; renderDirectory('all', document.querySelector('.cat-tab')); }); }
+        function deleteContact(id) { customConfirm("¿Eliminar contacto?", async () => { try{ await _supabase.from('contacts').delete().eq('id', id); await fetchDirectoryDB(); renderDirectory('all', document.querySelector('.cat-tab.active'));}catch(e){} }); }
 
-        // SUPABASE: ANTICIPOS
-        async function loadAdvances() {
-            const { data: empData, error: empErr } = await _supabase.from('employees').select('*').order('name', { ascending: true });
-            if (empErr) { customAlert("Error cargando empleados: " + empErr.message); return; }
-            employeesData = empData || [];
-            const { data: advData, error: advErr } = await _supabase.from('advances').select('*').order('datetime', { ascending: false });
-            if (advErr) { customAlert("Error cargando anticipos: " + advErr.message); return; }
-            advancesData = advData || [];
-
+        // ANTICIPOS (Render)
+        function loadAdvances() {
             let totalSum = 0; advancesData.forEach(a => { totalSum += parseFloat(a.amount || 0); });
             document.getElementById('totalAdvancesSum').innerText = `$${totalSum.toFixed(2)}`;
 
@@ -1012,12 +843,12 @@
             });
         }
         function openEmployeeForm() { document.getElementById('empName').value = ''; document.getElementById('employeeFormModal').style.display = 'flex'; }
-        async function saveEmployee() { const name = document.getElementById('empName').value.trim(); if (!name) return; await _supabase.from('employees').insert([{ id: Date.now(), name: name }]); closeModal('employeeFormModal'); loadAdvances(); }
-        function deleteEmployee(empId) { customConfirm("¿Eliminar empleado?", async () => { await _supabase.from('advances').delete().eq('employee_id', empId); await _supabase.from('employees').delete().eq('id', empId); loadAdvances(); }); }
-        function clearEmployeeAdvances(empId) { customConfirm("¿Borrar historial de anticipos?", async () => { await _supabase.from('advances').delete().eq('employee_id', empId); loadAdvances(); }); }
+        async function saveEmployee() { const name = document.getElementById('empName').value.trim(); if (!name) return; await _supabase.from('employees').insert([{ id: Date.now(), name: name }]); closeModal('employeeFormModal'); await fetchAdvancesDB(); loadAdvances(); }
+        function deleteEmployee(empId) { customConfirm("¿Eliminar empleado?", async () => { await _supabase.from('advances').delete().eq('employee_id', empId); await _supabase.from('employees').delete().eq('id', empId); await fetchAdvancesDB(); loadAdvances(); }); }
+        function clearEmployeeAdvances(empId) { customConfirm("¿Borrar historial de anticipos?", async () => { await _supabase.from('advances').delete().eq('employee_id', empId); await fetchAdvancesDB(); loadAdvances(); }); }
         function openAdvanceForm(empId) { currentEmpIdForAdvance = empId; document.getElementById('advAmount').value = ''; const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); document.getElementById('advDateTime').value = now.toISOString().slice(0, 16); document.getElementById('advanceFormModal').style.display = 'flex'; }
-        async function saveAdvance() { const amount = document.getElementById('advAmount').value; const datetime = document.getElementById('advDateTime').value; if (!amount || !datetime) return; await _supabase.from('advances').insert([{ id: Date.now(), employee_id: currentEmpIdForAdvance, amount: parseFloat(amount), datetime: new Date(datetime).toISOString() }]); closeModal('advanceFormModal'); loadAdvances(); }
-        async function deleteAdvance(advId) { customConfirm("¿Eliminar anticipo?", async () => { await _supabase.from('advances').delete().eq('id', advId); loadAdvances(); }); }
+        async function saveAdvance() { const amount = document.getElementById('advAmount').value; const datetime = document.getElementById('advDateTime').value; if (!amount || !datetime) return; await _supabase.from('advances').insert([{ id: Date.now(), employee_id: currentEmpIdForAdvance, amount: parseFloat(amount), datetime: new Date(datetime).toISOString() }]); closeModal('advanceFormModal'); await fetchAdvancesDB(); loadAdvances(); }
+        async function deleteAdvance(advId) { customConfirm("¿Eliminar anticipo?", async () => { await _supabase.from('advances').delete().eq('id', advId); await fetchAdvancesDB(); loadAdvances(); }); }
 
         function exportSingleEmployee(empId, format) {
             const emp = employeesData.find(e => e.id === empId); if(!emp) return;
@@ -1037,20 +868,18 @@
             const wrapper = document.getElementById('advanceExportWrapper'); html2canvas(wrapper, { scale: 2, backgroundColor: "#ffffff" }).then(canvas => { const imgData = canvas.toDataURL('image/png'); if(format === 'image') { const link = document.createElement('a'); link.download = filename + '.png'; link.href = imgData; link.click(); } else if(format === 'pdf') { const { jsPDF } = window.jspdf; const pdf = new jsPDF('p', 'mm', 'a4'); const w = pdf.internal.pageSize.getWidth(); const props = pdf.getImageProperties(imgData); const h = (props.height * w) / props.width; pdf.addImage(imgData, 'PNG', 0, 0, w, h); pdf.save(filename + '.pdf'); } });
         }
 
-        // CARGA Y MOSTRADO DE HISTORIAL CON CANTIDAD DE PERSONAS
-        async function loadHistory() {
-            const { data, error } = await _supabase.from('history').select('*').order('check_out', { ascending: false });
-            if (error) { customAlert("Error cargando historial: " + error.message); return; }
-            let history = data || []; const start = document.getElementById('filterStart').value; const end = document.getElementById('filterEnd').value;
+        // HISTORIAL CONTABLE (Render)
+        function loadHistory() {
+            let history = historyData; const start = document.getElementById('filterStart').value; const end = document.getElementById('filterEnd').value;
             if (start || end) { history = history.filter(h => { const checkOutLocalStr = new Date(h.check_out).toISOString().split('T')[0]; return (!start || checkOutLocalStr >= start) && (!end || checkOutLocalStr <= end); }); }
             const tbody = document.getElementById('exportTableBody'); tbody.innerHTML = '';
-            if (history.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay registros históricos.</td></tr>'; return; }
+            if (history.length === 0) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--text-muted);">No hay registros históricos o aún están cargando.</td></tr>'; return; }
             history.forEach(h => { 
                 const diffMs = new Date(h.check_out) - new Date(h.check_in); 
                 const diffHrs = Math.floor(diffMs / 3600000); 
                 const diffMins = Math.floor((diffMs % 3600000) / 60000);
                 const tiempoTotal = diffHrs > 0 ? `${diffHrs}h ${diffMins}m` : `${diffMins} min`;
-                const cantPersonas = h.guest_count ? `${h.guest_count} p.` : (h.personas ? `${h.personas} p.` : '1 p.');
+                const cantPersonas = h.guest_count ? `${h.guest_count} p.` : '1 p.';
                 tbody.innerHTML += `<tr><td>${h.room}</td><td><strong>${h.name}</strong></td><td>${h.cedula || 'N/A'}</td><td>${cantPersonas}</td><td>${formatFechaEcuador(h.check_in)}</td><td>${formatFechaEcuador(h.check_out)}</td><td>${tiempoTotal}</td></tr>`; 
             });
         }
